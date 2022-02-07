@@ -379,7 +379,7 @@ function NewTicket(props: any) {
                                       : false
                                   }
                                   onChange={handleChange(resource)}
-                                  name={resource.id}
+                                  name={resource.id.toString()}
                                 />
                                 <TextField
                                   onChange={handleChangeValue(resource)}
@@ -390,6 +390,7 @@ function NewTicket(props: any) {
                               </>
                             }
                             label={resource.resource}
+                            key={resource.id}
                           />
                         );
                       })}

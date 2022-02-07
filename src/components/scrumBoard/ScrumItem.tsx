@@ -14,7 +14,7 @@ function storyPoint(props: any) {
       story = props.fe_story;
     }
     el.push(
-      <div>
+      <div key="FE">
         <span>FE:</span>
         {story}
       </div>
@@ -28,7 +28,7 @@ function storyPoint(props: any) {
       story = props.be_story;
     }
     el.push(
-      <div>
+      <div key="BE">
         <span>BE:</span>
         {story}
       </div>
@@ -42,7 +42,7 @@ function storyPoint(props: any) {
       story = props.qa_story;
     }
     el.push(
-      <div>
+      <div key="QA">
         <span>QA:</span>
         {story}
       </div>

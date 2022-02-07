@@ -144,7 +144,7 @@ function ScrumBoard(props: any) {
       <div style={{ display: "flex" }}>
         <DragDropContext onDragEnd={onDragEnd}>
           {props.sprintStatusList?.map((el: any, ind: any) => (
-            <Droppable key={ind} droppableId={`${ind}`}>
+            <Droppable key={el.id} droppableId={`${ind}`}>
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}
