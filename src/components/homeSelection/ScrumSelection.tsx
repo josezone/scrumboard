@@ -31,11 +31,10 @@ function ScrumSelection(props: any) {
 
   return (
     <ScrumSelectionStyle>
-      {props.selectedScrum && (
+      {props.selectedScrum && !props.selectedScrum.active && (
         <div>
           <Button
             variant="contained"
-            disabled={props.selectedScrum.active}
             onClick={activateScrum}
           >
             Activate Scrum

@@ -256,8 +256,9 @@ function Home(props: any) {
       <Button variant="text" className="reportHead" onClick={clickDailyReport}>
         Daily Report
       </Button>
-      <AppBar {...state.context} send={send} />
+     
       <TabPanel value={value} index={0}>
+        <AppBar {...state.context} send={send} />
         <HomeSelection {...state.context} send={send} />
         <ScrumBoard {...state.context} send={send} ScrumItem={ScrumItem} />
       </TabPanel>

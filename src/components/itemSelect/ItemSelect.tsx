@@ -3,7 +3,7 @@ import { Fragment } from "react";
 import InputLabel from "@mui/material/InputLabel";
 import NativeSelect from "@mui/material/NativeSelect";
 
-import { ItemDiv } from "./ItemSelect.style";
+import { ItemDiv, LabelWrapper, SelectWrapper } from "./ItemSelect.style";
 
 interface IitemSelect {
   items: Array<any>;
@@ -16,11 +16,14 @@ interface IitemSelect {
 function ItemSelect(props: IitemSelect) {
   const { items, defaultItem, onChange, name, id } = props;
   return (
-    <Fragment>
-      <ItemDiv>
+    <ItemDiv>
+      <LabelWrapper>
         <InputLabel variant="standard" htmlFor={name} className="label_color">
           {name}
         </InputLabel>
+      </LabelWrapper>
+
+      <SelectWrapper>
         <NativeSelect
           defaultValue={defaultItem}
           onChange={onChange}
@@ -38,8 +41,8 @@ function ItemSelect(props: IitemSelect) {
             );
           })}
         </NativeSelect>
-      </ItemDiv>
-    </Fragment>
+      </SelectWrapper>
+    </ItemDiv>
   );
 }
 
