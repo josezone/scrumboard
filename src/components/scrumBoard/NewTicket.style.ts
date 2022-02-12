@@ -5,12 +5,12 @@ export const NewTicketStyled = styled.div`
     margin-left: 5px;
   }
   .cardContainer {
-    margin-top: 3em;
-    background-color: #f1f1f1;
-    width: 600px;
+    .MuiFormControl-root {
+      margin: 10px;
+    }
   }
   .textConatiner {
-    width: 285px;
+    width: 355px;
   }
   .slipContainer {
     float: right;
