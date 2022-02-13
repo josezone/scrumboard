@@ -133,8 +133,8 @@ function NewTicket(props: any) {
 
   return (
     <Fragment>
-       <Button onClick={handleCloseModal}>Open modal</Button>
-       <Modal open={modal} handleCloseIconClick={handleCloseModal} >
+       <Button onClick={handleCloseModal} variant="contained" >Add New Ticket</Button>
+       <Modal title="Add new ticket" open={modal} handleCloseIconClick={handleCloseModal} >
           <NewTicketStyled>
             <Card variant="outlined" className="cardContainer">
               <form onSubmit={onSubmit} className="formContainer">
