@@ -10,7 +10,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Fab from "@mui/material/Fab";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import NativeSelect from "@mui/material/NativeSelect";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
@@ -40,13 +39,6 @@ function SprintSelection(props: any) {
 
   const [countrySelect, setCountrySelect] = useState("");
   const [newCountry, setNewCountry] = useState("");
-
-  const onSprintChange = (event: any) => {
-    const selectedSprintNew = props?.sprintList?.filter((sprint:any)=> sprint.id === Number(event.target.value))
-    if(selectedSprintNew.length){
-      props.send({ type: "sprintChanged", prop: selectedSprintNew[0] });
-    }
-  };
 
   const addCountry = (event: any) => {
     if (newCountry) {
@@ -81,33 +73,12 @@ function SprintSelection(props: any) {
 
   return (
     <SprintSelectionStyle>
-      {props.sprintList && props.sprintList.length && props.selectedSprint && (
-        <div>
-          <InputLabel variant="standard" htmlFor="selectSprintNative">
-            Sprint
-          </InputLabel>
-          <NativeSelect
-            defaultValue={props.selectedScrum.id}
-            onChange={onSprintChange}
-            inputProps={{
-              name: "Scrum",
-              id: "selectSprintNative",
-            }}
-          >
-            {props.sprintList.map((sprint: any) => {
-              return (
-                <option value={sprint.id} key={sprint + sprint.sprint}>
-                  {sprint.sprint}
-                </option>
-              );
-            })}
-          </NativeSelect>
-        </div>
-      )}
       <div>
-        <Button variant="outlined" onClick={handleClickOpen}>
-          Create Sprint
-        </Button>
+        {props.selectedProject && (
+          <Button variant="outlined" onClick={handleClickOpen}>
+            Create Sprint
+          </Button>
+        )}
         <Dialog open={props.newSprintPopup} onClose={handleClose}>
           <form onSubmit={onSubmit}>
             <DialogTitle id="alert-dialog-title">{"Create Sprint"}</DialogTitle>
@@ -177,7 +148,10 @@ function SprintSelection(props: any) {
                       <InputLabel variant="standard" id="newCountry">
                         New Country
                       </InputLabel>
-                      <TextField onChange={newCountryChange} value={newCountry}/>
+                      <TextField
+                        onChange={newCountryChange}
+                        value={newCountry}
+                      />
                       <Fab size="small" color="primary" onClick={addCountry}>
                         <AddIcon />
                       </Fab>

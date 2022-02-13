@@ -1,7 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import AddIcon from "@mui/icons-material/Add";
-import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
 import Fab from "@mui/material/Fab";
 import TextField from "@mui/material/TextField";
 import { Controller, useForm } from "react-hook-form";
@@ -24,10 +22,6 @@ function ProjectSelection(props: any) {
     resolver: yupResolver(schema),
   });
 
-  const projectUpdated = (project: any) => (event: any) => {
-    props.send({ type: "projectChanged", prop: project });
-  };
-
   const onSubmit = (e: any) => {
     handleSubmit((data: any) => {
       reset();
@@ -39,24 +33,6 @@ function ProjectSelection(props: any) {
   return (
     <ProjectSelectionStyle>
         <div className="projectContainer">
-        {props.selectedProject && (<ButtonGroup>
-            {props.projectList.map((project: any) => {
-              return (
-                <Button
-                  variant={
-                    props.selectedProject.id === project.id
-                      ? "contained"
-                      : "outlined"
-                  }
-                  onClick={projectUpdated(project)}
-                  key={"project" + project.project}
-                  className="projectButton"
-                >
-                  {project.project}
-                </Button>
-              );
-            })}
-          </ButtonGroup>)}
           <form onSubmit={onSubmit}>
             <Controller
               name="project"

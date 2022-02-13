@@ -8,6 +8,7 @@ import HomeSelection from "../../components/homeSelection/HomeSelection";
 import Resources from "../../components/resources/Resources";
 import ScrumBoard from "../../components/scrumBoard/ScrumBoard";
 import ScrumItem from "../../components/scrumBoard/ScrumItem";
+import AppBar from "../../components/appBar/AppBar";
 import {
   useGetCountryList,
   useGetProjectList,
@@ -255,7 +256,9 @@ function Home(props: any) {
       <Button variant="text" className="reportHead" onClick={clickDailyReport}>
         Daily Report
       </Button>
+     
       <TabPanel value={value} index={0}>
+        <AppBar {...state.context} send={send} />
         <HomeSelection {...state.context} send={send} />
         <ScrumBoard {...state.context} send={send} ScrumItem={ScrumItem} />
       </TabPanel>
