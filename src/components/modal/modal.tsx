@@ -1,17 +1,18 @@
 import { FC } from 'react';
+
 import Backdrop from '@mui/material/Backdrop';
 import Modal from '@mui/material/Modal';
-import { IconButton, ModalProps, Typography } from "@mui/material"
-import CloseIcon from '@mui/icons-material/Close';
+import { ModalProps, Typography } from "@mui/material"
+
 import { ModalStyleWrapper, ModalContentStyle } from "./modal.style";
 
 interface IModalComponent extends ModalProps{
-    handleCloseIconClick: () => void,
+    handleClose: () => void,
     title: string
   }
 
  const ModalComponent: FC<IModalComponent> =  (props) => {
-    const { children, title, handleCloseIconClick, ...rest  } = props;
+    const { children, title, handleClose, ...rest  } = props;
 
     return (
         <ModalStyleWrapper>
@@ -23,14 +24,12 @@ interface IModalComponent extends ModalProps{
                 BackdropProps={{
                     timeout: 500,
                 }}
+                onClose={handleClose}
                 {...rest}
             >
                     <ModalContentStyle  >
                         <div className="closeButton">
                         <Typography id="modal-modal-title" variant="h6" component="h2">{title}</Typography>
-                            <IconButton  onClick={handleCloseIconClick}>
-                                <CloseIcon />
-                            </IconButton>
                         </div>
                       
                         {children}
