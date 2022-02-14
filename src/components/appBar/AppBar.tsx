@@ -1,10 +1,13 @@
+import { useState } from "react";
+
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Container from "@mui/material/Container";
 
 import ItemSelect from "../itemSelect/ItemSelect";
-import AddNew from "../addNew/addNew";
+import AddNew from "../addNewAppBar/addNewAppBar";
+import HomeSelection from "../homeSelection/HomeSelection";
 
 import { AppBarWrapper } from "./AppBar.style";
 
@@ -13,19 +16,23 @@ type scrumItem = { key: number; value: number; label: number };
 type sprintItem = { key: number; value: number; label: string };
 
 function AppBarHeader(props: any) {
+
+  
   const year = new Date().getFullYear();
   const yearItems: Array<yearItem> = [
     { key: year, value: year, label: year },
     { key: year - 1, value: year - 1, label: year - 1 },
   ];
+  
+
 
   const scrumItems: Array<scrumItem> = props.scrumList?.map((scrum: any) => {
     const date =
-      new Date(scrum.scrum).toLocaleString("default", {
-        month: "long",
-      }) +
-      " " +
-      new Date(scrum.scrum).getDate();
+    new Date(scrum.scrum).toLocaleString("default", {
+      month: "long",
+    }) +
+    " " +
+    new Date(scrum.scrum).getDate();
     return {
       key: scrum?.id,
       value: scrum?.id,
@@ -40,31 +47,31 @@ function AppBarHeader(props: any) {
         label: sprint.sprint,
       };
     }
-  );
-
-  const projectItems: Array<any> = props.projectList?.map((project: any) => {
-    return {
+    );
+    
+    const projectItems: Array<any> = props.projectList?.map((project: any) => {
+      return {
       key: project.id,
       value: project?.id,
       label: project.project,
     };
   });
+  
+
 
   const onYearChange = (event: any) => {
     props.send({ type: "yearChanged", prop: event.target.value });
   };
-
   const onScrumChange = (event: any) => {
     const selectedObjList = props.scrumList.filter(
       (obj: any) => obj.id === Number(event.target.value)
-    );
-    let selectedObj = {};
+      );
+      let selectedObj = {};
     if (selectedObjList.length) {
       selectedObj = selectedObjList[0];
     }
     props.send({ type: "scrumChanged", prop: selectedObj });
   };
-
   const onSprintChange = (event: any) => {
     const selectedSprintNew = props?.sprintList?.filter(
       (sprint: any) => sprint.id === Number(event.target.value)
@@ -73,7 +80,6 @@ function AppBarHeader(props: any) {
       props.send({ type: "sprintChanged", prop: selectedSprintNew[0] });
     }
   };
-
   const onProjectChanged = (event: any) => {
     const project = props?.projectList?.filter(
       (project: any) => project.id === Number(event.target.value)
@@ -82,10 +88,16 @@ function AppBarHeader(props: any) {
       props.send({ type: "projectChanged", prop: project[0] });
     }
   };
+  
+  
 
-  const onClick = ()=>{
-    console.log("clicked add new");
-  }
+  const openCreateScrum = () => {
+    props.send({ type: "createScrumPopupOpen" });
+  };
+  const openCreateSprint = () => {
+    props.send({ type: "createSprintPopupOpen" });
+  };
+
   return (
     <AppBarWrapper>
       <AppBar position="static">
@@ -102,7 +114,7 @@ function AppBarHeader(props: any) {
                     name="Scrum"
                     id="selectScrumNative"
                   >
-                    <AddNew addNew={onClick}></AddNew>
+                    <AddNew addNew={openCreateScrum} ></AddNew>
                   </ItemSelect>
                 )}
 
@@ -116,7 +128,7 @@ function AppBarHeader(props: any) {
                     name="Sprint"
                     id="selectSprintNative"
                   >
-                    <AddNew></AddNew>
+                    <AddNew addNew={openCreateSprint}></AddNew>
                   </ItemSelect>
                 )}
 
@@ -145,6 +157,9 @@ function AppBarHeader(props: any) {
           </Toolbar>
         </Container>
       </AppBar>
+
+      <HomeSelection {...props}></HomeSelection>
+
     </AppBarWrapper>
   );
 }
