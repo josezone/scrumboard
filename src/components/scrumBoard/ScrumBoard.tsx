@@ -108,7 +108,7 @@ function ScrumBoard(props: any) {
   function getIndividualSprint(el: any, ind: number) {
     if (props.ticketList && props.ticketList[el.status]) {
       return props.ticketList[el.status].map((item: any, index: any) => (
-        <Draggable key={item.ticket} draggableId={item.ticket} index={index}>
+        <Draggable key={item.ticket.id} draggableId={item.ticket} index={index}>
           {(provided, snapshot) => (
             <div
               ref={provided.innerRef}
