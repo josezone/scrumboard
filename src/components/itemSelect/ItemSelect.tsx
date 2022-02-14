@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { ReactChild, ReactChildren } from "react";
 
 import InputLabel from "@mui/material/InputLabel";
 import NativeSelect from "@mui/material/NativeSelect";
@@ -11,6 +11,7 @@ interface IitemSelect {
   onChange: any;
   name: string;
   id: string;
+  children?: ReactChild | ReactChild[] | ReactChildren | ReactChildren[];
 }
 
 function ItemSelect(props: IitemSelect) {
@@ -21,8 +22,9 @@ function ItemSelect(props: IitemSelect) {
         <InputLabel variant="standard" htmlFor={name} className="label_color">
           {name}
         </InputLabel>
+        {props.children}
       </LabelWrapper>
-
+     
       <SelectWrapper>
         <NativeSelect
           defaultValue={defaultItem}
