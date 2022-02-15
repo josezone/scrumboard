@@ -1,18 +1,16 @@
 import styled from "styled-components";
 
 export const NewTicketStyled = styled.div`
-  .cardContainer{
+  .cardContainer {
     padding: 10px;
     position: relative;
   }
-
 
   .formContainer {
     margin-left: 5px;
   }
 
   .slipContainer {
-   
   }
   .fabButton {
     position: absolute;
@@ -20,8 +18,19 @@ export const NewTicketStyled = styled.div`
     right: 10px;
   }
 
-  .newVerButton{
+  .newVerButton {
     margin-left: 20px;
-    width: 100px
+    width: 100px;
   }
+
+  .MuiCard-root {
+    border: none;
+  }
+`;
+
+export const ModalActionContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 100%;
 `;

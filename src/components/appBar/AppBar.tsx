@@ -4,6 +4,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Container from "@mui/material/Container";
 
 import ItemSelect from "../itemSelect/ItemSelect";
+import AddNew from "../addNew/addNew";
 
 import { AppBarWrapper } from "./AppBar.style";
 
@@ -81,6 +82,10 @@ function AppBarHeader(props: any) {
       props.send({ type: "projectChanged", prop: project[0] });
     }
   };
+
+  const onClick = ()=>{
+    console.log("clicked add new");
+  }
   return (
     <AppBarWrapper>
       <AppBar position="static">
@@ -96,7 +101,9 @@ function AppBarHeader(props: any) {
                     onChange={onScrumChange}
                     name="Scrum"
                     id="selectScrumNative"
-                  />
+                  >
+                    <AddNew addNew={onClick}></AddNew>
+                  </ItemSelect>
                 )}
 
               {props.sprintList &&
@@ -108,7 +115,9 @@ function AppBarHeader(props: any) {
                     onChange={onSprintChange}
                     name="Sprint"
                     id="selectSprintNative"
-                  />
+                  >
+                    <AddNew></AddNew>
+                  </ItemSelect>
                 )}
 
               {props.selectedProject && (
@@ -118,7 +127,9 @@ function AppBarHeader(props: any) {
                   onChange={onProjectChanged}
                   name="Project"
                   id="selectProjectNative"
-                />
+                >
+                  <AddNew></AddNew>
+                </ItemSelect>
               )}
             </Box>
 

@@ -1,8 +1,13 @@
+import { useState, useMemo, Fragment, useEffect } from "react";
+
+import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Controller, useForm } from "react-hook-form";
+
 import AddIcon from "@mui/icons-material/Add";
+import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
-import Fab from "@mui/material/Fab";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
@@ -13,14 +18,11 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Switch from "@mui/material/Switch";
 import TextField from "@mui/material/TextField";
-import { useState, useMemo, Fragment, useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
-import * as yup from "yup";
-import { NewTicketStyled } from "./NewTicket.style";
-import Modal from "../modal/modal"
-import Button from '@mui/material/Button';
 import { Grid, IconButton } from "@mui/material";
+
+import Modal from "../modal/modal";
 import MultipleSelect from "../multiSelect/multiSelect";
+import { NewTicketStyled, ModalActionContainer } from "./NewTicket.style";
 
 const schema = yup
   .object({
@@ -49,10 +51,12 @@ function NewTicket(props: any) {
   const [selectedResources, setSelectedResources] = useState<Array<any>>([]);
 
   useEffect(() => {
-    const resource = props.resourceList?.map((reso: any) => ({ ...reso, value: reso?.resource }))
+    const resource = props.resourceList?.map((reso: any) => ({
+      ...reso,
+      value: reso?.resource,
+    }));
     setResourceList(resource);
-    
-  },[JSON.stringify(props.resourceList)])
+  }, [JSON.stringify(props.resourceList)]);
 
   const handleChange = (resource: any) => (event: any) => {
     setTouched(true);
@@ -120,7 +124,7 @@ function NewTicket(props: any) {
       };
       console.log(newData);
 
-       props.send({ type: "newTicket", prop: newData });
+      props.send({ type: "newTicket", prop: newData });
     })(e);
   };
 
@@ -138,22 +142,28 @@ function NewTicket(props: any) {
   };
 
   const handleCloseModal = (): void => {
-    setModal(m => !m)
-  }
+    setModal((m) => !m);
+  };
 
   const handleChangeResource = (payload: Array<any>): void => {
     setSelectedResources(payload);
-  }
+  };
 
   return (
     <Fragment>
-      <Button onClick={handleCloseModal} variant="contained" >Add New Ticket</Button>
-      <Modal title="Add new ticket" open={modal} handleCloseIconClick={handleCloseModal} >
+      <Button onClick={handleCloseModal} variant="contained">
+        Add New Ticket
+      </Button>
+      <Modal
+        title="Add new ticket"
+        open={modal}
+        handleClose={handleCloseModal}
+      >
         <NewTicketStyled>
           <Card variant="outlined" className="cardContainer">
             <form onSubmit={onSubmit} className="formContainer">
-              <Grid container spacing={2} >
-                <Grid item md={6} sm={12} >
+              <Grid container spacing={2}>
+                <Grid item md={6} sm={12}>
                   <Controller
                     name="ticket"
                     control={formProps.control}
@@ -172,7 +182,7 @@ function NewTicket(props: any) {
                   />
                 </Grid>
                 <Grid item md={6} sm={12}>
-                  <FormControl fullWidth >
+                  <FormControl fullWidth>
                     <InputLabel id="priority">Priority</InputLabel>
                     <Controller
                       name="priority"
@@ -190,14 +200,19 @@ function NewTicket(props: any) {
                             setPriority(e.target.value);
                             field.onChange(e);
                           }}
-                          error={formProps.formState.errors.priority ? true : false}
+                          error={
+                            formProps.formState.errors.priority ? true : false
+                          }
                         >
                           <MenuItem value="">
                             <em>None</em>
                           </MenuItem>
                           {props.priorityList?.map((priority: any) => {
                             return (
-                              <MenuItem value={priority.id} key={priority.priority}>
+                              <MenuItem
+                                value={priority.id}
+                                key={priority.priority}
+                              >
                                 {priority.priority}
                               </MenuItem>
                             );
@@ -212,7 +227,7 @@ function NewTicket(props: any) {
                 </Grid>
 
                 <Grid item md={6} sm={12}>
-                  <FormControl fullWidth >
+                  <FormControl fullWidth>
                     <InputLabel id="version">Version</InputLabel>
                     <Controller
                       name="version"
@@ -230,14 +245,19 @@ function NewTicket(props: any) {
                             setVersion(e.target.value);
                             field.onChange(e);
                           }}
-                          error={formProps.formState.errors?.version ? true : false}
+                          error={
+                            formProps.formState.errors?.version ? true : false
+                          }
                         >
                           <MenuItem value="">
                             <em>None</em>
                           </MenuItem>
                           {props.versionList?.map((version: any) => {
                             return (
-                              <MenuItem value={version.id} key={version.version}>
+                              <MenuItem
+                                value={version.id}
+                                key={version.version}
+                              >
                                 {version.version}
                               </MenuItem>
                             );
@@ -263,14 +283,16 @@ function NewTicket(props: any) {
                       setNewVersion(e.target.value);
                     }}
                     InputProps={{
-                      endAdornment: <IconButton onClick={createNewVersion} >
-                        <AddIcon color="primary" />
-                      </IconButton>
+                      endAdornment: (
+                        <IconButton onClick={createNewVersion}>
+                          <AddIcon color="primary" />
+                        </IconButton>
+                      ),
                     }}
                   />
                 </Grid>
 
-                <Grid item md={6} sm={12} >
+                <Grid item md={6} sm={12}>
                   <FormControl fullWidth>
                     <InputLabel id="scope">Scope</InputLabel>
                     <Controller
@@ -288,7 +310,9 @@ function NewTicket(props: any) {
                             setScope(e.target.value);
                             field.onChange(e);
                           }}
-                          error={formProps.formState.errors.scope ? true : false}
+                          error={
+                            formProps.formState.errors.scope ? true : false
+                          }
                         >
                           <MenuItem value="">
                             <em>None</em>
@@ -313,73 +337,94 @@ function NewTicket(props: any) {
                   {props.scopeList
                     ?.filter((item: any) => item.id === scope)[0]
                     ?.scope?.includes("BE") && (
-                      <Controller
-                        name="beStory"
-                        control={formProps.control}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            type="number"
-                            id="standard-basic"
-                            label="BE Story Points"
-                            variant="outlined"
-                            fullWidth
-                            error={formProps.formState.errors.beStory ? true : false}
-                            helperText={formProps.formState.errors?.beStory?.message}
-                          />
-                        )}
-                      />
-                    )}
+                    <Controller
+                      name="beStory"
+                      control={formProps.control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          type="number"
+                          id="standard-basic"
+                          label="BE Story Points"
+                          variant="outlined"
+                          fullWidth
+                          error={
+                            formProps.formState.errors.beStory ? true : false
+                          }
+                          helperText={
+                            formProps.formState.errors?.beStory?.message
+                          }
+                        />
+                      )}
+                    />
+                  )}
 
                   {props.scopeList
                     ?.filter((item: any) => item.id === scope)[0]
                     ?.scope?.includes("FE") && (
-                      <Controller
-                        name="feStory"
-                        control={formProps.control}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            type="number"
-                            id="standard-basic"
-                            label="FE Story Points"
-                            variant="outlined"
-                            fullWidth
-                            error={formProps.formState.errors.feStory ? true : false}
-                            helperText={formProps.formState.errors?.feStory?.message}
-                          />
-                        )}
-                      />
-                    )}
+                    <Controller
+                      name="feStory"
+                      control={formProps.control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          type="number"
+                          id="standard-basic"
+                          label="FE Story Points"
+                          variant="outlined"
+                          fullWidth
+                          error={
+                            formProps.formState.errors.feStory ? true : false
+                          }
+                          helperText={
+                            formProps.formState.errors?.feStory?.message
+                          }
+                        />
+                      )}
+                    />
+                  )}
 
                   {props.scopeList
                     ?.filter((item: any) => item.id === scope)[0]
                     ?.scope?.includes("QA") && (
-                      <Controller
-                        name="qaStory"
-                        control={formProps.control}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            type="number"
-                            id="standard-basic"
-                            label="QA Story Points"
-                            variant="outlined"
-                            fullWidth
-                            error={formProps.formState.errors.qaStory ? true : false}
-                            helperText={formProps.formState.errors?.qaStory?.message}
-                          />
-                        )}
-                      />
-                    )}
+                    <Controller
+                      name="qaStory"
+                      control={formProps.control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          type="number"
+                          id="standard-basic"
+                          label="QA Story Points"
+                          variant="outlined"
+                          fullWidth
+                          error={
+                            formProps.formState.errors.qaStory ? true : false
+                          }
+                          helperText={
+                            formProps.formState.errors?.qaStory?.message
+                          }
+                        />
+                      )}
+                    />
+                  )}
                 </Grid>
 
-                <Grid  item md={6} sm={12}>
-                <Controller
+                <Grid item md={6} sm={12}>
+                  <Controller
                     name="spill"
                     control={formProps.control}
                     render={({ field }) => (
-                         <MultipleSelect label="Resources" error={getResourceError() && !Boolean(selectedResources.length)}  options={resourceList} handleChange={handleChangeResource} />)}
+                      <MultipleSelect
+                        label="Resources"
+                        error={
+                          getResourceError() &&
+                          !Boolean(selectedResources.length)
+                        }
+                        options={resourceList}
+                        handleChange={handleChangeResource}
+                      />
+                    )}
                   />
                 </Grid>
 
@@ -398,70 +443,83 @@ function NewTicket(props: any) {
                   />
                 </Grid>
 
-              
                 <Grid item md={12} sm={12}>
-                 {Boolean(selectedResources.length) && <FormControl
-                    sx={{ m: 3 }}
-                    component="fieldset"
-                    variant="standard"
-                    error={getResourceError()}
-                  >
-                    <FormLabel component="legend">Resources StoryPoints </FormLabel>
-                    <Controller
-                      name="resources"
-                      control={formProps.control}
-                      render={({ field }) => {
-                        return (
-                          <FormGroup>
-                            {selectedResources?.map((resource: any) => {
-                              return (
-                                <FormControlLabel
-                                  control={
-                                    <>
-                                      <Checkbox
-                                        checked={
-                                          resourceCheck[resource.id]?.checked
-                                            ? true
-                                            : false
-                                        }
-                                        onChange={handleChange(resource)}
-                                        name={resource.id}
-                                      />
-                                      <TextField
-                                        onChange={handleChangeValue(resource)}
-                                        type="number"
-                                        label="Story points"
-                                        variant="standard"
-                                      />
-                                    </>
-                                  }
-                                  label={resource.resource}
-                                />
-                              );
-                            })}
-                          </FormGroup>
-                        );
-                      }}
-                    />
-                    {getResourceError() && (
-                      <FormHelperText>
-                        Resource with storypoint required
-                      </FormHelperText>
-                    )}
-                  </FormControl>}
+                  {Boolean(selectedResources.length) && (
+                    <FormControl
+                      sx={{ m: 3 }}
+                      component="fieldset"
+                      variant="standard"
+                      error={getResourceError()}
+                    >
+                      <FormLabel component="legend">
+                        Resources StoryPoints{" "}
+                      </FormLabel>
+                      <Controller
+                        name="resources"
+                        control={formProps.control}
+                        render={({ field }) => {
+                          return (
+                            <FormGroup>
+                              {selectedResources?.map((resource: any) => {
+                                return (
+                                  <FormControlLabel
+                                    control={
+                                      <>
+                                        <Checkbox
+                                          checked={
+                                            resourceCheck[resource.id]?.checked
+                                              ? true
+                                              : false
+                                          }
+                                          onChange={handleChange(resource)}
+                                          name={resource.id}
+                                        />
+                                        <TextField
+                                          onChange={handleChangeValue(resource)}
+                                          type="number"
+                                          label="Story points"
+                                          variant="standard"
+                                        />
+                                      </>
+                                    }
+                                    label={resource.resource}
+                                  />
+                                );
+                              })}
+                            </FormGroup>
+                          );
+                        }}
+                      />
+                      {getResourceError() && (
+                        <FormHelperText>
+                          Resource with storypoint required
+                        </FormHelperText>
+                      )}
+                    </FormControl>
+                  )}
                 </Grid>
 
-                <Fab size="small" color="primary" type="submit" className="fabButton">
+                {/* <Fab
+                  size="small"
+                  color="primary"
+                  type="submit"
+                  className="fabButton"
+                >
                   <AddIcon />
-                </Fab>
+                </Fab> */}
+                <ModalActionContainer>
+                  <Button onClick={handleCloseModal}>Cancel</Button>
+                  <Button type="submit" autoFocus>
+                    Create
+                  </Button>
+                </ModalActionContainer>
               </Grid>
             </form>
           </Card>
         </NewTicketStyled>
       </Modal>
     </Fragment>
-  )
-
+  );
 }
 
 export default NewTicket;
