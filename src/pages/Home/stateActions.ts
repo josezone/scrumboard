@@ -198,6 +198,9 @@ const updateSprint = assign({
   selectedSprint: (context: any, event: any) => {
     return event.prop;
   },
+  selectedCountry: (context: any, event: any) => { 
+    return event?.prop?.country || context?.selectedCountry
+  }
 });
 
 const updateTicketStatus = assign({
@@ -257,6 +260,18 @@ const assignVersionList = assign({
 const assignCreateTicket = assign({
   newTicket: (context: any, event: any) => {
     return event.prop;
+  },
+});
+
+const assignUpdateTicket = assign({
+  updateTicket: (context: any, event: any) => {
+    return event.prop;
+  },
+});
+
+const clearUpdateTicket = assign({
+  updateTicket: (context: any, event: any) => {
+    return undefined;
   },
 });
 
@@ -330,4 +345,6 @@ export const actions = {
   updateTicketStatus,
   assignRemoteUpdate,
   assignPriorityList,
+  assignUpdateTicket,
+  clearUpdateTicket
 };

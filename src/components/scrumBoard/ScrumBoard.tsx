@@ -130,6 +130,7 @@ function ScrumBoard(props: any) {
                   draggableIndx={index}
                   droppableIndx={ind}
                   removeItem={removeItem}
+                  restProps={props}
                 />
               </div>
             </div>
