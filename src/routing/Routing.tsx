@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { GraphQLClient } from "graphql-request";
+import Estimate from "../pages/Estimate/Estimate";
 const graphQLClient = new GraphQLClient(
   process.env.REACT_APP_API_URL as string
 );
@@ -15,7 +16,7 @@ function Routing() {
     <BrowserRouter>
       <Routes>
         <Route
-          path="/ticket"
+          path="/"
           element={<Home graphQLClient={graphQLClient} />}
         />
         <Route
@@ -26,7 +27,8 @@ function Routing() {
           path="/dailyreport"
           element={<DailyReport graphQLClient={graphQLClient} />}
         />
-        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/estimate" element={<Estimate graphQLClient={graphQLClient} />} />
       </Routes>
     </BrowserRouter>
   );
