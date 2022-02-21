@@ -16,3 +16,10 @@ export const CreateSprintStyle = styled.div`
     width: 11em;
   }
 `;
+
+export const ModalActionContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 100%;
+`;

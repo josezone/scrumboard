@@ -1,24 +1,21 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import AddIcon from "@mui/icons-material/Add";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
+
 import Fab from "@mui/material/Fab";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import {
   CreateSprintStyle,
   SprintSelectionStyle,
+  ModalActionContainer,
 } from "./sprintSelection.style";
+import ModalComponent from "../modal/modal";
 
 const schema = yup
   .object({
@@ -51,10 +48,6 @@ function SprintSelection(props: any) {
     setNewCountry(event.target.value);
   };
 
-  const handleClickOpen = () => {
-    props.send({ type: "createSprintPopupOpen" });
-  };
-
   const handleClose = () => {
     reset();
     setCountrySelect("");
@@ -74,100 +67,89 @@ function SprintSelection(props: any) {
   return (
     <SprintSelectionStyle>
       <div>
-        {props.selectedProject && (
-          <Button variant="outlined" onClick={handleClickOpen}>
-            Create Sprint
-          </Button>
-        )}
-        <Dialog open={props.newSprintPopup} onClose={handleClose}>
-          <form onSubmit={onSubmit}>
-            <DialogTitle id="alert-dialog-title">{"Create Sprint"}</DialogTitle>
-            <DialogContent>
-              <Box>
-                <DialogContentText id="alert-dialog-description">
-                  <CreateSprintStyle>
-                    <div>
-                      <div>
-                        <InputLabel variant="standard" id="sprintInputTitle">
-                          Sprint
-                        </InputLabel>
-                        <Controller
-                          name="sprint"
-                          control={control}
-                          render={({ field }) => (
-                            <TextField
-                              {...field}
-                              error={errors.sprint ? true : false}
-                              helperText={errors?.sprint?.message}
-                            />
-                          )}
+        <ModalComponent
+          open={props.newSprintPopup}
+          handleClose={handleClose}
+          title="Create Sprint"
+        >
+          <Fragment>
+            <form onSubmit={onSubmit}>
+              <CreateSprintStyle>
+                <div>
+                  <div>
+                    <InputLabel variant="standard" id="sprintInputTitle">
+                      Sprint
+                    </InputLabel>
+                    <Controller
+                      name="sprint"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          error={errors.sprint ? true : false}
+                          helperText={errors?.sprint?.message}
                         />
-                      </div>
-                      {props.countryList && props.countryList.length && (
-                        <div>
-                          <InputLabel
-                            variant="standard"
-                            htmlFor="selectSprintNative"
-                          >
-                            Country
-                          </InputLabel>
-                          <Controller
-                            name="country"
-                            control={control}
-                            render={({ field }) => (
-                              <Select
-                                {...field}
-                                value={countrySelect}
-                                onChange={(e: any) => {
-                                  setCountrySelect(e.target.value);
-                                  field.onChange(e);
-                                }}
-                                error={errors.country ? true : false}
-                              >
-                                <MenuItem value="">
-                                  <em>None</em>
-                                </MenuItem>
-                                {props.countryList.map((country: any) => {
-                                  return (
-                                    <MenuItem
-                                      value={country.id}
-                                      key={country + country.country}
-                                    >
-                                      {country.country}
-                                    </MenuItem>
-                                  );
-                                })}
-                              </Select>
-                            )}
-                          />
-                        </div>
                       )}
-                    </div>
-                    <div className="createProjectSection" />
+                    />
+                  </div>
+                  {props.countryList && props.countryList.length && (
                     <div>
-                      <InputLabel variant="standard" id="newCountry">
-                        New Country
+                      <InputLabel
+                        variant="standard"
+                        htmlFor="selectSprintNative"
+                      >
+                        Country
                       </InputLabel>
-                      <TextField
-                        onChange={newCountryChange}
-                        value={newCountry}
+                      <Controller
+                        name="country"
+                        control={control}
+                        render={({ field }) => (
+                          <Select
+                            {...field}
+                            value={countrySelect}
+                            onChange={(e: any) => {
+                              setCountrySelect(e.target.value);
+                              field.onChange(e);
+                            }}
+                            error={errors.country ? true : false}
+                          >
+                            <MenuItem value="">
+                              <em>None</em>
+                            </MenuItem>
+                            {props.countryList.map((country: any) => {
+                              return (
+                                <MenuItem
+                                  value={country.id}
+                                  key={country + country.country}
+                                >
+                                  {country.country}
+                                </MenuItem>
+                              );
+                            })}
+                          </Select>
+                        )}
                       />
-                      <Fab size="small" color="primary" onClick={addCountry}>
-                        <AddIcon />
-                      </Fab>
                     </div>
-                  </CreateSprintStyle>
-                </DialogContentText>
-              </Box>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose}>Cancel</Button>
-              <Button type="submit" autoFocus>
-                Create
-              </Button>
-            </DialogActions>
-          </form>
-        </Dialog>
+                  )}
+                </div>
+                <div className="createProjectSection" />
+                <div>
+                  <InputLabel variant="standard" id="newCountry">
+                    New Country
+                  </InputLabel>
+                  <TextField onChange={newCountryChange} value={newCountry} />
+                  <Fab size="small" color="primary" onClick={addCountry}>
+                    <AddIcon />
+                  </Fab>
+                </div>
+              </CreateSprintStyle>
+              <ModalActionContainer>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button type="submit">Create</Button>
+              </ModalActionContainer>
+            </form>
+          </Fragment>
+        </ModalComponent>
       </div>
     </SprintSelectionStyle>
   );

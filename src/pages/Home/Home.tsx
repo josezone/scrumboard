@@ -260,6 +260,10 @@ function Home(props: any) {
     },
   });
   // console.log(state);
+  const activateScrum = () => {
+    send({ type: "activateScrum" });
+  };
+
   return (
     <HomeStyle>
       <Tabs value={value} onChange={handleChange} className="tabBar">
@@ -272,7 +276,13 @@ function Home(props: any) {
 
       <TabPanel value={value} index={0}>
         <AppBar {...state.context} send={send} />
-        <HomeSelection {...state.context} send={send} />
+        {state.context.selectedScrum && !state.context.selectedScrum.active && (
+          <div>
+            <Button variant="contained" onClick={activateScrum}>
+              Activate Scrum
+            </Button>
+          </div>
+        )}
         <ScrumBoard {...state.context} send={send} ScrumItem={ScrumItem} />
       </TabPanel>
       <TabPanel value={value} index={1}>
