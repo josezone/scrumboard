@@ -126,6 +126,7 @@ function NewTicket(props: any) {
 
       props.send({ type: "newTicket", prop: newData });
     })(e);
+    handleCloseModal();
   };
 
   const getResourceError = () => {
