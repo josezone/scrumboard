@@ -1,9 +1,13 @@
-import { yupResolver } from "@hookform/resolvers/yup";
+import { useState } from "react";
+
+import * as yup from "yup";
 import AddIcon from "@mui/icons-material/Add";
 import Fab from "@mui/material/Fab";
 import TextField from "@mui/material/TextField";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
-import * as yup from "yup";
+
+import ModalComponent from "../modal/modal";
 import { ProjectSelectionStyle } from "./projectSelection.style";
 
 const schema = yup
@@ -22,16 +26,23 @@ function ProjectSelection(props: any) {
     resolver: yupResolver(schema),
   });
 
+
   const onSubmit = (e: any) => {
     handleSubmit((data: any) => {
       reset();
       e.target.reset();
       props.send({ type: "createProject", prop: data.project });
     })(e);
+    props.handleProjectModal();
   };
 
   return (
-    <ProjectSelectionStyle>
+    <ModalComponent
+      title="Create Project"
+      handleClose={props.handleProjectModal}
+      open={props.projectModal}
+    >
+      <ProjectSelectionStyle>
         <div className="projectContainer">
           <form onSubmit={onSubmit}>
             <Controller
@@ -53,7 +64,8 @@ function ProjectSelection(props: any) {
             </Fab>
           </form>
         </div>
-    </ProjectSelectionStyle>
+      </ProjectSelectionStyle>
+    </ModalComponent>
   );
 }
 

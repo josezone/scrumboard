@@ -16,23 +16,21 @@ type scrumItem = { key: number; value: number; label: number };
 type sprintItem = { key: number; value: number; label: string };
 
 function AppBarHeader(props: any) {
+  const [projectModal, setProjectModal] = useState<boolean>(false);
 
-  
   const year = new Date().getFullYear();
   const yearItems: Array<yearItem> = [
     { key: year, value: year, label: year },
     { key: year - 1, value: year - 1, label: year - 1 },
   ];
-  
-
 
   const scrumItems: Array<scrumItem> = props.scrumList?.map((scrum: any) => {
     const date =
-    new Date(scrum.scrum).toLocaleString("default", {
-      month: "long",
-    }) +
-    " " +
-    new Date(scrum.scrum).getDate();
+      new Date(scrum.scrum).toLocaleString("default", {
+        month: "long",
+      }) +
+      " " +
+      new Date(scrum.scrum).getDate();
     return {
       key: scrum?.id,
       value: scrum?.id,
@@ -47,17 +45,15 @@ function AppBarHeader(props: any) {
         label: sprint.sprint,
       };
     }
-    );
-    
-    const projectItems: Array<any> = props.projectList?.map((project: any) => {
-      return {
+  );
+
+  const projectItems: Array<any> = props.projectList?.map((project: any) => {
+    return {
       key: project.id,
       value: project?.id,
       label: project.project,
     };
   });
-  
-
 
   const onYearChange = (event: any) => {
     props.send({ type: "yearChanged", prop: event.target.value });
@@ -65,8 +61,8 @@ function AppBarHeader(props: any) {
   const onScrumChange = (event: any) => {
     const selectedObjList = props.scrumList.filter(
       (obj: any) => obj.id === Number(event.target.value)
-      );
-      let selectedObj = {};
+    );
+    let selectedObj = {};
     if (selectedObjList.length) {
       selectedObj = selectedObjList[0];
     }
@@ -88,8 +84,6 @@ function AppBarHeader(props: any) {
       props.send({ type: "projectChanged", prop: project[0] });
     }
   };
-  
-  
 
   const openCreateScrum = () => {
     props.send({ type: "createScrumPopupOpen" });
@@ -97,52 +91,70 @@ function AppBarHeader(props: any) {
   const openCreateSprint = () => {
     props.send({ type: "createSprintPopupOpen" });
   };
-
+  const handleProjectModal = (): void => {
+    setProjectModal((m) => !m);
+  };
   return (
     <AppBarWrapper>
       <AppBar position="static">
         <Container maxWidth={false}>
           <Toolbar>
             <Box sx={{ flexGrow: 1, display: "flex" }}>
-              {props.selectedScrum &&
+              {/* {props.selectedScrum &&
                 props.scrumList &&
-                props.scrumList.length && (
-                  <ItemSelect
-                    items={scrumItems}
-                    defaultItem={props.selectedScrum.id}
-                    onChange={onScrumChange}
-                    name="Scrum"
-                    id="selectScrumNative"
-                  >
-                    <AddNew addNew={openCreateScrum} ></AddNew>
-                  </ItemSelect>
-                )}
-
-              {props.sprintList &&
-                props.sprintList.length &&
-                props.selectedSprint && (
-                  <ItemSelect
-                    items={sprintItems}
-                    defaultItem={props.selectedSprint.id}
-                    onChange={onSprintChange}
-                    name="Sprint"
-                    id="selectSprintNative"
-                  >
-                    <AddNew addNew={openCreateSprint}></AddNew>
-                  </ItemSelect>
-                )}
+                props.scrumList.length && ( */}
+              <ItemSelect
+                items={scrumItems}
+                defaultItem={props.selectedScrum?.id}
+                onChange={onScrumChange}
+                name="Scrum"
+                id="selectScrumNative"
+                showList={
+                  props.selectedScrum &&
+                  props.scrumList &&
+                  props.scrumList.length &&
+                  true
+                }
+              >
+                <AddNew addNew={openCreateScrum}></AddNew>
+              </ItemSelect>
+              {/* )} */}
 
               {props.selectedProject && (
                 <ItemSelect
-                  items={projectItems}
-                  defaultItem={props.selectedProject.id}
-                  onChange={onProjectChanged}
-                  name="Project"
-                  id="selectProjectNative"
+                  items={sprintItems}
+                  defaultItem={props.selectedSprint?.id}
+                  onChange={onSprintChange}
+                  name="Sprint"
+                  id="selectSprintNative"
+                  showList={
+                    props.selectedSprint &&
+                    props.sprintList &&
+                    props.sprintList.length &&
+                    true
+                  }
                 >
-                  <AddNew></AddNew>
+                  <AddNew addNew={openCreateSprint}></AddNew>
                 </ItemSelect>
               )}
+
+              {/* {props.selectedProject && ( */}
+              <ItemSelect
+                items={projectItems}
+                defaultItem={props.selectedProject?.id}
+                onChange={onProjectChanged}
+                name="Project"
+                id="selectProjectNative"
+                showList={
+                  props.selectedProject &&
+                  props.projectList &&
+                  props.projectList.length &&
+                  true
+                }
+              >
+                <AddNew addNew={handleProjectModal}></AddNew>
+              </ItemSelect>
+              {/* )} */}
             </Box>
 
             <Box sx={{ flexGrow: 0 }}>
@@ -152,14 +164,18 @@ function AppBarHeader(props: any) {
                 onChange={onYearChange}
                 name="Year"
                 id="selectYearNative"
+                showList={true}
               />
             </Box>
           </Toolbar>
         </Container>
       </AppBar>
 
-      <HomeSelection {...props}></HomeSelection>
-
+      <HomeSelection
+        {...props}
+        projectModal={projectModal}
+        handleProjectModal={handleProjectModal}
+      ></HomeSelection>
     </AppBarWrapper>
   );
 }

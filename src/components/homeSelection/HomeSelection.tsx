@@ -6,8 +6,8 @@ function HomeSelection(props: any) {
   return (
     <div>
       <ScrumSelection {...props} />
-      {/* <ProjectSelection {...props} />
-      <SprintSelection {...props} /> */}
+      <ProjectSelection {...props}/>
+      <SprintSelection {...props} />
     </div>
   );
 }

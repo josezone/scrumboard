@@ -8,8 +8,9 @@ import TextField from "@mui/material/TextField";
 import isWeekend from "date-fns/isWeekend";
 import ModalComponent from "../modal/modal";
 
-function ScrumSelection(props: any) {
+import { ModalActionContainer } from "./scrumSelection.style";
 
+function ScrumSelection(props: any) {
   const handleClose = () => {
     props.send({ type: "createScrumPopupClose" });
   };
@@ -37,10 +38,10 @@ function ScrumSelection(props: any) {
             renderInput={(params) => <TextField {...params} />}
           />
         </LocalizationProvider>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleCreateScrum}>
-          Create
-        </Button>
+        <ModalActionContainer>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleCreateScrum}>Create</Button>
+        </ModalActionContainer>
       </Fragment>
     </ModalComponent>
   );

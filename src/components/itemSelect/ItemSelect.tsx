@@ -12,6 +12,7 @@ interface IitemSelect {
   name: string;
   id: string;
   children?: ReactChild | ReactChild[] | ReactChildren | ReactChildren[];
+  showList?: boolean;
 }
 
 function ItemSelect(props: IitemSelect) {
@@ -24,25 +25,35 @@ function ItemSelect(props: IitemSelect) {
         </InputLabel>
         {props.children}
       </LabelWrapper>
-     
+
       <SelectWrapper>
-        <NativeSelect
-          defaultValue={defaultItem}
-          onChange={onChange}
-          inputProps={{
-            name: name,
-            id: id,
-          }}
-          className="label_color"
-        >
-          {items.map((item) => {
-            return (
-              <option value={item.value} key={item.key}>
-                {item.label}
+        {props.showList ? (
+          <NativeSelect
+            defaultValue={defaultItem}
+            onChange={onChange}
+            inputProps={{
+              name: name,
+              id: id,
+            }}
+            className="label_color"
+          >
+            {items.map((item) => {
+              return (
+                <option value={item.value} key={item.key}>
+                  {item.label}
+                </option>
+              );
+            })}
+          </NativeSelect>
+        ) : (
+          <NativeSelect defaultValue={"0"} key={name} className="label_color">
+            {
+              <option value="0" disabled>
+                No items
               </option>
-            );
-          })}
-        </NativeSelect>
+            }
+          </NativeSelect>
+        )}
       </SelectWrapper>
     </ItemDiv>
   );
