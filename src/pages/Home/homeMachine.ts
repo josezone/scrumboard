@@ -33,6 +33,7 @@ export const homeMachine = createMachine<any>({
     removeTicketId: undefined,
     resouceTypeList: undefined,
     newResource: undefined,
+    updateTicket: undefined
   },
   states: {
     home: {
@@ -652,7 +653,25 @@ export const homeMachine = createMachine<any>({
               target: "createTicket",
               actions: "assignCreateTicket",
             },
+            updateTicket: {
+              target: "updateExistingTicket",
+              actions: "assignUpdateTicket"
+            }
           },
+        },
+        updateExistingTicket: {
+          invoke: {
+            id: "updateTicket",
+            src: "invokeUpdateTicket",
+            onDone: {
+              target: ["idle", "#home.getTickets"],
+              actions: "clearUpdateTicket"
+            },
+            onError: {
+              target: "idle",
+              actions: "clearUpdateTicket"
+            },
+          }
         },
         createTicket: {
           invoke: {

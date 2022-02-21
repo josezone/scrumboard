@@ -30,15 +30,17 @@ const schema = yup
     priority: yup.string().required(),
     scope: yup.string().required(),
     version: yup.string().required(),
-    beStory: yup.number(),
-    feStory: yup.number(),
-    qaStory: yup.number(),
+    beStory: yup.number().nullable(true),
+    feStory: yup.number().nullable(true),
+    qaStory: yup.number().nullable(true),
   })
   .required();
 
 function NewTicket(props: any) {
+  const isEditTicket = Boolean(props?.type === "editTicket");
   const formProps = useForm({
     resolver: yupResolver(schema),
+    ...(isEditTicket ? { defaultValues: props?.initialValues } : {}),
   });
   const [resourceCheck, setResourceCheck] = useState<any>({});
   const [touched, setTouched] = useState<boolean>(false);
@@ -49,6 +51,25 @@ function NewTicket(props: any) {
   const [modal, setModal] = useState<boolean>(false);
   const [resourceList, setResourceList] = useState<Array<any>>([]);
   const [selectedResources, setSelectedResources] = useState<Array<any>>([]);
+
+
+  useEffect(() => {
+    if (isEditTicket) {
+      const values = props?.initialValues || {};
+      setPriority(values.priority);
+      setVersion(values.version);
+      setScope(values.scope);
+      let selectedResourceValues: any = {};
+      const resources = values?.ticket_resources?.map((reso: any) => {
+        const id = reso?.resource?.id;
+        selectedResourceValues[id] = { checked: true, value: reso?.story }
+        return { ...reso, ...reso?.resource, value: reso?.resource?.resource }
+      })
+      setSelectedResources(resources);
+      setResourceCheck(selectedResourceValues)
+    }
+  }, [props?.initialValues, props?.type])
+
 
   useEffect(() => {
     const resource = props.resourceList?.map((reso: any) => ({
@@ -123,8 +144,9 @@ function NewTicket(props: any) {
         resources,
       };
       console.log(newData);
-
-      props.send({ type: "newTicket", prop: newData });
+      
+      if(isEditTicket)props?.handleEditSubmit(newData)
+      else props.send({ type: "newTicket", prop: newData });
     })(e);
     handleCloseModal();
   };
@@ -143,6 +165,10 @@ function NewTicket(props: any) {
   };
 
   const handleCloseModal = (): void => {
+    if(isEditTicket){
+      props?.handleClose()
+      return;
+    }
     setModal((m) => !m);
   };
 
@@ -152,12 +178,13 @@ function NewTicket(props: any) {
 
   return (
     <Fragment>
+     {!isEditTicket &&
       <Button onClick={handleCloseModal} variant="contained">
         Add New Ticket
-      </Button>
+      </Button>}
       <Modal
-        title="Add new ticket"
-        open={modal}
+        title={props?.modalTitleName || "Add new ticket"}
+        open={modal || Boolean(props?.editModal)}
         handleClose={handleCloseModal}
       >
         <NewTicketStyled>
@@ -338,77 +365,78 @@ function NewTicket(props: any) {
                   {props.scopeList
                     ?.filter((item: any) => item.id === scope)[0]
                     ?.scope?.includes("BE") && (
-                    <Controller
-                      name="beStory"
-                      control={formProps.control}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          type="number"
-                          id="standard-basic"
-                          label="BE Story Points"
-                          variant="outlined"
-                          fullWidth
-                          error={
-                            formProps.formState.errors.beStory ? true : false
-                          }
-                          helperText={
-                            formProps.formState.errors?.beStory?.message
-                          }
-                        />
-                      )}
-                    />
-                  )}
+                      <Controller
+                        name="beStory"
+                        control={formProps.control}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            type="number"
+                            id="standard-basic"
+                            label="BE Story Points"
+                            variant="outlined"
+                            fullWidth
+                            error={
+                              formProps.formState.errors.beStory ? true : false
+                            }
+                            helperText={
+                              formProps.formState.errors?.beStory?.message
+                            }
+                          />
+                        )
+                        }
+                      />
+                    )}
 
                   {props.scopeList
                     ?.filter((item: any) => item.id === scope)[0]
                     ?.scope?.includes("FE") && (
-                    <Controller
-                      name="feStory"
-                      control={formProps.control}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          type="number"
-                          id="standard-basic"
-                          label="FE Story Points"
-                          variant="outlined"
-                          fullWidth
-                          error={
-                            formProps.formState.errors.feStory ? true : false
-                          }
-                          helperText={
-                            formProps.formState.errors?.feStory?.message
-                          }
-                        />
-                      )}
-                    />
-                  )}
+                      <Controller
+                        name="feStory"
+                        control={formProps.control}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            type="number"
+                            id="standard-basic"
+                            label="FE Story Points"
+                            variant="outlined"
+                            fullWidth
+                            error={
+                              formProps.formState.errors.feStory ? true : false
+                            }
+                            helperText={
+                              formProps.formState.errors?.feStory?.message
+                            }
+                          />
+                        )}
+                      />
+                    )}
 
                   {props.scopeList
                     ?.filter((item: any) => item.id === scope)[0]
                     ?.scope?.includes("QA") && (
-                    <Controller
-                      name="qaStory"
-                      control={formProps.control}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          type="number"
-                          id="standard-basic"
-                          label="QA Story Points"
-                          variant="outlined"
-                          fullWidth
-                          error={
-                            formProps.formState.errors.qaStory ? true : false
-                          }
-                          helperText={
-                            formProps.formState.errors?.qaStory?.message
-                          }
-                        />
-                      )}
-                    />
-                  )}
+                      <Controller
+                        name="qaStory"
+                        control={formProps.control}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            type="number"
+                            id="standard-basic"
+                            label="QA Story Points"
+                            variant="outlined"
+                            fullWidth
+                            error={
+                              formProps.formState.errors.qaStory ? true : false
+                            }
+                            helperText={
+                              formProps.formState.errors?.qaStory?.message
+                            }
+                          />
+                        )}
+                      />
+                    )}
                 </Grid>
 
                 <Grid item md={6} sm={12}>
@@ -423,6 +451,7 @@ function NewTicket(props: any) {
                           !Boolean(selectedResources.length)
                         }
                         options={resourceList}
+                        value={selectedResources}
                         handleChange={handleChangeResource}
                       />
                     )}
@@ -435,12 +464,12 @@ function NewTicket(props: any) {
                     control={formProps.control}
                     render={({ field }) => (
                       <FormControlLabel
-                        {...field}
-                        className="slipContainer"
-                        control={<Switch />}
-                        label="Spill"
-                      />
-                    )}
+                          {...field}
+                          className="slipContainer"
+                          control={<Switch checked={Boolean(field.value)} />}
+                          label="Spill"
+                      />)
+                    }
                   />
                 </Grid>
 
@@ -480,6 +509,7 @@ function NewTicket(props: any) {
                                           type="number"
                                           label="Story points"
                                           variant="standard"
+                                          value={resourceCheck[resource.id]?.value || null}
                                         />
                                       </>
                                     }

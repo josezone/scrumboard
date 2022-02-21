@@ -18,6 +18,7 @@ import {
   useInvokeCreateNewCountry,
   useInvokeCreateNewSprint,
   useInvokeCreateNewTickets,
+  useInvokeUpdateTicket,
   useInvokeCreateResource,
   useInvokeCreateVersion,
   useInvokeGetSprintList,
@@ -148,6 +149,10 @@ function Home(props: any) {
     props.graphQLClient
   );
 
+  const { mutateAsync: invokeUpdateTicket } = useInvokeUpdateTicket(
+    props.graphQLClient
+  );
+
   const { mutateAsync: invokeTicketResource } = useInvokeTicketResource(
     props.graphQLClient
   );
@@ -230,6 +235,14 @@ function Home(props: any) {
             : 0,
           ...context.newTicket.ticket,
         }),
+      invokeUpdateTicket: (context: any) => invokeUpdateTicket({
+        sprintId: context?.selectedSprint?.id,
+        statusId: context.sprintStatusList.length
+          ? context.sprintStatusList[0]?.id
+          : 0,
+        ...context?.updateTicket?.ticket,
+        ticket_id: context?.updateTicket?.ticket_id
+      }),
       invokeAddResource: (context: any) =>
         invokeTicketResource({
           ticketId: context.newTicketId,

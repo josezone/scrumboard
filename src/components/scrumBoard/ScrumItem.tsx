@@ -3,6 +3,10 @@ import EditIcon from "@mui/icons-material/Edit";
 import PlaylistRemoveIcon from "@mui/icons-material/PlaylistRemove";
 import BugReportIcon from "@mui/icons-material/BugReport";
 import { useNavigate } from "react-router-dom";
+import { IconButton } from "@mui/material";
+import { useState } from "react";
+import ModalComponent from "../modal/modal";
+import EditTicket from "./EditTicket";
 
 function storyPoint(props: any) {
   const el = [];
@@ -53,6 +57,8 @@ function storyPoint(props: any) {
 
 function ScrumItem(props: any) {
   const navigate = useNavigate();
+  const [editModal, setEditModal] = useState<boolean>(false);
+
   function removeClicked() {
     props.removeItem(
       props.droppableIndx,
@@ -65,8 +71,13 @@ function ScrumItem(props: any) {
     navigate(`/issue/${props.id}`);
   }
 
+  const toggleModal = ():void => {
+    setEditModal(m => !m);
+  }
+
   return (
     <DndItemStyled>
+        <EditTicket {...props} editModal={editModal} handleClose={toggleModal} />
       <div
         className={
           props.priority.priority === "Critical"
@@ -79,15 +90,15 @@ function ScrumItem(props: any) {
         }
       >
         <div className="editContainer">
-          <div>
+          <IconButton onClick={toggleModal} >
             <EditIcon />
-          </div>
-          <div onClick={removeClicked}>
+          </IconButton>
+          <IconButton onClick={removeClicked}>
             <PlaylistRemoveIcon />
-          </div>
-          <div onClick={issueClicked}>
+          </IconButton>
+          <IconButton onClick={issueClicked}>
             <BugReportIcon />
-          </div>
+          </IconButton>
         </div>
         <div className="dndItem">
           <div className="ticketContainer">
