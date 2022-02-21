@@ -40,6 +40,7 @@ export function useInvokeGetTicketsList(graphQLClient: any) {
               status
             }
             ticket_resources {
+              story
               resource {
                 resource
                 id
@@ -353,6 +354,35 @@ export function useInvokeCreateNewTickets(graphQLClient: any) {
           returning {
             id
           }
+        }
+      }
+    `);
+    }
+  );
+}
+
+export function useInvokeUpdateTicket(graphQLClient: any) {
+  return useMutation(
+    ({
+      ticket,
+      sprintId,
+      scopeId,
+      versionId,
+      priorityId,
+      statusId,
+      spill,
+      beStory,
+      feStory,
+      qaStory,
+      beSpill,
+      feSpill,
+      qaSpill,
+      ticket_id
+    }: any) => {
+      return graphQLClient.request(gql`
+      mutation MyMutation {
+        update_ticket_by_pk(pk_columns: {id: ${ticket_id} }, _set: {ticket: "${ticket}", sprint_id: ${sprintId}, scope_id: ${scopeId}, version_id: ${versionId}, priority_id: ${priorityId}, status_id: ${statusId}, spill:${spill}, fe_story: ${feStory}, fe_spill: ${feSpill}, be_story: ${beStory}, be_spill: ${beSpill}, qa_story: ${qaStory}, qa_spill: ${qaSpill}}) {
+            id
         }
       }
     `);

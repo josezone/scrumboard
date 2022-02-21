@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -34,7 +34,15 @@ type Payload = {
 
 const MultipleSelect: FC<IMultipleSelect> = (props) => {
   const { handleChange, value, label, options, helperText, ...rest } = props;
-  const [values, setValues] = useState<string[]>(props?.value || []);
+  const [values, setValues] = useState<string[]>( []);
+
+  useEffect(()=> {
+    if(props?.value instanceof Array){
+       const value = props?.value?.map((v: any) => v?.value || v);
+      setValues(value)
+    }
+
+  }, [JSON.stringify(props?.value)])
   
   
   const handleOptionChange = (event: SelectChangeEvent<typeof values>) => {
@@ -65,7 +73,6 @@ const MultipleSelect: FC<IMultipleSelect> = (props) => {
           id="demo-multiple-chip"
           multiple
           value={values}
-          
           onChange={handleOptionChange}
           input={<OutlinedInput id="select-multiple-chip" label={label} />}
           renderValue={(selected: any) => (
