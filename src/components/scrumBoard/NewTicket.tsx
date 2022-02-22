@@ -189,6 +189,7 @@ function NewTicket(props: any) {
       >
         <NewTicketStyled>
           <Card variant="outlined" className="cardContainer">
+          {isEditTicket ? props?.chamgeSprintComponent : null}
             <form onSubmit={onSubmit} className="formContainer">
               <Grid container spacing={2}>
                 <Grid item md={6} sm={12}>
