@@ -36,6 +36,8 @@ import {
   useInvokeResourceList,
   useInvokeScopeList,
   useInvokeTicketResource,
+  useGetSprintListForMovingSprint,
+  useChangeSprintTicket
 } from "./dataService";
 import { HomeStyle } from "./home.style";
 import { homeMachine } from "./homeMachine";
@@ -168,6 +170,13 @@ function Home(props: any) {
   const { mutateAsync: invokeCreateResource } = useInvokeCreateResource(
     props.graphQLClient
   );
+  const { mutateAsync: invokeGetSprintListForMovingSprint } = useGetSprintListForMovingSprint(
+    props.graphQLClient
+  )
+
+  const { mutateAsync: invokeChangeSprintTicket } = useChangeSprintTicket(
+    props.graphQLClient
+  )
 
   const [state, send] = useMachine(homeMachine, {
     actions,
@@ -257,6 +266,8 @@ function Home(props: any) {
         }),
       invokeResouceTypeList: () => invokeResouceTypeList(),
       invokePriorityList: () => invokePriorityList(),
+      invokeGetSprintListForMovingSprint: (cxt: any) => invokeGetSprintListForMovingSprint(cxt?.sprintListMovingPayload || {}),
+      invokeUpdateChangeTicketSprint: (cxt: any) => invokeChangeSprintTicket(cxt?.changeSprintPayload || {})
     },
   });
   // console.log(state);

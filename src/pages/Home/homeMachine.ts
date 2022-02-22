@@ -33,7 +33,10 @@ export const homeMachine = createMachine<any>({
     removeTicketId: undefined,
     resouceTypeList: undefined,
     newResource: undefined,
-    updateTicket: undefined
+    updateTicket: undefined,
+    sprintListMoving: undefined,
+    sprintListMovingPayload: undefined,
+    changeSprintPayload: undefined
   },
   states: {
     home: {
@@ -290,13 +293,26 @@ export const homeMachine = createMachine<any>({
             id: "getTickets",
             src: "invokeGetTicketsList",
             onDone: {
-              target: "success",
+              target: "getAvailableSprintListForMoving",
               actions: "assignTicketList",
             },
             onError: {
               target: "failiure",
             },
           },
+        },
+        getAvailableSprintListForMoving: {
+          invoke: {
+            id: "getAvailableScrum",
+            src: "invokeGetSprintListForMovingSprint",
+            onDone: {
+              target: "success",
+              actions: "assignScrumListForMovingSprint"
+            },
+            onError: {
+              target: "failiure",
+            },
+          }
         },
         success: {
           type: "final",
@@ -656,8 +672,26 @@ export const homeMachine = createMachine<any>({
             updateTicket: {
               target: "updateExistingTicket",
               actions: "assignUpdateTicket"
+            },
+            changeTicketSprint: {
+                target: "updateChangeTicketSprint",
+                actions: "assignChangeSprintPayload"
             }
           },
+        },
+        updateChangeTicketSprint: {
+          invoke: {
+            id: "updateChangeTicketSprint",
+            src: "invokeUpdateChangeTicketSprint",
+            onDone: {
+              target: ["idle", "#home.getTickets"],
+              actions: "clearAssignChangeSprintPayload"
+            },
+            onError: {
+              target: "idle",
+              actions: "clearAssignChangeSprintPayload"
+            },
+          }
         },
         updateExistingTicket: {
           invoke: {
