@@ -34,6 +34,7 @@ export const homeMachine = createMachine<any>({
     resouceTypeList: undefined,
     newResource: undefined,
     updateTicket: undefined,
+    estimateToggleId: undefined,
   },
   states: {
     home: {

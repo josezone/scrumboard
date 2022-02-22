@@ -198,7 +198,7 @@ const updateSprint = assign({
   selectedSprint: (context: any, event: any) => {
     return event.prop;
   },
-  selectedCountry: (context: any, event: any) => { 
+  selectedCountry: (context: any, event: any) => {
     return event?.prop?.country || context?.selectedCountry
   }
 });
@@ -263,6 +263,12 @@ const assignCreateTicket = assign({
   },
 });
 
+const assignEstimateChange = assign({
+  estimateToggleId: (context: any, event: any) => {
+    return event.prop;
+  },
+});
+
 const assignUpdateTicket = assign({
   updateTicket: (context: any, event: any) => {
     return event.prop;
@@ -305,6 +311,19 @@ const assignNewResource = assign({
   },
 });
 
+const assignEstimateStatus = assign({
+  ticketList: (context: any, event: any) => {
+    Object.values(context.ticketList).forEach((ticketType: any) => {
+      ticketType.forEach((ticket: any) => {
+        if (ticket.id === context.estimateToggleId.id) {
+          ticket.estimation = context.estimateToggleId.estimation;
+        }
+      });
+    });
+    return context.ticketList;
+  }
+})
+
 export const actions = {
   assignNewResource,
   assignResourceTypeList,
@@ -346,5 +365,7 @@ export const actions = {
   assignRemoteUpdate,
   assignPriorityList,
   assignUpdateTicket,
-  clearUpdateTicket
+  clearUpdateTicket,
+  assignEstimateChange,
+  assignEstimateStatus
 };

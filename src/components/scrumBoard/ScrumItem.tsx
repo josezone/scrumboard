@@ -91,8 +91,8 @@ function ScrumItem(props: any) {
     setEditModal(m => !m);
   }
 
-  const estimateClicked = () =>{
-    console.log(props)
+  const estimateClicked = () => {
+    props.restProps.send({ type: "toggleEstimate", prop: { id: props.id, estimation: props.estimation ? false : true } });
   }
 
   function menuList() {
@@ -131,7 +131,7 @@ function ScrumItem(props: any) {
           </MenuItem>
 
           <MenuItem onClick={handleClose(estimateClicked)}>
-            <Checkbox value={props.estimation}/>
+            <Checkbox checked={props.estimation} />
             Estimate
           </MenuItem>
 

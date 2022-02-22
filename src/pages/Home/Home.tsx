@@ -36,6 +36,7 @@ import {
   useInvokeResourceList,
   useInvokeScopeList,
   useInvokeTicketResource,
+  useInvokeChangeEstimate,
 } from "./dataService";
 import { HomeStyle } from "./home.style";
 import { homeMachine } from "./homeMachine";
@@ -169,6 +170,10 @@ function Home(props: any) {
     props.graphQLClient
   );
 
+  const { mutateAsync: invokeChangeEstimate } = useInvokeChangeEstimate(
+    props.graphQLClient
+  );
+
   const [state, send] = useMachine(homeMachine, {
     actions,
     services: {
@@ -257,6 +262,7 @@ function Home(props: any) {
         }),
       invokeResouceTypeList: () => invokeResouceTypeList(),
       invokePriorityList: () => invokePriorityList(),
+      invokeChangeEstimate: (context: any) => invokeChangeEstimate({ ticketId: context.estimateToggleId.id, estimate: context.estimateToggleId.estimation }),
     },
   });
   // console.log(state);
