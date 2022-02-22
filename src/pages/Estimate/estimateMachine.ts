@@ -7,6 +7,7 @@ export const estimateMachine = createMachine<any>({
   context: {
     ticketList: undefined,
     selectedTicketId: undefined,
+    estimateList: undefined,
   },
   states: {
     home: {

@@ -46,6 +46,7 @@ export function useInvokeGetTicketsList(graphQLClient: any) {
                 id
               }
             }
+            estimation
           }
         }
     `);
