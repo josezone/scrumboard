@@ -1,7 +1,7 @@
 import { gql } from "graphql-request";
 import { useMutation } from "react-query";
 
-export function useInvokeRemoveTicket(graphQLClient: any) {
+function useInvokeRemoveTicket(graphQLClient: any) {
     return useMutation(({ ticketId }: any) => {
         return graphQLClient.request(gql`
             mutation MyMutation {
@@ -15,7 +15,7 @@ export function useInvokeRemoveTicket(graphQLClient: any) {
     });
 }
 
-export function useInvokeGetTicketsList(graphQLClient: any) {
+function useInvokeGetTicketsList(graphQLClient: any) {
     return useMutation(() => {
         return graphQLClient.request(gql`
             query MyQuery {
@@ -61,4 +61,18 @@ export function useInvokeGetTicketsList(graphQLClient: any) {
             }
       `);
     });
+}
+
+export const useServices = (props: any) => {
+    const { mutateAsync: invokeGetTicketList } = useInvokeGetTicketsList(
+        props.graphQLClient
+    );
+    const { mutateAsync: invokeRemoveTicket } = useInvokeRemoveTicket(
+        props.graphQLClient
+    );
+
+    return {
+        invokeGetTicketList: () => invokeGetTicketList(),
+        invokeRemoveTicket: (context: any) => invokeRemoveTicket({ ticketId: context.selectedTicketId }),
+    }
 }
