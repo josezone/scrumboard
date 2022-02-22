@@ -46,6 +46,7 @@ export function useInvokeGetTicketsList(graphQLClient: any) {
                 id
               }
             }
+            estimation
           }
         }
     `);
@@ -435,9 +436,9 @@ export function useInvokeTicketResource(graphQLClient: any) {
     const query = gql`
       mutation MyMutation {
         insert_ticket_resource(objects: [${getResourceList(
-          resources,
-          ticketId
-        )}]) {
+      resources,
+      ticketId
+    )}]) {
           returning {
             id
           }
@@ -480,6 +481,20 @@ export function useInvokeCreateResource(graphQLClient: any) {
     return graphQLClient.request(gql`
       mutation MyMutation {
         insert_resource(objects: {resource: "${resource}", resource_type_id: ${resourceType}, status: true}) {
+          returning {
+            id
+          }
+        }
+      }
+    `);
+  });
+}
+
+export function useInvokeChangeEstimate(graphQLClient: any) {
+  return useMutation(({ ticketId, estimate }: any) => {
+    return graphQLClient.request(gql`
+    mutation MyMutation {
+      update_ticket(where: {id: {_eq: "${ticketId}"}}, _set: {estimation: ${estimate}}) {
           returning {
             id
           }

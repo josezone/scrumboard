@@ -7,6 +7,10 @@ import { IconButton } from "@mui/material";
 import { useState } from "react";
 import ModalComponent from "../modal/modal";
 import EditTicket from "./EditTicket";
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Checkbox from '@mui/material/Checkbox';
 
 function storyPoint(props: any) {
   const el = [];
@@ -56,6 +60,18 @@ function storyPoint(props: any) {
 }
 
 function ScrumItem(props: any) {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: any) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = (buttonAction: any) => () => {
+    setAnchorEl(null);
+    if (buttonAction) {
+      buttonAction();
+    }
+  };
+
   const navigate = useNavigate();
   const [editModal, setEditModal] = useState<boolean>(false);
 
@@ -71,34 +87,78 @@ function ScrumItem(props: any) {
     navigate(`/issue/${props.id}`);
   }
 
-  const toggleModal = ():void => {
+  const toggleModal = (): void => {
     setEditModal(m => !m);
+  }
+
+  const estimateClicked = () => {
+    props.restProps.send({ type: "toggleEstimate", prop: { id: props.id, estimation: props.estimation ? false : true } });
+  }
+
+  function menuList() {
+    return (
+      <div className="menuList">
+        <IconButton
+          id="long-button"
+          onClick={handleClick}
+        >
+          <MoreVertIcon />
+        </IconButton>
+        <Menu
+          id="long-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose(null)}
+          PaperProps={{
+            style: {
+              maxHeight: 48 * 4.5,
+              width: '20ch',
+            },
+          }}
+        >
+          <MenuItem onClick={handleClose(toggleModal)}>
+            <IconButton >
+              <EditIcon />
+            </IconButton>
+            Edit
+          </MenuItem>
+
+          <MenuItem onClick={handleClose(removeClicked)}>
+            <IconButton>
+              <PlaylistRemoveIcon />
+            </IconButton>
+            Delete
+          </MenuItem>
+
+          <MenuItem onClick={handleClose(estimateClicked)}>
+            <Checkbox checked={props.estimation} />
+            Estimate
+          </MenuItem>
+
+        </Menu>
+      </div>
+    );
   }
 
   return (
     <DndItemStyled>
-        <EditTicket {...props} editModal={editModal} handleClose={toggleModal} />
+      <EditTicket {...props} editModal={editModal} handleClose={toggleModal} />
       <div
         className={
           props.priority.priority === "Critical"
             ? "priorityCritical"
             : props.priority.priority === "High"
-            ? "priorityHigh"
-            : props.priority.priority === "Normal"
-            ? "priorityNormal"
-            : "priorityLow"
+              ? "priorityHigh"
+              : props.priority.priority === "Normal"
+                ? "priorityNormal"
+                : "priorityLow"
         }
       >
         <div className="editContainer">
-          <IconButton onClick={toggleModal} >
-            <EditIcon />
-          </IconButton>
-          <IconButton onClick={removeClicked}>
-            <PlaylistRemoveIcon />
-          </IconButton>
           <IconButton onClick={issueClicked}>
             <BugReportIcon />
           </IconButton>
+          {menuList()}
         </div>
         <div className="dndItem">
           <div className="ticketContainer">

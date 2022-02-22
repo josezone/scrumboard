@@ -36,7 +36,8 @@ export const homeMachine = createMachine<any>({
     updateTicket: undefined,
     sprintListMoving: undefined,
     sprintListMovingPayload: undefined,
-    changeSprintPayload: undefined
+    changeSprintPayload: undefined,
+    estimateToggleId: undefined,
   },
   states: {
     home: {
@@ -375,6 +376,34 @@ export const homeMachine = createMachine<any>({
         },
       },
     },
+    estimate: {
+      id: "estimate",
+      initial: "end",
+      on: {
+        toggleEstimate: {
+          target: "estimate.changeEstimate",
+          actions: "assignEstimateChange",
+        },
+      },
+      states: {
+        changeEstimate: {
+          invoke: {
+            id: "changeEstimate",
+            src: "invokeChangeEstimate",
+            onDone: {
+              actions: "assignEstimateStatus",
+              target: "end",
+            },
+            onError: {
+              target: "end",
+            },
+          },
+        },
+        end: {
+          type: "final",
+        },
+      },
+    },
     newScrum: {
       id: "newScrum",
       initial: "end",
@@ -699,13 +728,13 @@ export const homeMachine = createMachine<any>({
             src: "invokeUpdateTicket",
             onDone: {
               target: ["idle", "#home.getTickets"],
-              actions: "clearUpdateTicket"
+              actions: "clearUpdateTicket",
             },
             onError: {
               target: "idle",
-              actions: "clearUpdateTicket"
+              actions: "clearUpdateTicket",
             },
-          }
+          },
         },
         createTicket: {
           invoke: {

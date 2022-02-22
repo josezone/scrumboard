@@ -1,11 +1,11 @@
 import AddIcon from "@mui/icons-material/Add";
-import {AddIconWrapper} from "./AddNew.style";
+import {AddIconWrapper} from "./AddNewAppBar.style";
 
 interface IAddNew {
   addNew?: () => void;
 }
 
-function AddNew(props: IAddNew) {
+function AddNewAppBar(props: IAddNew) {
   return (
     <AddIconWrapper>
       <AddIcon fontSize="small" color="primary" onClick={props.addNew} />
@@ -13,4 +13,4 @@ function AddNew(props: IAddNew) {
   );
 }
 
-export default AddNew;
+export default AddNewAppBar;

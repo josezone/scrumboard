@@ -148,6 +148,7 @@ function NewTicket(props: any) {
       if(isEditTicket)props?.handleEditSubmit(newData)
       else props.send({ type: "newTicket", prop: newData });
     })(e);
+    handleCloseModal();
   };
 
   const getResourceError = () => {

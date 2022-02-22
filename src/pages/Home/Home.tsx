@@ -37,7 +37,8 @@ import {
   useInvokeScopeList,
   useInvokeTicketResource,
   useGetSprintListForMovingSprint,
-  useChangeSprintTicket
+  useChangeSprintTicket,
+  useInvokeChangeEstimate,
 } from "./dataService";
 import { HomeStyle } from "./home.style";
 import { homeMachine } from "./homeMachine";
@@ -178,6 +179,10 @@ function Home(props: any) {
     props.graphQLClient
   )
 
+  const { mutateAsync: invokeChangeEstimate } = useInvokeChangeEstimate(
+    props.graphQLClient
+  );
+
   const [state, send] = useMachine(homeMachine, {
     actions,
     services: {
@@ -267,10 +272,15 @@ function Home(props: any) {
       invokeResouceTypeList: () => invokeResouceTypeList(),
       invokePriorityList: () => invokePriorityList(),
       invokeGetSprintListForMovingSprint: (cxt: any) => invokeGetSprintListForMovingSprint(cxt?.sprintListMovingPayload || {}),
-      invokeUpdateChangeTicketSprint: (cxt: any) => invokeChangeSprintTicket(cxt?.changeSprintPayload || {})
+      invokeUpdateChangeTicketSprint: (cxt: any) => invokeChangeSprintTicket(cxt?.changeSprintPayload || {}),
+      invokeChangeEstimate: (context: any) => invokeChangeEstimate({ ticketId: context.estimateToggleId.id, estimate: context.estimateToggleId.estimation }),
     },
   });
   // console.log(state);
+  const activateScrum = () => {
+    send({ type: "activateScrum" });
+  };
+
   return (
     <HomeStyle>
       <Tabs value={value} onChange={handleChange} className="tabBar">
@@ -283,7 +293,13 @@ function Home(props: any) {
 
       <TabPanel value={value} index={0}>
         <AppBar {...state.context} send={send} />
-        <HomeSelection {...state.context} send={send} />
+        {state.context.selectedScrum && !state.context.selectedScrum.active && (
+          <div>
+            <Button variant="contained" onClick={activateScrum}>
+              Activate Scrum
+            </Button>
+          </div>
+        )}
         <ScrumBoard {...state.context} send={send} ScrumItem={ScrumItem} />
       </TabPanel>
       <TabPanel value={value} index={1}>

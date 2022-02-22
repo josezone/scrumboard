@@ -210,7 +210,7 @@ const updateSprint = assign({
   selectedSprint: (context: any, event: any) => {
     return event.prop;
   },
-  selectedCountry: (context: any, event: any) => { 
+  selectedCountry: (context: any, event: any) => {
     return event?.prop?.country || context?.selectedCountry
   },
   sprintListMovingPayload:(context: any, event: any) => { 
@@ -283,6 +283,12 @@ const assignCreateTicket = assign({
   },
 });
 
+const assignEstimateChange = assign({
+  estimateToggleId: (context: any, event: any) => {
+    return event.prop;
+  },
+});
+
 const assignUpdateTicket = assign({
   updateTicket: (context: any, event: any) => {
     return event.prop;
@@ -341,6 +347,19 @@ const clearAssignChangeSprintPayload =  assign({
   changeSprintPayload: (context: any, event: any) => {
     return undefined
   },
+});
+
+const assignEstimateStatus = assign({
+  ticketList: (context: any, event: any) => {
+    Object.values(context.ticketList).forEach((ticketType: any) => {
+      ticketType.forEach((ticket: any) => {
+        if (ticket.id === context.estimateToggleId.id) {
+          ticket.estimation = context.estimateToggleId.estimation;
+        }
+      });
+    });
+    return context.ticketList;
+  }
 })
 
 export const actions = {
@@ -387,5 +406,7 @@ export const actions = {
   clearUpdateTicket,
   assignScrumListForMovingSprint,
   assignChangeSprintPayload,
-  clearAssignChangeSprintPayload
+  clearAssignChangeSprintPayload,
+  assignEstimateChange,
+  assignEstimateStatus
 };
