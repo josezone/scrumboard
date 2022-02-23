@@ -7,7 +7,7 @@ export const ProjectCardStyled = styled.div`
     display: inline-block;
     border: 1px solid black;
     background-color: white;
-    width: 150px;
+    width: 275px;
     .cardHead{
         display: flex;
         justify-content: space-around;

@@ -53,7 +53,11 @@ function ProjectCard(props: any) {
             </div>
         );
     })
-    console.log(estimate)
+    const maxTotal = estimate.reduce((acc: any, val: any) => {
+        console.log(val.story)
+        return acc + val.story;
+    }, 0)
+    
     return (
         <ProjectCardStyled>
             <div className="cardHead">
@@ -63,6 +67,10 @@ function ProjectCard(props: any) {
                 <div className="Total">
                     <span>Total:</span>
                     {fePoint + bePoint + qaPoint}
+                </div>
+                <div className="Total">
+                    <span>Max total:</span>
+                    {maxTotal}
                 </div>
             </div>
             <Divider style={{ marginTop: "2px" }} />
