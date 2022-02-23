@@ -18,8 +18,15 @@ const assignEstimateList = assign({
     },
 });
 
+const assignEstimateDate = assign({
+    estimateDate: (context: any, event: any) => {
+        return event.data["estimation_limit"];
+    },
+});
+
 export const actions = {
     assignTicketList,
     removeTicketAction,
-    assignEstimateList
+    assignEstimateList,
+    assignEstimateDate
 }

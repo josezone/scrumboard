@@ -411,7 +411,7 @@ export function useGetSprintListForMovingSprint(graphQLClient: any){
 export function useChangeSprintTicket(graphQLClient: any){
   return useMutation((variables: any) => { 
     const query  = gql`
-    mutation updateTicket($ticketId: Int!, $sprintId: Int!, $beSpill: numeric, $feSpill: numeric, $qaSpill: numeric, $spill: Boolean) {
+    mutation updateTicket($ticketId: bigint!, $sprintId: Int!, $beSpill: numeric, $feSpill: numeric, $qaSpill: numeric, $spill: Boolean) {
       update_ticket(where: {id: {_eq: $ticketId }}, _set: { sprint_id: $sprintId, be_spill: $beSpill, fe_spill: $feSpill, qa_spill: $qaSpill, spill: $spill  }){
         returning{
           id

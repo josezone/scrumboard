@@ -15,6 +15,19 @@ function useInvokeRemoveTicket(graphQLClient: any) {
     });
 }
 
+function useEstimateDate(graphQLClient: any) {
+    return useMutation(() => {
+        return graphQLClient.request(gql`
+            query MyQuery {
+                estimation_limit(distinct_on: estimate_date) {
+                estimate_date
+                }
+            }
+        `);
+    });
+}
+
+
 function useEstimateLimit(graphQLClient: any) {
     return useMutation(() => {
         return graphQLClient.request(gql`
@@ -103,9 +116,14 @@ export const useServices = (props: any) => {
         props.graphQLClient
     );
 
+    const { mutateAsync: invokeEstimateDate } = useEstimateDate(
+        props.graphQLClient
+    );
+
     return {
         invokeGetTicketList: () => invokeGetTicketList(),
         invokeRemoveTicket: (context: any) => invokeRemoveTicket({ ticketId: context.selectedTicketId }),
         invokeGetEstimateList: () => invokeEstimateLimit(),
+        invokeEstimateDate: () => invokeEstimateDate(),
     }
 }

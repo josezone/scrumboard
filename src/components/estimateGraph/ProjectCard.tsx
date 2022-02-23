@@ -40,21 +40,20 @@ function ProjectCard(props: any) {
         bePoint += storyBe;
         qaPoint += storyQa;
     });
-    const estimate = props.estimateList.filter((estimate: any) => {
+    const estimate = props.estimateList?.filter((estimate: any) => {
         if (estimate.project.project === props.project) {
             return estimate;
         }
     });
-    let el = estimate.map((item: any) => {
+    let el = estimate?.map((item: any) => {
         return (
-            <div className={item["resource_type"]["resource_type"]}>
+            <div className={item["resource_type"]["resource_type"]} key={item["resource_type"]["resource_type"]}>
                 <span>max {item["resource_type"]["resource_type"]}:</span>
                 {item.story}
             </div>
         );
     })
-    const maxTotal = estimate.reduce((acc: any, val: any) => {
-        console.log(val.story)
+    const maxTotal = estimate?.reduce((acc: any, val: any) => {
         return acc + val.story;
     }, 0)
     
