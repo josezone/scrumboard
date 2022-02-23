@@ -34,3 +34,20 @@ export const ModalActionContainer = styled.div`
   justify-content: flex-end;
   width: 100%;
 `;
+
+export const MoveTicketStyled = styled.div`
+  width: 450px;
+  padding: 10px;
+
+  .MuiFormControl-root{
+    margin: 10px 0px;
+  }
+
+  .SubmitBtn{
+    margin: 10px;
+  }
+`
+
+export const MoveTicketStyledWrapper = styled.div`
+  margin: 10px;
+`

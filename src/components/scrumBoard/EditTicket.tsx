@@ -1,7 +1,6 @@
 import { FC } from "react";
 import NewTicket from "./NewTicket";
-
-
+import MoveTicket from "./moveTicket";
 interface IEditProfile {
     ticket: string,
     priority: any,
@@ -13,7 +12,11 @@ interface IEditProfile {
     scope: any,
     editModal: boolean,
     handleClose: () => void,
-    id: number
+    id: number,
+    qa_spill: number | null,
+    fe_spill: number | null,
+    be_spill: number | null,
+    spill: boolean
 }
 
 
@@ -28,6 +31,15 @@ const EditTicket: FC<IEditProfile> = (props) => {
         version: props?.version?.id,
         scope: props?.scope?.id
     }
+
+    const moveTicketInitialValue = {
+        beSpill: props?.be_spill || null,
+        feSpill: props?.fe_spill || null,
+        qaSpill: props?.qa_spill ||null,
+        sprintId: null,
+        ticketId: props?.id,
+        spill: Boolean(props.spill)
+    }
     
     const handleEditSubmit = (values: any) => {
         handleClose()
@@ -35,8 +47,19 @@ const EditTicket: FC<IEditProfile> = (props) => {
             ...values,
             ticket_id: rest?.id
         }
-
         restProps.send({ type: "updateTicket", prop: payload });
+    }
+
+    const handleMoveTicketSubmit = (data: any) => {
+        let payload = data;
+        if(!Boolean(data.spill)){
+            payload = {
+                ...moveTicketInitialValue,
+                sprintId: data?.sprintId,
+            }
+        }
+        restProps.send({ type: "changeTicketSprint", prop: payload });
+        handleClose()
     }
 
 
@@ -48,7 +71,12 @@ const EditTicket: FC<IEditProfile> = (props) => {
             handleEditSubmit={handleEditSubmit} 
             initialValues={initialValues}
             modalTitleName="Edit Ticket"
-            type="editTicket" />
+            type="editTicket" 
+            chamgeSprintComponent={<MoveTicket 
+                                        sprintList={restProps?.sprintListMoving || []} 
+                                        onSubmit={handleMoveTicketSubmit}
+                                        initialValues={moveTicketInitialValue} />}
+        />
     );
 }
 

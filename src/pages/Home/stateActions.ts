@@ -86,6 +86,18 @@ const assignSelectedSprint = assign({
         : ""
       : "";
   },
+  sprintListMovingPayload:(context: any, event: any) => {
+    const countryId = context?.sprintList[0]?.country?.id || "";
+    const projectId = context?.selectedProject?.id || "";
+    const currentSprintId = context.sprintList[0]?.id || ""
+    return {
+      projectId,
+      countryId,
+      currentSprintId
+    }
+    
+  },
+
 });
 
 const updateYear = assign({
@@ -200,7 +212,15 @@ const updateSprint = assign({
   },
   selectedCountry: (context: any, event: any) => {
     return event?.prop?.country || context?.selectedCountry
+  },
+  sprintListMovingPayload:(context: any, event: any) => { 
+    return {
+      ...context?.sprintListMovingPayload,
+      countryId: event?.prop?.country?.id,
+      currentSprintId: event?.prop?.id
+    }
   }
+
 });
 
 const updateTicketStatus = assign({
@@ -311,6 +331,24 @@ const assignNewResource = assign({
   },
 });
 
+const assignScrumListForMovingSprint = assign({
+  sprintListMoving:(context: any, event: any) => {
+    return event.data?.sprint || [];
+  },
+})
+
+const assignChangeSprintPayload = assign({
+  changeSprintPayload: (context: any, event: any) => {
+    return event.prop;
+  },
+})
+
+const clearAssignChangeSprintPayload =  assign({
+  changeSprintPayload: (context: any, event: any) => {
+    return undefined
+  },
+});
+
 const assignEstimateStatus = assign({
   ticketList: (context: any, event: any) => {
     Object.values(context.ticketList).forEach((ticketType: any) => {
@@ -366,6 +404,9 @@ export const actions = {
   assignPriorityList,
   assignUpdateTicket,
   clearUpdateTicket,
+  assignScrumListForMovingSprint,
+  assignChangeSprintPayload,
+  clearAssignChangeSprintPayload,
   assignEstimateChange,
   assignEstimateStatus
 };

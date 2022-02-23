@@ -370,7 +370,6 @@ export function useInvokeUpdateTicket(graphQLClient: any) {
       scopeId,
       versionId,
       priorityId,
-      statusId,
       spill,
       beStory,
       feStory,
@@ -382,7 +381,7 @@ export function useInvokeUpdateTicket(graphQLClient: any) {
     }: any) => {
       return graphQLClient.request(gql`
       mutation MyMutation {
-        update_ticket_by_pk(pk_columns: {id: ${ticket_id} }, _set: {ticket: "${ticket}", sprint_id: ${sprintId}, scope_id: ${scopeId}, version_id: ${versionId}, priority_id: ${priorityId}, status_id: ${statusId}, spill:${spill}, fe_story: ${feStory}, fe_spill: ${feSpill}, be_story: ${beStory}, be_spill: ${beSpill}, qa_story: ${qaStory}, qa_spill: ${qaSpill}}) {
+        update_ticket_by_pk(pk_columns: {id: ${ticket_id} }, _set: {ticket: "${ticket}", sprint_id: ${sprintId}, scope_id: ${scopeId}, version_id: ${versionId}, priority_id: ${priorityId}, spill:${spill}, fe_story: ${feStory}, fe_spill: ${feSpill}, be_story: ${beStory}, be_spill: ${beSpill}, qa_story: ${qaStory}, qa_spill: ${qaSpill}}) {
             id
         }
       }
@@ -390,6 +389,40 @@ export function useInvokeUpdateTicket(graphQLClient: any) {
     }
   );
 }
+
+export function useGetSprintListForMovingSprint(graphQLClient: any){
+  return useMutation((variables: any) => { 
+    const query  = gql`
+    query getSprints($countryId: Int!, $projectId: Int!, $currentSprintId: Int!) {
+      sprint(where: {country_id: {_eq: $countryId}, project_id: {_eq: $projectId}, id: {_neq: $currentSprintId}}) {
+        id
+        sprint
+        scrum_id
+        country{
+          country
+        }
+      }
+    }
+    `
+    return graphQLClient.request(query, variables);
+  })
+}
+
+export function useChangeSprintTicket(graphQLClient: any){
+  return useMutation((variables: any) => { 
+    const query  = gql`
+    mutation updateTicket($ticketId: Int!, $sprintId: Int!, $beSpill: numeric, $feSpill: numeric, $qaSpill: numeric, $spill: Boolean) {
+      update_ticket(where: {id: {_eq: $ticketId }}, _set: { sprint_id: $sprintId, be_spill: $beSpill, fe_spill: $feSpill, qa_spill: $qaSpill, spill: $spill  }){
+        returning{
+          id
+        }
+      }
+    }
+    `
+    return graphQLClient.request(query, variables);
+  })
+}
+
 
 function getResourceList(resourceList: any, ticketId: string) {
   const insertArray = resourceList.map((resource: any) => {

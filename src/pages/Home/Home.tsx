@@ -36,6 +36,8 @@ import {
   useInvokeResourceList,
   useInvokeScopeList,
   useInvokeTicketResource,
+  useGetSprintListForMovingSprint,
+  useChangeSprintTicket,
   useInvokeChangeEstimate,
 } from "./dataService";
 import { HomeStyle } from "./home.style";
@@ -173,6 +175,13 @@ function Home(props: any) {
   const { mutateAsync: invokeCreateResource } = useInvokeCreateResource(
     props.graphQLClient
   );
+  const { mutateAsync: invokeGetSprintListForMovingSprint } = useGetSprintListForMovingSprint(
+    props.graphQLClient
+  )
+
+  const { mutateAsync: invokeChangeSprintTicket } = useChangeSprintTicket(
+    props.graphQLClient
+  )
 
   const { mutateAsync: invokeChangeEstimate } = useInvokeChangeEstimate(
     props.graphQLClient
@@ -266,6 +275,8 @@ function Home(props: any) {
         }),
       invokeResouceTypeList: () => invokeResouceTypeList(),
       invokePriorityList: () => invokePriorityList(),
+      invokeGetSprintListForMovingSprint: (cxt: any) => invokeGetSprintListForMovingSprint(cxt?.sprintListMovingPayload || {}),
+      invokeUpdateChangeTicketSprint: (cxt: any) => invokeChangeSprintTicket(cxt?.changeSprintPayload || {}),
       invokeChangeEstimate: (context: any) => invokeChangeEstimate({ ticketId: context.estimateToggleId.id, estimate: context.estimateToggleId.estimation }),
     },
   });
