@@ -39,8 +39,8 @@ function useEstimateLimit(graphQLClient: any) {
 function useInvokeGetTicketsList(graphQLClient: any) {
     return useMutation(() => {
         return graphQLClient.request(gql`
-            query MyQuery {
-                ticket(where: {estimation: {_eq:true}}) {
+           query MyQuery {
+                ticket(where: {estimation: {_eq: true}}) {
                     be_spill
                     be_story
                     fe_spill
@@ -51,32 +51,40 @@ function useInvokeGetTicketsList(graphQLClient: any) {
                     spill
                     ticket
                     priority {
-                        colorCode
-                        id
-                        priority
+                    colorCode
+                    id
+                    priority
                     }
                     scope {
-                        id
-                        scope
+                    id
+                    scope
                     }
                     sprint {
+                    id
+                    sprint
+                    project {
                         id
-                        sprint
+                        project
+                    }
+                    country {
+                        country
+                        id
+                    }
                     }
                     version {
-                        id
-                        version
+                    id
+                    version
                     }
                     status {
-                        id
-                        status
+                    id
+                    status
                     }
                     ticket_resources {
-                        story
-                        resource {
-                            resource
-                            id
-                        }
+                    story
+                    resource {
+                        resource
+                        id
+                    }
                     }
                 }
             }

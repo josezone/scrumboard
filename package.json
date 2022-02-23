@@ -27,6 +27,7 @@
     "react-beautiful-dnd": "^13.1.0",
     "react-dom": "^18.0.0-rc.0",
     "react-hook-form": "^7.25.3",
+    "react-organizational-chart": "^2.1.1",
     "react-query": "^3.34.12",
     "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",

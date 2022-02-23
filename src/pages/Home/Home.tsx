@@ -71,6 +71,10 @@ function Home(props: any) {
     navigate("/dailyReport");
   }
 
+  function clickEstimate() {
+    navigate("/estimate");
+  }
+
   props.graphQLClient.setHeader(
     "Authorization",
     "Basic " + localStorage.getItem("data")
@@ -278,6 +282,9 @@ function Home(props: any) {
       </Tabs>
       <Button variant="text" className="reportHead" onClick={clickDailyReport}>
         Daily Report
+      </Button>
+      <Button variant="text" className="reportHead" onClick={clickEstimate}>
+        Estimate
       </Button>
 
       <TabPanel value={value} index={0}>
