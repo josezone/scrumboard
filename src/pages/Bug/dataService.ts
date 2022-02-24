@@ -11,10 +11,13 @@ export function useInvokeNewBug(graphQLClient: any) {
       resource_id,
       spilled,
       ticket_id,
+      beSpill,
+      feSpill,
+      qaSpill
     }: any) => {
       return graphQLClient.request(gql`
             mutation MyMutation {
-                insert_bugs(objects: {bug: ${bug}, evidence: "${evidence}", impact: ${impact}, report: ${report}, resource_id: ${resource_id}, spilled: ${spilled}, ticket_id: ${ticket_id}}) {
+                insert_bugs(objects: {bug: ${bug}, evidence: "${evidence}", impact: ${impact}, report: ${report}, resource_id: ${resource_id}, spilled: ${spilled}, ticket_id: ${ticket_id}, qa_spill: ${qaSpill}, be_spill: ${beSpill}, fe_spill: ${feSpill}}) {
                     returning {
                         id
                     }
@@ -45,6 +48,9 @@ export function useInvokeGetList(graphQLClient: any) {
               ticket
               id
             }
+            qa_spill
+            be_spill
+            fe_spill
           }
         }
       `);
@@ -76,5 +82,18 @@ export function useInvokeDeleteBug(graphQLClient: any) {
                 }
             }
         `);
+  });
+}
+
+export function useInvokeGetTicket(graphQLClient: any) {
+  return useMutation((variable: any) => {
+    return graphQLClient.request(gql`
+          query getTicket($ticketId: bigint!){
+            ticket_by_pk(id:$ticketId){
+              id,
+              ticket
+            }
+          }
+        `, variable);
   });
 }
