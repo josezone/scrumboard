@@ -309,7 +309,9 @@ export function useInvokeGetVersionList(graphQLClient: any) {
   return useMutation(({ countryId, projectId }: any) => {
     return graphQLClient.request(gql`
       query MyQuery {
-        version(where: { country_id: { _eq: ${countryId || 0} }, project_id: { _eq: ${projectId || 0} } }) {
+        version(where: { country_id: { _eq: ${
+          countryId || 0
+        } }, project_id: { _eq: ${projectId || 0} } }) {
           id
           version
         }
@@ -377,7 +379,7 @@ export function useInvokeUpdateTicket(graphQLClient: any) {
       beSpill,
       feSpill,
       qaSpill,
-      ticket_id
+      ticket_id,
     }: any) => {
       return graphQLClient.request(gql`
       mutation MyMutation {
@@ -390,39 +392,64 @@ export function useInvokeUpdateTicket(graphQLClient: any) {
   );
 }
 
-export function useGetSprintListForMovingSprint(graphQLClient: any){
-  return useMutation((variables: any) => { 
-    const query  = gql`
-    query getSprints($countryId: Int!, $projectId: Int!, $currentSprintId: Int!) {
-      sprint(where: {country_id: {_eq: $countryId}, project_id: {_eq: $projectId}, id: {_neq: $currentSprintId}}) {
-        id
-        sprint
-        scrum_id
-        country{
-          country
-        }
-      }
-    }
-    `
-    return graphQLClient.request(query, variables);
-  })
-}
-
-export function useChangeSprintTicket(graphQLClient: any){
-  return useMutation((variables: any) => { 
-    const query  = gql`
-    mutation updateTicket($ticketId: Int!, $sprintId: Int!, $beSpill: numeric, $feSpill: numeric, $qaSpill: numeric, $spill: Boolean) {
-      update_ticket(where: {id: {_eq: $ticketId }}, _set: { sprint_id: $sprintId, be_spill: $beSpill, fe_spill: $feSpill, qa_spill: $qaSpill, spill: $spill  }){
-        returning{
+export function useGetSprintListForMovingSprint(graphQLClient: any) {
+  return useMutation((variables: any) => {
+    const query = gql`
+      query getSprints(
+        $countryId: Int!
+        $projectId: Int!
+        $currentSprintId: Int!
+      ) {
+        sprint(
+          where: {
+            country_id: { _eq: $countryId }
+            project_id: { _eq: $projectId }
+            id: { _neq: $currentSprintId }
+          }
+        ) {
           id
+          sprint
+          scrum_id
+          country {
+            country
+          }
         }
       }
-    }
-    `
+    `;
     return graphQLClient.request(query, variables);
-  })
+  });
 }
 
+export function useChangeSprintTicket(graphQLClient: any) {
+  return useMutation((variables: any) => {
+    const query = gql`
+      mutation updateTicket(
+        $ticketId: Int!
+        $sprintId: Int!
+        $beSpill: numeric
+        $feSpill: numeric
+        $qaSpill: numeric
+        $spill: Boolean
+      ) {
+        update_ticket(
+          where: { id: { _eq: $ticketId } }
+          _set: {
+            sprint_id: $sprintId
+            be_spill: $beSpill
+            fe_spill: $feSpill
+            qa_spill: $qaSpill
+            spill: $spill
+          }
+        ) {
+          returning {
+            id
+          }
+        }
+      }
+    `;
+    return graphQLClient.request(query, variables);
+  });
+}
 
 function getResourceList(resourceList: any, ticketId: string) {
   const insertArray = resourceList.map((resource: any) => {
@@ -436,9 +463,9 @@ export function useInvokeTicketResource(graphQLClient: any) {
     const query = gql`
       mutation MyMutation {
         insert_ticket_resource(objects: [${getResourceList(
-      resources,
-      ticketId
-    )}]) {
+          resources,
+          ticketId
+        )}]) {
           returning {
             id
           }
@@ -497,6 +524,28 @@ export function useInvokeChangeEstimate(graphQLClient: any) {
       update_ticket(where: {id: {_eq: "${ticketId}"}}, _set: {estimation: ${estimate}}) {
           returning {
             id
+          }
+        }
+      }
+    `);
+  });
+}
+
+export function useInvokeUpdateSprint(graphQLClient: any) {
+  return useMutation(({ sprintId, sprint, country }: any) => {
+    return graphQLClient.request(gql`
+      mutation MyMutation {
+        update_sprint(
+          where: { id: { _eq: "${sprintId}" } }
+          _set: { sprint: "${sprint}", country_id: "${country}" }
+        ) {
+          returning {
+           sprint
+           id
+            country{
+              id
+             country  
+          }
           }
         }
       }

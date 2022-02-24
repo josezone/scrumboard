@@ -38,6 +38,7 @@ export const homeMachine = createMachine<any>({
     sprintListMovingPayload: undefined,
     changeSprintPayload: undefined,
     estimateToggleId: undefined,
+    updateSprint: undefined,
   },
   states: {
     home: {
@@ -59,6 +60,14 @@ export const homeMachine = createMachine<any>({
         sprintChanged: {
           actions: "updateSprint",
           target: "home.getTickets",
+        },
+        updateSprint: {
+          actions: "assignUpdateSprint",
+          target: "home.updateSelectedSprint",
+        },
+        assignNewCountry: {
+          target: "newSprint.createNewCountry",
+          actions: "assignNewCountry",
         },
       },
       states: {
@@ -276,6 +285,19 @@ export const homeMachine = createMachine<any>({
             actions: "assignSelectedSprint",
           },
         },
+        updateSelectedSprint: {
+          invoke: {
+            id: "updateSelectedSprint",
+            src: "invokeUpdateSprint",
+            onDone: {
+              actions: "assignSelectedUpdatedSprint",
+            },
+            onError: {
+              target: "idle",
+              actions: "clearUpdateSprint",
+            },
+          },
+        },
         getVersionList: {
           invoke: {
             id: "getVersionList",
@@ -308,12 +330,12 @@ export const homeMachine = createMachine<any>({
             src: "invokeGetSprintListForMovingSprint",
             onDone: {
               target: "success",
-              actions: "assignScrumListForMovingSprint"
+              actions: "assignScrumListForMovingSprint",
             },
             onError: {
               target: "failiure",
             },
-          }
+          },
         },
         success: {
           type: "final",
@@ -700,12 +722,12 @@ export const homeMachine = createMachine<any>({
             },
             updateTicket: {
               target: "updateExistingTicket",
-              actions: "assignUpdateTicket"
+              actions: "assignUpdateTicket",
             },
             changeTicketSprint: {
-                target: "updateChangeTicketSprint",
-                actions: "assignChangeSprintPayload"
-            }
+              target: "updateChangeTicketSprint",
+              actions: "assignChangeSprintPayload",
+            },
           },
         },
         updateChangeTicketSprint: {
@@ -714,13 +736,13 @@ export const homeMachine = createMachine<any>({
             src: "invokeUpdateChangeTicketSprint",
             onDone: {
               target: ["idle", "#home.getTickets"],
-              actions: "clearAssignChangeSprintPayload"
+              actions: "clearAssignChangeSprintPayload",
             },
             onError: {
               target: "idle",
-              actions: "clearAssignChangeSprintPayload"
+              actions: "clearAssignChangeSprintPayload",
             },
-          }
+          },
         },
         updateExistingTicket: {
           invoke: {

@@ -86,18 +86,37 @@ const assignSelectedSprint = assign({
         : ""
       : "";
   },
-  sprintListMovingPayload:(context: any, event: any) => {
+  sprintListMovingPayload: (context: any, event: any) => {
     const countryId = context?.sprintList[0]?.country?.id || "";
     const projectId = context?.selectedProject?.id || "";
-    const currentSprintId = context.sprintList[0]?.id || ""
+    const currentSprintId = context.sprintList[0]?.id || "";
     return {
       projectId,
       countryId,
-      currentSprintId
-    }
-    
+      currentSprintId,
+    };
   },
+});
 
+const assignSelectedUpdatedSprint = assign({
+  selectedSprint: (context: any, event: any) => {
+    const updatedSprint = event.data?.update_sprint?.returning[0];
+    return updatedSprint ? updatedSprint : {};
+  },
+  selectedCountry: (context: any, event: any) => {
+    const updatedSprint = event.data?.update_sprint?.returning[0];
+    return updatedSprint ? updatedSprint.country : "";
+  },
+  sprintList: (context: any, event: any) => {
+    const updatedSprint = event.data?.update_sprint?.returning[0];
+    const newSprintList = context.sprintList.map((sprint: any) => {
+      return sprint.id === updatedSprint.id ? updatedSprint : sprint;
+    });
+    return newSprintList;
+  },
+  updateSprint: (context: any, event) => {
+    return undefined;
+  },
 });
 
 const updateYear = assign({
@@ -202,6 +221,7 @@ const assignNewSprint = assign({
 
 const assignNewCountry = assign({
   newCountry: (context: any, event: any) => {
+    debugger;
     return event.prop;
   },
 });
@@ -211,16 +231,15 @@ const updateSprint = assign({
     return event.prop;
   },
   selectedCountry: (context: any, event: any) => {
-    return event?.prop?.country || context?.selectedCountry
+    return event?.prop?.country || context?.selectedCountry;
   },
-  sprintListMovingPayload:(context: any, event: any) => { 
+  sprintListMovingPayload: (context: any, event: any) => {
     return {
       ...context?.sprintListMovingPayload,
       countryId: event?.prop?.country?.id,
-      currentSprintId: event?.prop?.id
-    }
-  }
-
+      currentSprintId: event?.prop?.id,
+    };
+  },
 });
 
 const updateTicketStatus = assign({
@@ -295,6 +314,16 @@ const assignUpdateTicket = assign({
   },
 });
 
+const assignUpdateSprint = assign({
+  updateSprint: (context: any, event: any) => {
+    return event.prop;
+  },
+});
+const clearUpdateSprint = assign({
+  updateSprint: (context: any, event: any) => {
+    return undefined;
+  },
+});
 const clearUpdateTicket = assign({
   updateTicket: (context: any, event: any) => {
     return undefined;
@@ -332,20 +361,20 @@ const assignNewResource = assign({
 });
 
 const assignScrumListForMovingSprint = assign({
-  sprintListMoving:(context: any, event: any) => {
+  sprintListMoving: (context: any, event: any) => {
     return event.data?.sprint || [];
   },
-})
+});
 
 const assignChangeSprintPayload = assign({
   changeSprintPayload: (context: any, event: any) => {
     return event.prop;
   },
-})
+});
 
-const clearAssignChangeSprintPayload =  assign({
+const clearAssignChangeSprintPayload = assign({
   changeSprintPayload: (context: any, event: any) => {
-    return undefined
+    return undefined;
   },
 });
 
@@ -359,8 +388,8 @@ const assignEstimateStatus = assign({
       });
     });
     return context.ticketList;
-  }
-})
+  },
+});
 
 export const actions = {
   assignNewResource,
@@ -408,5 +437,8 @@ export const actions = {
   assignChangeSprintPayload,
   clearAssignChangeSprintPayload,
   assignEstimateChange,
-  assignEstimateStatus
+  assignEstimateStatus,
+  assignUpdateSprint,
+  clearUpdateSprint,
+  assignSelectedUpdatedSprint,
 };
