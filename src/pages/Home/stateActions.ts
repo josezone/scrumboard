@@ -221,7 +221,6 @@ const assignNewSprint = assign({
 
 const assignNewCountry = assign({
   newCountry: (context: any, event: any) => {
-    debugger;
     return event.prop;
   },
 });

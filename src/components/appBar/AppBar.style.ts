@@ -22,5 +22,6 @@ export const AppBarWrapper = styled.div`
 export const EditIconWrapper = styled.div`
   .MuiSvgIcon-root{
     height:0.9em;
+    cursor:pointer;
   }
 `

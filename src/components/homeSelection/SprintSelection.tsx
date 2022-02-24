@@ -52,7 +52,6 @@ function SprintSelection(props: any) {
   }, [selectedSprint?.sprint, editMode]);
 
   const addCountry = (event: any) => {
-    debugger;
     if (newCountry) {
       props.send({ type: "assignNewCountry", prop: newCountry });
       setNewCountry("");
