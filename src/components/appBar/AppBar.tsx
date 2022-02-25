@@ -2,14 +2,17 @@ import { useState } from "react";
 
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
 import Container from "@mui/material/Container";
+import Toolbar from "@mui/material/Toolbar";
+import EditIcon from "@mui/icons-material/Edit";
 
 import ItemSelect from "../itemSelect/ItemSelect";
 import AddNew from "../addNewAppBar/addNewAppBar";
 import HomeSelection from "../homeSelection/HomeSelection";
 
-import { AppBarWrapper } from "./AppBar.style";
+import { AppBarWrapper, EditIconWrapper } from "./AppBar.style";
+import ScrumSelection from "../homeSelection/ScrumSelection";
+import SprintSelection from "../homeSelection/SprintSelection";
 
 type yearItem = { key: number; value: number; label: number };
 type scrumItem = { key: number; value: number; label: number };
@@ -17,6 +20,11 @@ type sprintItem = { key: number; value: number; label: string };
 
 function AppBarHeader(props: any) {
   const [projectModal, setProjectModal] = useState<boolean>(false);
+  const [editSprint, setEditSprint] = useState(false);
+
+  const handleSprintEdit = (): void => {
+    setEditSprint((m) => !m);
+  };
 
   const year = new Date().getFullYear();
   const yearItems: Array<yearItem> = [
@@ -100,9 +108,6 @@ function AppBarHeader(props: any) {
         <Container maxWidth={false}>
           <Toolbar>
             <Box sx={{ flexGrow: 1, display: "flex" }}>
-              {/* {props.selectedScrum &&
-                props.scrumList &&
-                props.scrumList.length && ( */}
               <ItemSelect
                 items={scrumItems}
                 defaultItem={props.selectedScrum?.id}
@@ -118,7 +123,6 @@ function AppBarHeader(props: any) {
               >
                 <AddNew addNew={openCreateScrum}></AddNew>
               </ItemSelect>
-              {/* )} */}
 
               {props.selectedProject && (
                 <ItemSelect
@@ -134,11 +138,16 @@ function AppBarHeader(props: any) {
                     true
                   }
                 >
+                  <EditIconWrapper>
+                    <EditIcon
+                      color="primary"
+                      onClick={handleSprintEdit}
+                    ></EditIcon>
+                  </EditIconWrapper>
                   <AddNew addNew={openCreateSprint}></AddNew>
                 </ItemSelect>
               )}
 
-              {/* {props.selectedProject && ( */}
               <ItemSelect
                 items={projectItems}
                 defaultItem={props.selectedProject?.id}
@@ -154,7 +163,6 @@ function AppBarHeader(props: any) {
               >
                 <AddNew addNew={handleProjectModal}></AddNew>
               </ItemSelect>
-              {/* )} */}
             </Box>
 
             <Box sx={{ flexGrow: 0 }}>
@@ -176,6 +184,12 @@ function AppBarHeader(props: any) {
         projectModal={projectModal}
         handleProjectModal={handleProjectModal}
       ></HomeSelection>
+      <ScrumSelection {...props}></ScrumSelection>
+      <SprintSelection
+        {...props}
+        editMode={editSprint}
+        handleEditMode={handleSprintEdit}
+      ></SprintSelection>
     </AppBarWrapper>
   );
 }

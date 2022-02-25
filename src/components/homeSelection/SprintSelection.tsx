@@ -16,6 +16,7 @@ import {
   ModalActionContainer,
 } from "./sprintSelection.style";
 import ModalComponent from "../modal/modal";
+import { useEffect } from "react";
 
 const schema = yup
   .object({
@@ -25,17 +26,30 @@ const schema = yup
   .required();
 
 function SprintSelection(props: any) {
+  const { editMode = false, handleEditMode, selectedSprint } = props;
   const {
     reset,
     handleSubmit,
     formState: { errors },
     control,
+    setValue,
   } = useForm({
     resolver: yupResolver(schema),
   });
 
   const [countrySelect, setCountrySelect] = useState("");
   const [newCountry, setNewCountry] = useState("");
+
+  useEffect(() => {
+    if (editMode) {
+      setCountrySelect(selectedSprint?.country?.id);
+      setValue("sprint", selectedSprint?.sprint);
+      setValue("country", selectedSprint?.country?.id);
+    } else {
+      setValue("sprint", "");
+      setValue("country", "");
+    }
+  }, [selectedSprint?.sprint, editMode]);
 
   const addCountry = (event: any) => {
     if (newCountry) {
@@ -60,7 +74,12 @@ function SprintSelection(props: any) {
       reset();
       e.target.reset();
       setCountrySelect("");
-      props.send({ type: "assignNewSprint", prop: data });
+      if (!editMode) {
+        props.send({ type: "assignNewSprint", prop: data });
+      } else {
+        props.send({ type: "updateSprint", prop: data });
+        handleEditMode();
+      }
     })(e);
   };
 
@@ -68,9 +87,9 @@ function SprintSelection(props: any) {
     <SprintSelectionStyle>
       <div>
         <ModalComponent
-          open={props.newSprintPopup}
-          handleClose={handleClose}
-          title="Create Sprint"
+          open={editMode ? editMode : props.newSprintPopup}
+          handleClose={editMode ? handleEditMode : handleClose}
+          title={editMode ? "Update Sprint" : "Create Sprint"}
         >
           <Fragment>
             <form onSubmit={onSubmit}>
@@ -144,8 +163,10 @@ function SprintSelection(props: any) {
                 </div>
               </CreateSprintStyle>
               <ModalActionContainer>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button type="submit">Create</Button>
+                <Button onClick={editMode ? handleEditMode : handleClose}>
+                  Cancel
+                </Button>
+                <Button type="submit"> {editMode ? "Update" : "Create"}</Button>
               </ModalActionContainer>
             </form>
           </Fragment>

@@ -5,9 +5,9 @@ import SprintSelection from "./SprintSelection";
 function HomeSelection(props: any) {
   return (
     <div>
-      <ScrumSelection {...props} />
+      {/* <ScrumSelection {...props} /> */}
       <ProjectSelection {...props}/>
-      <SprintSelection {...props} />
+      {/* <SprintSelection {...props} /> */}
     </div>
   );
 }

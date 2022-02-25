@@ -39,6 +39,7 @@ import {
   useGetSprintListForMovingSprint,
   useChangeSprintTicket,
   useInvokeChangeEstimate,
+  useInvokeUpdateSprint,
 } from "./dataService";
 import { HomeStyle } from "./home.style";
 import { homeMachine } from "./homeMachine";
@@ -175,18 +176,20 @@ function Home(props: any) {
   const { mutateAsync: invokeCreateResource } = useInvokeCreateResource(
     props.graphQLClient
   );
-  const { mutateAsync: invokeGetSprintListForMovingSprint } = useGetSprintListForMovingSprint(
-    props.graphQLClient
-  )
+  const { mutateAsync: invokeGetSprintListForMovingSprint } =
+    useGetSprintListForMovingSprint(props.graphQLClient);
 
   const { mutateAsync: invokeChangeSprintTicket } = useChangeSprintTicket(
     props.graphQLClient
-  )
+  );
 
   const { mutateAsync: invokeChangeEstimate } = useInvokeChangeEstimate(
     props.graphQLClient
   );
 
+  const { mutateAsync: invokeUpdateSprint } = useInvokeUpdateSprint(
+    props.graphQLClient
+  );
   const [state, send] = useMachine(homeMachine, {
     actions,
     services: {
@@ -253,14 +256,20 @@ function Home(props: any) {
             : 0,
           ...context.newTicket.ticket,
         }),
-      invokeUpdateTicket: (context: any) => invokeUpdateTicket({
-        sprintId: context?.selectedSprint?.id,
-        statusId: context.sprintStatusList.length
-          ? context.sprintStatusList[0]?.id
-          : 0,
-        ...context?.updateTicket?.ticket,
-        ticket_id: context?.updateTicket?.ticket_id
-      }),
+      invokeUpdateSprint: (context: any) =>
+        invokeUpdateSprint({
+          sprintId: context.selectedSprint?.id,
+          ...context?.updateSprint,
+        }),
+      invokeUpdateTicket: (context: any) =>
+        invokeUpdateTicket({
+          sprintId: context?.selectedSprint?.id,
+          statusId: context.sprintStatusList.length
+            ? context.sprintStatusList[0]?.id
+            : 0,
+          ...context?.updateTicket?.ticket,
+          ticket_id: context?.updateTicket?.ticket_id,
+        }),
       invokeAddResource: (context: any) =>
         invokeTicketResource({
           ticketId: context.newTicketId,
@@ -275,9 +284,15 @@ function Home(props: any) {
         }),
       invokeResouceTypeList: () => invokeResouceTypeList(),
       invokePriorityList: () => invokePriorityList(),
-      invokeGetSprintListForMovingSprint: (cxt: any) => invokeGetSprintListForMovingSprint(cxt?.sprintListMovingPayload || {}),
-      invokeUpdateChangeTicketSprint: (cxt: any) => invokeChangeSprintTicket(cxt?.changeSprintPayload || {}),
-      invokeChangeEstimate: (context: any) => invokeChangeEstimate({ ticketId: context.estimateToggleId.id, estimate: context.estimateToggleId.estimation }),
+      invokeGetSprintListForMovingSprint: (cxt: any) =>
+        invokeGetSprintListForMovingSprint(cxt?.sprintListMovingPayload || {}),
+      invokeUpdateChangeTicketSprint: (cxt: any) =>
+        invokeChangeSprintTicket(cxt?.changeSprintPayload || {}),
+      invokeChangeEstimate: (context: any) =>
+        invokeChangeEstimate({
+          ticketId: context.estimateToggleId.id,
+          estimate: context.estimateToggleId.estimation,
+        }),
     },
   });
   // console.log(state);
