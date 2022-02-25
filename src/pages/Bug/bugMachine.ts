@@ -9,6 +9,8 @@ export const bugMachine = createMachine<any>({
     updateBugReport: undefined,
     removeBug: undefined,
     resourceList: undefined,
+    ticketInfo: undefined,
+    newBugModal: false
   },
   states: {
     bug: {
@@ -23,7 +25,7 @@ export const bugMachine = createMachine<any>({
                 src: "invokeGetList",
                 onDone: {
                   actions: "assignBugList",
-                  target: "end",
+                  target: ["#main.getTickets.getTicketsInfo", "end"],
                 },
                 onError: {
                   target: "end",
@@ -58,6 +60,31 @@ export const bugMachine = createMachine<any>({
         },
       },
     },
+    getTickets: {
+      initial: "idle",
+      states: {
+        idle: {
+          on: {
+            getTicketInfo: {
+              target: "getTicketsInfo",
+            },
+          },
+        },
+        getTicketsInfo: {
+          invoke: {
+            id: "getTicketsInfo",
+            src: "invokeGetTicket",
+            onDone: {
+              actions: "assignTicketInfo",
+              target: "idle"
+            },
+            onError: {
+              target: "idle"
+            }
+          }
+        }
+      }
+    },
     createBug: {
       initial: "idle",
       states: {
@@ -67,6 +94,10 @@ export const bugMachine = createMachine<any>({
               target: "newBug",
               actions: "assignNewBug",
             },
+            addBugModalToggle: {
+              target: "idle",
+              actions: "assignToggleModal"
+            }
           },
         },
         newBug: {
@@ -75,6 +106,7 @@ export const bugMachine = createMachine<any>({
             src: "invokeNewBug",
             onDone: {
               target: ["#main.bug.listBug.getList", "idle"],
+              actions: "assignToggleModal"
             },
             onError: {
               target: "idle",

@@ -35,3 +35,17 @@ export const BugListStyle = styled.div`
     margin-top: -45px;
   }
 `;
+
+export const AddBugStyled = styled.div`
+
+`;
+
+
+export const AddBugFormWrapper = styled.form`
+    width: 450px;
+    margin: 10px;
+
+    .MuiFormControl-root {
+      margin: 10px 0px;
+    }
+`

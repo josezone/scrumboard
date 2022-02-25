@@ -5,6 +5,7 @@ import {
   useInvokeGetList,
   useInvokeNewBug,
   useInvokeUpdateReport,
+  useInvokeGetTicket
 } from "./dataService";
 import { useMachine } from "@xstate/react";
 import { actions } from "./stateActions";
@@ -13,6 +14,7 @@ import { useInvokeResourceList } from "../Home/dataService";
 
 function Bug(props: any) {
   const { id } = useParams<"id">();
+  const { mutateAsync: invokeGetTicket } = useInvokeGetTicket(props.graphQLClient);
 
   const { mutateAsync: invokeNewBug } = useInvokeNewBug(props.graphQLClient);
 
@@ -33,6 +35,7 @@ function Bug(props: any) {
   const [state, send] = useMachine(bugMachine, {
     actions,
     services: {
+      invokeGetTicket: (context: any) => invokeGetTicket({ ticketId: id ? parseInt(id) : null }),
       invokeResourceList: () => invokeResourceList(),
       invokeNewBug: (context: any) =>
         invokeNewBug({
@@ -41,8 +44,9 @@ function Bug(props: any) {
           impact: context.newBug.impact ? context.newBug.impact : null,
           report: context.newBug.report ? true : false,
           resource_id: context.newBug.resource,
-          spilled: context.newBug.spilled ? true : false,
+          spilled: context.newBug.spill ? true : false,
           ticket_id: id,
+          ...context.newBug
         }),
       invokeGetList: (context: any) => invokeGetList({ ticket_id: id }),
       invokeUpdateReport: (context: any) =>

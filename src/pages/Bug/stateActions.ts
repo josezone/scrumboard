@@ -43,6 +43,18 @@ const assignDeleteBug = assign({
   },
 });
 
+const assignTicketInfo = assign({
+  ticketInfo:(context: any, event: any) => {
+      return event?.data?.ticket_by_pk || {};
+  },
+})
+
+const assignToggleModal =  assign({
+  newBugModal:(context: any, event: any) => {
+      return !Boolean(context.newBugModal)
+  },
+})
+
 export const actions = {
   assignDeleteBug,
   assignRemoveBug,
@@ -50,4 +62,6 @@ export const actions = {
   assignNewBug,
   assignResourceList,
   assignBugList,
+  assignTicketInfo,
+  assignToggleModal
 };
