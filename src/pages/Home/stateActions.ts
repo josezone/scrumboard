@@ -390,6 +390,12 @@ const assignEstimateStatus = assign({
   },
 });
 
+const assignNewProjectId = assign({
+  newProjectId: (context: any, event: any) => {
+    return event.data.insert_project.returning[0].id
+  },
+});
+
 export const actions = {
   assignNewResource,
   assignResourceTypeList,
@@ -440,4 +446,5 @@ export const actions = {
   assignUpdateSprint,
   clearUpdateSprint,
   assignSelectedUpdatedSprint,
+  assignNewProjectId,
 };

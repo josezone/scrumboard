@@ -58,7 +58,7 @@ function ProjectCard(props: any) {
         );
     })
     const maxTotal = estimate?.reduce((acc: any, val: any) => {
-        return acc + val.story;
+        return acc + Number(val.story);
     }, 0)
 
     return (

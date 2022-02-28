@@ -5,6 +5,11 @@ import { useInvokeGetDailyReport } from "./dataService";
 import { actions } from "./stateActions";
 
 function DailyReport(props: any) {
+  props.graphQLClient.setHeader(
+    "Authorization",
+    "Basic " + localStorage.getItem("data")
+  );
+  
   const { mutateAsync: invokeGetDailyReport } = useInvokeGetDailyReport(
     props.graphQLClient
   );

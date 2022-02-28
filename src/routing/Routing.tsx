@@ -1,5 +1,5 @@
 import { lazy } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { GraphQLClient } from "graphql-request";
 import Estimate from "../pages/Estimate/Estimate";
 const graphQLClient = new GraphQLClient(
@@ -13,24 +13,35 @@ const DailyReport = lazy(() => import("../pages/DailyReport/DailyReport"));
 const SprintReport = lazy(() => import("../pages/SprintReport/sprintReport"));
 
 function Routing() {
+  const loginData = localStorage.getItem("data");
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/login" element={<Login />} />
+        {loginData &&
+          <>
+            <Route
+              path="/"
+              element={<Home graphQLClient={graphQLClient} />}
+            />
+            <Route
+              path="/issue/:id"
+              element={<Bug graphQLClient={graphQLClient} />}
+            />
+            <Route
+              path="/dailyreport"
+              element={<DailyReport graphQLClient={graphQLClient} />}
+            />
+            <Route path="/estimate" element={<Estimate graphQLClient={graphQLClient} />} />
+            <Route path="/sprintReport" element={<SprintReport />}/>
+          </>
+        }
         <Route
-          path="/"
-          element={<Home graphQLClient={graphQLClient} />}
-        />
-        <Route
-          path="/issue/:id"
-          element={<Bug graphQLClient={graphQLClient} />}
-        />
-        <Route
-          path="/dailyreport"
-          element={<DailyReport graphQLClient={graphQLClient} />}
+          path="*"
+          element={<Navigate to="/login" />}
         />
         <Route path="/login" element={<Login />} />
         <Route path="/estimate" element={<Estimate graphQLClient={graphQLClient} />} />
-        <Route path="/sprintReport" element={<SprintReport />}/>
       </Routes>
     </BrowserRouter>
   );

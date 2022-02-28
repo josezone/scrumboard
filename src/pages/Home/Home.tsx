@@ -40,6 +40,7 @@ import {
   useChangeSprintTicket,
   useInvokeChangeEstimate,
   useInvokeUpdateSprint,
+  useInvokecreateEstimateList,
 } from "./dataService";
 import { HomeStyle } from "./home.style";
 import { homeMachine } from "./homeMachine";
@@ -190,6 +191,11 @@ function Home(props: any) {
   const { mutateAsync: invokeUpdateSprint } = useInvokeUpdateSprint(
     props.graphQLClient
   );
+
+  const { mutateAsync: invokecreateEstimateList } = useInvokecreateEstimateList(
+    props.graphQLClient
+  );
+
   const [state, send] = useMachine(homeMachine, {
     actions,
     services: {
@@ -293,9 +299,10 @@ function Home(props: any) {
           ticketId: context.estimateToggleId.id,
           estimate: context.estimateToggleId.estimation,
         }),
+      invokecreateEstimateList: (context: any) => invokecreateEstimateList({ projectId: context.newProjectId, resourceTypeList: context.resourceTypeList })
     },
   });
-  // console.log(state);
+  console.log(state.context);
   const activateScrum = () => {
     send({ type: "activateScrum" });
   };
