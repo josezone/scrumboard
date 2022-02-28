@@ -5,6 +5,7 @@ export const dailyReportMachine = createMachine<any>({
   initial: "getDailyReport",
   context: {
     dailyReport: undefined,
+    scrumName: undefined
   },
   states: {
     getDailyReport: {

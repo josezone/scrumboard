@@ -10,6 +10,7 @@ const Home = lazy(() => import("../pages/Home/Home"));
 const Login = lazy(() => import("../pages/Login/Login"));
 const Bug = lazy(() => import("../pages/Bug/Bug"));
 const DailyReport = lazy(() => import("../pages/DailyReport/DailyReport"));
+const SprintReport = lazy(() => import("../pages/SprintReport/sprintReport"));
 
 function Routing() {
   return (
@@ -29,6 +30,7 @@ function Routing() {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/estimate" element={<Estimate graphQLClient={graphQLClient} />} />
+        <Route path="/sprintReport" element={<SprintReport />}/>
       </Routes>
     </BrowserRouter>
   );

@@ -1,6 +1,12 @@
+import { Button, Card, CardActions, CardContent } from "@mui/material";
 import groupArray from "group-array";
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { useRef, useState } from "react";
 
 function DailyReportComponent(props: any) {
+  const contentRef = useRef<any>(null);
+  const [btnText, setBtnText] = useState<string>("Copy");
+
   const issueToReport = props?.dailyReport?.filter(
     (issue: any) => issue.report
   );
@@ -10,9 +16,26 @@ function DailyReportComponent(props: any) {
     "ticket.sprint.sprint",
     "ticket.ticket"
   );
-  console.log(byProject);
+  
+
+  const onCopyClick = () => {
+   if (window.getSelection) {
+      setBtnText("Copied")
+      let range = document.createRange();
+      range.selectNode(contentRef.current);
+      window.getSelection()?.addRange(range);
+      document.execCommand("copy");
+    }
+    
+  }
+
+
   return (
-    <div>
+    <Card className="cardContainer" sx={{ maxWidth: 500,  margin: "auto" }} >
+      <CardActions>
+        <Button size="small" variant="contained" onClick={onCopyClick} startIcon={<ContentCopyIcon />}>{btnText}</Button>
+      </CardActions>
+      <CardContent ref={contentRef}>
       {Object.keys(byProject)?.map((projectIdx: any) => {
         return (
           <div>
@@ -33,7 +56,7 @@ function DailyReportComponent(props: any) {
                                   <div>
                                     • {issue.bug}
                                     {issue.evidence
-                                      ? ". Link " + issue.evidence
+                                      ? <>. Link <a href={issue.evidence}>here</a></> 
                                       : "."}
                                   </div>
                                   <div>
@@ -53,7 +76,8 @@ function DailyReportComponent(props: any) {
           </div>
         );
       })}
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 
