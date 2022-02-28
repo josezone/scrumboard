@@ -79,10 +79,10 @@ function Home(props: any) {
     navigate("/estimate");
   }
 
-  // props.graphQLClient.setHeader(
-  //   "Authorization",
-  //   "Basic " + localStorage.getItem("data")
-  // );
+  props.graphQLClient.setHeader(
+    "Authorization",
+    "Basic " + localStorage.getItem("data")
+  );
 
   const { mutateAsync: getScrumList } = useGetScrumList(props.graphQLClient);
   const { mutateAsync: getCountryList } = useGetCountryList(

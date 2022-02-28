@@ -14,6 +14,12 @@ import { useInvokeResourceList } from "../Home/dataService";
 
 function Bug(props: any) {
   const { id } = useParams<"id">();
+
+  props.graphQLClient.setHeader(
+    "Authorization",
+    "Basic " + localStorage.getItem("data")
+  );
+  
   const { mutateAsync: invokeGetTicket } = useInvokeGetTicket(props.graphQLClient);
 
   const { mutateAsync: invokeNewBug } = useInvokeNewBug(props.graphQLClient);
