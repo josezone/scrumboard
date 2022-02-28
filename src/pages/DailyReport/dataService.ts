@@ -5,6 +5,10 @@ export function useInvokeGetDailyReport(graphQLClient: any) {
   return useMutation(() => {
     return graphQLClient.request(gql`
       query MyQuery {
+        scrum(where: { active: { _eq: true } }){
+          scrum
+        }
+
         bugs(
           where: {
             report: { _eq: true }

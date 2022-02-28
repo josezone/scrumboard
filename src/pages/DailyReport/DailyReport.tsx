@@ -1,5 +1,5 @@
 import { useMachine } from "@xstate/react";
-import DailyReportComponent from "../../components/dailyReport/DailyReport";
+import DailyReportComponent from "../../components/dailyReport";
 import { dailyReportMachine } from "./DailyReportMachine";
 import { useInvokeGetDailyReport } from "./dataService";
 import { actions } from "./stateActions";
@@ -21,7 +21,6 @@ function DailyReport(props: any) {
     },
   });
 
-  console.log(state.context)
   return <DailyReportComponent {...state.context}/>;
 }
 
