@@ -16,5 +16,6 @@ export const ProjectCardStyled = styled.div`
         display: flex;
         justify-content: space-around;
         margin-top: 10px;
+        gap: 10px;
     }
 `

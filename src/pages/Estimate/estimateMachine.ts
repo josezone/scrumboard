@@ -10,6 +10,7 @@ export const estimateMachine = createMachine<any>({
     estimateList: undefined,
     estimateDate: undefined,
     selectedEstimate: undefined,
+    updatedPoint: undefined,
   },
   states: {
     home: {
@@ -18,7 +19,7 @@ export const estimateMachine = createMachine<any>({
       states: {
         idle: {
           always: {
-            target: ["groupList.ticketList", "groupList.estimateDate"],
+            target: ["groupList.ticketList", "groupList.getEstimateList"],
           },
         },
         groupList: {
@@ -46,28 +47,9 @@ export const estimateMachine = createMachine<any>({
                 },
               },
             },
-            estimateDate: {
-              initial: "getEstimateDate",
+            getEstimateList: {
+              initial: "getEstimateList",
               states: {
-                getEstimateDate: {
-                  invoke: {
-                    id: "getEstimateDate",
-                    src: "invokeEstimateDate",
-                    onDone: {
-                      actions: "assigngetEstimateDate",
-                      target: "selectDefaultDate",
-                    },
-                    onError: {
-                      target: "end",
-                    },
-                  },
-                },
-                selectDefaultDate: {
-                  always: {
-                    actions: "assignDefaultDate",
-                    target: "getEstimateList",
-                  },
-                },
                 getEstimateList: {
                   invoke: {
                     id: "getEstimateList",
@@ -90,14 +72,26 @@ export const estimateMachine = createMachine<any>({
         },
       },
     },
-    changeDate: {
+    updatePoints: {
       initial: "idle",
       states: {
         idle: {
           on: {
-            changeDate: {
-              actions: "assignChangeDate",
-              target:"#main.home.groupList.estimateDate.getEstimateList"
+            updatePoints: {
+              target: "invokeUpdatePoints",
+              actions: "assignPoints",
+            },
+          },
+        },
+        invokeUpdatePoints: {
+          invoke: {
+            id: "invokeUpdatePoints",
+            src: "invokeUpdatePoints",
+            onDone: {
+              target: "idle",
+            },
+            onError: {
+              target: "idle",
             },
           },
         },

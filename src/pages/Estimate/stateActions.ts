@@ -18,9 +18,17 @@ const assignEstimateList = assign({
     },
 });
 
-const assignEstimateDate = assign({
-    estimateDate: (context: any, event: any) => {
-        return event.data["estimation_limit"];
+const assignPoints = assign({
+    estimateList: (context: any, event: any) => {
+        return context.estimateList.filter((estimate: any) => {
+            if (estimate.id === event.data.id) {
+                estimate.story = event.data.story;
+            }
+            return estimate;
+        })
+    },
+    updatedPoint: (context: any, event: any) => {
+        return event.data;
     },
 });
 
@@ -28,5 +36,5 @@ export const actions = {
     assignTicketList,
     removeTicketAction,
     assignEstimateList,
-    assignEstimateDate
+    assignPoints
 }

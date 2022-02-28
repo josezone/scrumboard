@@ -10,7 +10,7 @@ function EstimateGraph(props: any) {
         <Tree label={<div className='title'>Projects</div>}>
             {Object.keys(result)?.map((project) => {
                 return (
-                    <TreeNode key={project} label={<ProjectCard project={project} ticketList={props.ticketList} estimateList={props.estimateList}/>}>
+                    <TreeNode key={project} label={<ProjectCard project={project} ticketList={props.ticketList} estimateList={props.estimateList} send={props.send}/>}>
                         {Object.keys(result[project])?.map((country) => {
                             return (
                                 <TreeNode key={country} label={<div className='title'>{country}</div>}>

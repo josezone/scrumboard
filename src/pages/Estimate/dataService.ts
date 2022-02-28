@@ -105,7 +105,24 @@ function useInvokeGetTicketsList(graphQLClient: any) {
     });
 }
 
+export function useInvokeUpdatePoints(graphQLClient: any) {
+    return useMutation(({ id, story }: any) => {
+        return graphQLClient.request(gql`
+            mutation MyMutation {
+                update_estimation_limit(where: {id: {_eq: ${id}}}, _set: {story: ${story}}) {
+                    returning {
+                        id
+                    }
+                }
+            }
+        `);
+    });
+}
+
 export const useServices = (props: any) => {
+    const { mutateAsync: invokeUpdatePoints } = useInvokeUpdatePoints(
+        props.graphQLClient
+    );
     const { mutateAsync: invokeGetTicketList } = useInvokeGetTicketsList(
         props.graphQLClient
     );
@@ -125,5 +142,6 @@ export const useServices = (props: any) => {
         invokeRemoveTicket: (context: any) => invokeRemoveTicket({ ticketId: context.selectedTicketId }),
         invokeGetEstimateList: () => invokeEstimateLimit(),
         invokeEstimateDate: () => invokeEstimateDate(),
+        invokeUpdatePoints: (context: any) => invokeUpdatePoints(context.updatedPoint),
     }
 }
