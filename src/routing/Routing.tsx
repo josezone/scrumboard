@@ -40,8 +40,6 @@ function Routing() {
           path="*"
           element={<Navigate to="/login" />}
         />
-        <Route path="/login" element={<Login />} />
-        <Route path="/estimate" element={<Estimate graphQLClient={graphQLClient} />} />
       </Routes>
     </BrowserRouter>
   );
