@@ -5,13 +5,14 @@ import reportWebVitals from "./reportWebVitals";
 import Routing from "./routing/Routing";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { GraphQLClient } from "graphql-request";
+import FullScreenLoader from "./components/fullScreenLoader/fullScreenLoader";
 
 //@ts-ignore
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const queryClient = new QueryClient();
 
 root.render(
-  <Suspense fallback={<div>Loading...</div>}>
+  <Suspense fallback={<FullScreenLoader />}>
     <QueryClientProvider client={queryClient}>
       <Routing />
     </QueryClientProvider>
