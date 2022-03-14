@@ -11,6 +11,7 @@ const Login = lazy(() => import("../pages/Login/Login"));
 const Bug = lazy(() => import("../pages/Bug/Bug"));
 const DailyReport = lazy(() => import("../pages/DailyReport/DailyReport"));
 const SprintReport = lazy(() => import("../pages/SprintReport/sprintReport"));
+const ResourcePlanning = lazy(() => import("../pages/ResourcePlanning/ResourcePlanning"));
 
 function Routing() {
   const loginData = localStorage.getItem("data");
@@ -34,6 +35,7 @@ function Routing() {
             />
             <Route path="/estimate" element={<Estimate graphQLClient={graphQLClient} />} />
             <Route path="/sprintReport" element={<SprintReport />}/>
+            <Route path="/resource-planning" element={<ResourcePlanning graphQLClient={graphQLClient} />}/>
           </>
         }
         <Route
