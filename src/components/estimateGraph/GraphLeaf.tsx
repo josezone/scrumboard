@@ -1,5 +1,8 @@
 import { GraphLeafStyled } from "./GraphLeaf.style";
 import Divider from '@mui/material/Divider';
+import BugReportIcon from "@mui/icons-material/BugReport";
+import { IconButton } from "@mui/material";
+import { useNavigate, createSearchParams } from "react-router-dom";
 
 function storyPoint(props: any) {
     const el = [];
@@ -47,7 +50,7 @@ function storyPoint(props: any) {
     }
     const total = storyFe + storyBe + storyQa
     el.push(
-        <div className="total"  key={"total" + total}>
+        <div className="total" key={"total" + total}>
             <span>Total:</span>
             {total}
         </div>
@@ -56,10 +59,26 @@ function storyPoint(props: any) {
 }
 
 function GraphLeaf(props: any) {
+    const navigate = useNavigate();
+
+    function issueClicked() {
+        navigate({
+            pathname: `/issue/${props.id}`,
+            search: `?${createSearchParams({
+                type: "estimate"
+            })}`
+        });
+    }
+
     return (
         <GraphLeafStyled>
-            <div className="cardHead">
-                {props.ticket}
+            <div className="headContainer">
+                <div className="cardHead">
+                    {props.ticket}
+                </div>
+                <IconButton onClick={issueClicked}>
+                    <BugReportIcon />
+                </IconButton>
             </div>
             <Divider style={{ marginTop: "2px" }} />
             <div>

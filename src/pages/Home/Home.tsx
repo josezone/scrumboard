@@ -79,6 +79,10 @@ function Home(props: any) {
     navigate("/estimate");
   }
 
+  function clickResourcePlan(){
+    navigate("/resource-planning");
+  }
+
   props.graphQLClient.setHeader(
     "Authorization",
     "Basic " + localStorage.getItem("data")
@@ -302,7 +306,7 @@ function Home(props: any) {
       invokecreateEstimateList: (context: any) => invokecreateEstimateList({ projectId: context.newProjectId, resourceTypeList: context.resourceTypeList })
     },
   });
-  console.log(state.context);
+
   const activateScrum = () => {
     send({ type: "activateScrum" });
   };
@@ -318,6 +322,9 @@ function Home(props: any) {
       </Button>
       <Button variant="text" className="reportHead" onClick={clickEstimate}>
         Estimate
+      </Button>
+      <Button variant="text" className="reportHead" onClick={clickResourcePlan}>
+        Resource Plan
       </Button>
 
       <TabPanel value={value} index={0}>

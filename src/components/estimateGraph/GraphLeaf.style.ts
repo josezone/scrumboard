@@ -11,6 +11,7 @@ export const GraphLeafStyled = styled.div`
     .cardHead{
         display: flex;
         justify-content: space-around;
+        padding: 11px;
     }
     .cardBody{
         display: flex;
@@ -19,5 +20,9 @@ export const GraphLeafStyled = styled.div`
     }
     .total{
         color:blue;
+    }
+    .headContainer{
+        display:flex;
+        justify-content:space-between;
     }
 `

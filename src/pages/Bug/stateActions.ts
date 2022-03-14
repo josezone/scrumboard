@@ -44,14 +44,14 @@ const assignDeleteBug = assign({
 });
 
 const assignTicketInfo = assign({
-  ticketInfo:(context: any, event: any) => {
-      return event?.data?.ticket_by_pk || {};
+  ticketInfo: (context: any, event: any) => {
+    return event?.data?.ticket_by_pk || {};
   },
 })
 
-const assignToggleModal =  assign({
-  newBugModal:(context: any, event: any) => {
-      return !Boolean(context.newBugModal)
+const assignToggleModal = assign({
+  newBugModal: (context: any, event: any) => {
+    return !Boolean(context.newBugModal)
   },
 })
 
