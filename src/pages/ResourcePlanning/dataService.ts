@@ -49,8 +49,8 @@ function useInvokeProjectGroupList(graphQLClient: any) {
 function useInvokeResourcePlan(graphQLClient: any) {
     return useMutation((scrumId) => {
         return graphQLClient.request(gql`
-        query MyQuery {
-            resource_plan(where: {scrum_id: {_eq: ${scrumId}}}) {
+            query MyQuery {
+                resource_plan(where: {scrum_id: {_eq: ${scrumId}}}) {
                     id
                     planned_leave
                     planned_half_day
@@ -60,10 +60,16 @@ function useInvokeResourcePlan(graphQLClient: any) {
                     resource {
                         id
                         resource
-                            resource_type {
+                        resource_type {
+                            id
+                            resource_type
+                        }
+                        scrum_resource_projects {
+                            project {
                                 id
-                                resource_type
+                                project
                             }
+                        }
                     }
                 }
             }
