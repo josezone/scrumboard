@@ -83,6 +83,10 @@ function Home(props: any) {
     navigate("/resource-planning");
   }
 
+  function clickSprintReport(){
+    navigate("/sprintReport");
+  }
+
   props.graphQLClient.setHeader(
     "Authorization",
     "Basic " + localStorage.getItem("data")
@@ -325,6 +329,9 @@ function Home(props: any) {
       </Button>
       <Button variant="text" className="reportHead" onClick={clickResourcePlan}>
         Resource Plan
+      </Button>
+      <Button variant="text" className="reportHead" onClick={clickSprintReport}>
+        Sprint Report
       </Button>
 
       <TabPanel value={value} index={0}>

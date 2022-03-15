@@ -34,7 +34,7 @@ function Routing() {
               element={<DailyReport graphQLClient={graphQLClient} />}
             />
             <Route path="/estimate" element={<Estimate graphQLClient={graphQLClient} />} />
-            <Route path="/sprintReport" element={<SprintReport />}/>
+            <Route path="/sprintReport" element={<SprintReport graphQLClient={graphQLClient}  />}/>
             <Route path="/resource-planning" element={<ResourcePlanning graphQLClient={graphQLClient} />}/>
           </>
         }
