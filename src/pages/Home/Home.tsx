@@ -5,7 +5,6 @@ import { useMachine } from "@xstate/react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import HomeSelection from "../../components/homeSelection/HomeSelection";
-import Resources from "../../components/resources/Resources";
 import ScrumBoard from "../../components/scrumBoard/ScrumBoard";
 import ScrumItem from "../../components/scrumBoard/ScrumItem";
 import AppBar from "../../components/appBar/AppBar";
@@ -45,7 +44,7 @@ import {
 import { HomeStyle } from "./home.style";
 import { homeMachine } from "./homeMachine";
 import { actions } from "./stateActions";
-
+import Resources from "../Resources/Resource";
 function TabPanel(props: any) {
   const { children, value, index, ...other } = props;
 
@@ -310,7 +309,6 @@ function Home(props: any) {
       invokecreateEstimateList: (context: any) => invokecreateEstimateList({ projectId: context.newProjectId, resourceTypeList: context.resourceTypeList })
     },
   });
-
   const activateScrum = () => {
     send({ type: "activateScrum" });
   };
@@ -346,7 +344,7 @@ function Home(props: any) {
         <ScrumBoard {...state.context} send={send} ScrumItem={ScrumItem} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Resources {...state.context} send={send} />
+        <Resources graphQLClient={props.graphQLClient}></Resources>
       </TabPanel>
     </HomeStyle>
   );
