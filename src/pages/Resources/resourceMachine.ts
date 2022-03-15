@@ -5,11 +5,11 @@ export const resourceMachine = createMachine<any>({
   initial: "getResourceList",
   context: {
     newResource: undefined,
-    resourceList: undefined,
+    resourceList: [],
     removeResource: undefined,
-    resourceType: undefined,
+    resourceType: [],
     resourceModal: false,
-    changingResourceId: undefined,
+    changingResource: undefined,
     updateResource: undefined,
     updateResourceModal: false,
   },
@@ -99,7 +99,7 @@ export const resourceMachine = createMachine<any>({
               target: "newResource",
             },
             closeModal: {
-              actions: "assignResourceToggleModal",
+              actions: "assignResourceModalToggle",
               target: "#main.idle",
             },
           },
@@ -109,7 +109,7 @@ export const resourceMachine = createMachine<any>({
             id: "newResource",
             src: "invokeNewResource",
             onDone: {
-              actions: ["assignResourceToggleModal", "clearNewResource"],
+              actions: ["assignResourceModalToggle", "clearNewResource"],
               target: "#main.getResourceList",
             },
             onError: {

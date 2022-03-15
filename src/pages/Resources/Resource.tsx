@@ -8,11 +8,9 @@ import {
 import { useMachine } from "@xstate/react";
 import { resourceMachine } from "./resourceMachine";
 import { actions } from "./stateActions";
-import { ResourceListStyle } from "./resourceList.style";
-import ResourceTable from "./ResourceTable";
+import ResourceList from "./resourceList";
 
 function Resources(props: any) {
-    debugger;
   const { mutateAsync: invokeGetResourceList } = useInvokeGetResourceList(
     props.graphQLClient
   );
@@ -32,7 +30,6 @@ function Resources(props: any) {
     actions,
     services: {
       invokeGetResourceList: () => {
-        //   debugger;
           return invokeGetResourceList()},
       invokeResourceTypeList: () => invokeResourceTypeList(),
       invokeUpdateResource: (context: any) =>
@@ -40,11 +37,10 @@ function Resources(props: any) {
       invokeNewResource: (context: any) =>
         invokeNewResource({ ...context?.newResource }),
       invokeChangeResourceStatus: (context: any) =>
-        invokeChangeResourceStatus({ resourceId: context.changingResourceId }),
+        invokeChangeResourceStatus({ ...context?.changingResource }),
     },
   });
-  console.log(state);
-  return <ResourceTable contents={state.context.resourceList}></ResourceTable>;
+  return <ResourceList contents={state?.context?.resourceList} send={send} context={state?.context}></ResourceList>;
 }
 
 export default Resources;

@@ -41,18 +41,17 @@ export function useInvokeUpdateResource(graphQLClient: any) {
 }
 
 export function useInvokeGetResourceList(graphQLClient: any) {
-  // debugger;
   return useMutation(() => {
-    // debugger;
     return graphQLClient.request(gql`
       query MyQuery {
-        resource {
-          resource
+        resource(order_by: { status: desc }) {
           id
+          resource
           resource_type {
-            resource_type
             id
+            resource_type
           }
+          status
         }
       }
     `);

@@ -20,7 +20,6 @@ const assignResourceTypeList = assign({
 
 const assignResourceList = assign({
   resourceList: (context: any, event: any) => {
-      debugger;
     return event.data.resource;
   },
 });
@@ -31,10 +30,22 @@ const assignNewResource = assign({
   },
 });
 
+const assignChangingResource = assign({
+  changingResource: (context: any, event: any) => {
+    return event.data;
+  },
+});
+const clearChangingResource = assign({
+  changingResource: (context: any, event: any) => {
+    return {};
+  },
+});
 export const actions = {
   assignResourceUpdateModalToggle,
   assignResourceModalToggle,
   assignResourceTypeList,
+  assignChangingResource,
+  clearChangingResource,
   assignResourceList,
-  assignNewResource
+  assignNewResource,
 };
