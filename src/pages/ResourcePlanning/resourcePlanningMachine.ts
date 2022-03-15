@@ -7,23 +7,31 @@ export const resourcePlanningMachine = createMachine<any>({
     on: {
         planLeave: {
             actions: "assignPlanedLeave",
-            target: "estimateActions.initPlannedLeave.createPlannedLeave",
+            target: "estimateActions.initPlannedLeave",
         },
         planHalfLeave: {
             actions: "assignPlanedHalfLeave",
-            target: "estimateActions.initPlannedHalfLeave.createHalfPlannedLeave",
+            target: "estimateActions.initPlannedHalfLeave",
         },
         leaveTaken: {
             actions: "assignLeaveTaken",
-            target: "estimateActions.initLeaveTaken.createLeaveTaken",
+            target: "estimateActions.initLeaveTaken",
         },
         emergencyLeave: {
             actions: "assignEmergencyLeave",
-            target: "estimateActions.initUnplannedLeave.createUnplannedLeave",
+            target: "estimateActions.initUnplannedLeave",
         },
         emergencyHalfLeave: {
             actions: "assignEmergencyHalfLeave",
-            target: "estimateActions.initUnplannedHalfLeave.createHalfUnplannedLeave",
+            target: "estimateActions.initUnplannedHalfLeave",
+        },
+        changeProjectGroup: {
+            actions: "updateDefaultProjectGroup",
+            target: "getInitialData.getProjectGroupList.scrumList",
+        },
+        changeScrum: {
+            actions: "updateDefaultScrum",
+            target: "getInitialData.getProjectGroupList.getResourcePlan",
         },
     },
     states: {
@@ -32,7 +40,7 @@ export const resourcePlanningMachine = createMachine<any>({
                 always: {
                     target: [
                         "getInitialData.getResourceList",
-                        "getInitialData.getScrumList",
+                        "getInitialData.getProjectGroupList",
                     ],
                 },
             },
@@ -61,20 +69,45 @@ export const resourcePlanningMachine = createMachine<any>({
                         },
                     },
                 },
-                getScrumList: {
-                    initial: "scrumList",
+                getProjectGroupList: {
+                    initial: "projectGroupList",
                     states: {
+                        projectGroupList: {
+                            invoke: {
+                                id: "projectGroupList",
+                                src: "invokeProjectGroupList",
+                                onDone: {
+                                    actions: "assignProjectGroupList",
+                                    target: "defaultProjectGroup",
+                                },
+                                onError: {
+                                    target: "end",
+                                },
+                            },
+                        },
+                        defaultProjectGroup: {
+                            always: {
+                                actions: "selectDefaultProjectGroup",
+                                target: "scrumList",
+                            },
+                        },
                         scrumList: {
                             invoke: {
                                 id: "scrumList",
                                 src: "invokeGetScrumList",
                                 onDone: {
-                                    actions: ["assignScrumList", "selectDefaultScrum"],
-                                    target: "getResourcePlan",
+                                    actions: "assignScrumList",
+                                    target: "defaultScrum",
                                 },
                                 onError: {
                                     target: "end",
                                 },
+                            },
+                        },
+                        defaultScrum: {
+                            always: {
+                                actions: "selectDefaultScrum",
+                                target: "getResourcePlan",
                             },
                         },
                         getResourcePlan: {
@@ -101,6 +134,7 @@ export const resourcePlanningMachine = createMachine<any>({
             type: "parallel",
             states: {
                 initPlannedLeave: {
+                    initial: "createPlannedLeave",
                     states: {
                         createPlannedLeave: {
                             invoke: {
@@ -121,6 +155,7 @@ export const resourcePlanningMachine = createMachine<any>({
                     },
                 },
                 initPlannedHalfLeave: {
+                    initial: "createHalfPlannedLeave",
                     states: {
                         createHalfPlannedLeave: {
                             invoke: {
@@ -141,6 +176,7 @@ export const resourcePlanningMachine = createMachine<any>({
                     },
                 },
                 initLeaveTaken: {
+                    initial: "createLeaveTaken",
                     states: {
                         createLeaveTaken: {
                             invoke: {
@@ -161,6 +197,7 @@ export const resourcePlanningMachine = createMachine<any>({
                     },
                 },
                 initUnplannedLeave: {
+                    initial: "createUnplannedLeave",
                     states: {
                         createUnplannedLeave: {
                             invoke: {
@@ -181,6 +218,7 @@ export const resourcePlanningMachine = createMachine<any>({
                     },
                 },
                 initUnplannedHalfLeave: {
+                    initial: "createHalfUnplannedLeave",
                     states: {
                         createHalfUnplannedLeave: {
                             invoke: {

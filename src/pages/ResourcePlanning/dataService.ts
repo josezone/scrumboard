@@ -19,10 +19,10 @@ function useInvokeResourceList(graphQLClient: any) {
 }
 
 function useInvokeGetScrumList(graphQLClient: any) {
-    return useMutation(() => {
+    return useMutation((projectGroupId: number) => {
         return graphQLClient.request(gql`
                     query MyQuery {
-                        scrum(order_by: {scrum: desc}) {
+                        scrum(order_by: {scrum: desc}, where: {project_group_id: {_eq: ${projectGroupId}}}) {
                             id
                             active
                             scrum
@@ -32,10 +32,49 @@ function useInvokeGetScrumList(graphQLClient: any) {
     });
 }
 
-function useInvokeResourcePlan(graphQLClient: any) {
+function useInvokeProjectGroupList(graphQLClient: any) {
     return useMutation(() => {
         return graphQLClient.request(gql`
-              `);
+            query MyQuery {
+                project_group {
+                    name
+                    id
+                }
+            }
+        `);
+    });
+}
+
+
+function useInvokeResourcePlan(graphQLClient: any) {
+    return useMutation((scrumId) => {
+        return graphQLClient.request(gql`
+        query MyQuery {
+            resource_plan(where: {scrum_id: {_eq: ${scrumId}}}) {
+                    id
+                    planned_leave
+                    planned_half_day
+                    leave_taken
+                    unplanned_half_day
+                    unplanned_leave
+                    resource {
+                        id
+                        resource
+                            resource_type {
+                                id
+                                resource_type
+                            }
+                    }
+                }
+            }
+        `);
+    });
+}
+
+function useInvokeCreateResourcePlan(graphQLClient: any) {
+    return useMutation((scrumId) => {
+        return graphQLClient.request(gql`
+                `);
     });
 }
 
@@ -85,8 +124,18 @@ export const useServices = (props: any) => {
         props.graphQLClient
     );
 
+    const { mutateAsync: invokeProjectGroupList } = useInvokeProjectGroupList(
+        props.graphQLClient
+    );
+
+    const { mutateAsync: invokeResourcePlan } = useInvokeResourcePlan(
+        props.graphQLClient
+    );
+
     return {
         invokeResourceList: () => invokeResourceList(),
-        invokeGetScrumList: () => invokeGetScrumList()
+        invokeGetScrumList: (context: any) => invokeGetScrumList(context.projectGroup.id),
+        invokeProjectGroupList: () => invokeProjectGroupList(),
+        invokeResourcePlan: (context: any) => invokeResourcePlan(context.scrumSelected.id),
     }
 }
