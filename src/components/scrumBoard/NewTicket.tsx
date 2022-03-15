@@ -141,7 +141,6 @@ function NewTicket(props: any) {
         },
         resources,
       };
-      console.log(newData);
 
       if (isEditTicket) props?.handleEditSubmit(newData);
       else props.send({ type: "newTicket", prop: newData });

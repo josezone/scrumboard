@@ -2,6 +2,8 @@ import { BugListStyle } from "./bugList.style";
 import BugTable from "./bugListTable";
 import { Container } from "@mui/material";
 import AddBug from "./addBug";
+import AddEstimateBug from "./addEstimateBug";
+import BugEstimateTable from "./bugEstimateTable";
 
 
 function BugList(props: any) {
@@ -18,15 +20,25 @@ function BugList(props: any) {
   };
 
   const handleFormSubmit = (data: any) => {
-      props.send({ type: "createBug", data });
+    props.send({ type: "createBug", data });
   }
 
   return (
     <BugListStyle>
       <Container>
         <h2>Ticket#:&nbsp;{props?.ticketInfo?.ticket}</h2>
-        <AddBug resourceList={props?.resourceList || []} onSubmit={handleFormSubmit} send={props.send} modalVisible={Boolean(props?.newBugModal)} />
-        <BugTable contents={props?.bugList || []} reportOnChange={reportChanged} onDelete={deleteClicked}  />
+        {props.bugType === null &&
+          <>
+            <AddBug resourceList={props?.resourceList || []} onSubmit={handleFormSubmit} send={props.send} modalVisible={Boolean(props?.newBugModal)} />
+            <BugTable contents={props?.bugList || []} reportOnChange={reportChanged} onDelete={deleteClicked} />
+          </>
+        }
+        {props.bugType === "estimate" &&
+          <>
+            <AddEstimateBug resourceList={props?.resourceList || []} onSubmit={handleFormSubmit} send={props.send} modalVisible={Boolean(props?.newBugModal)} />
+            <BugEstimateTable contents={props?.bugList || []} onDelete={deleteClicked} />
+          </>
+        }
       </Container>
     </BugListStyle>
   );

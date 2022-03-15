@@ -39,6 +39,7 @@ import {
   useChangeSprintTicket,
   useInvokeChangeEstimate,
   useInvokeUpdateSprint,
+  useInvokecreateEstimateList,
 } from "./dataService";
 import { HomeStyle } from "./home.style";
 import { homeMachine } from "./homeMachine";
@@ -75,6 +76,14 @@ function Home(props: any) {
 
   function clickEstimate() {
     navigate("/estimate");
+  }
+
+  function clickResourcePlan(){
+    navigate("/resource-planning");
+  }
+
+  function clickSprintReport(){
+    navigate("/sprintReport");
   }
 
   props.graphQLClient.setHeader(
@@ -189,6 +198,11 @@ function Home(props: any) {
   const { mutateAsync: invokeUpdateSprint } = useInvokeUpdateSprint(
     props.graphQLClient
   );
+
+  const { mutateAsync: invokecreateEstimateList } = useInvokecreateEstimateList(
+    props.graphQLClient
+  );
+
   const [state, send] = useMachine(homeMachine, {
     actions,
     services: {
@@ -292,6 +306,7 @@ function Home(props: any) {
           ticketId: context.estimateToggleId.id,
           estimate: context.estimateToggleId.estimation,
         }),
+      invokecreateEstimateList: (context: any) => invokecreateEstimateList({ projectId: context.newProjectId, resourceTypeList: context.resourceTypeList })
     },
   });
   const activateScrum = () => {
@@ -309,6 +324,12 @@ function Home(props: any) {
       </Button>
       <Button variant="text" className="reportHead" onClick={clickEstimate}>
         Estimate
+      </Button>
+      <Button variant="text" className="reportHead" onClick={clickResourcePlan}>
+        Resource Plan
+      </Button>
+      <Button variant="text" className="reportHead" onClick={clickSprintReport}>
+        Sprint Report
       </Button>
 
       <TabPanel value={value} index={0}>

@@ -10,7 +10,7 @@ export const bugMachine = createMachine<any>({
     removeBug: undefined,
     resourceList: undefined,
     ticketInfo: undefined,
-    newBugModal: false
+    newBugModal: false,
   },
   states: {
     bug: {

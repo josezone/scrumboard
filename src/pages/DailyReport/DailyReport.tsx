@@ -1,10 +1,15 @@
 import { useMachine } from "@xstate/react";
-import DailyReportComponent from "../../components/dailyReport/DailyReport";
+import DailyReportComponent from "../../components/dailyReport";
 import { dailyReportMachine } from "./DailyReportMachine";
 import { useInvokeGetDailyReport } from "./dataService";
 import { actions } from "./stateActions";
 
 function DailyReport(props: any) {
+  props.graphQLClient.setHeader(
+    "Authorization",
+    "Basic " + localStorage.getItem("data")
+  );
+  
   const { mutateAsync: invokeGetDailyReport } = useInvokeGetDailyReport(
     props.graphQLClient
   );
@@ -16,7 +21,6 @@ function DailyReport(props: any) {
     },
   });
 
-  console.log(state.context)
   return <DailyReportComponent {...state.context}/>;
 }
 

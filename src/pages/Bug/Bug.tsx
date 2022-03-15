@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { bugMachine } from "./bugMachine";
 import {
   useInvokeDeleteBug,
@@ -14,6 +14,14 @@ import { useInvokeResourceList } from "../Home/dataService";
 
 function Bug(props: any) {
   const { id } = useParams<"id">();
+  const [searchParams] = useSearchParams();
+  const type = searchParams.get('type');
+
+  props.graphQLClient.setHeader(
+    "Authorization",
+    "Basic " + localStorage.getItem("data")
+  );
+
   const { mutateAsync: invokeGetTicket } = useInvokeGetTicket(props.graphQLClient);
 
   const { mutateAsync: invokeNewBug } = useInvokeNewBug(props.graphQLClient);
@@ -39,6 +47,7 @@ function Bug(props: any) {
       invokeResourceList: () => invokeResourceList(),
       invokeNewBug: (context: any) =>
         invokeNewBug({
+          bugType: type,
           bug: context.newBug.bug,
           evidence: context.newBug.evidence,
           impact: context.newBug.impact ? context.newBug.impact : null,
@@ -48,7 +57,7 @@ function Bug(props: any) {
           ticket_id: id,
           ...context.newBug
         }),
-      invokeGetList: (context: any) => invokeGetList({ ticket_id: id }),
+      invokeGetList: (context: any) => invokeGetList({ bugType: type, ticket_id: id }),
       invokeUpdateReport: (context: any) =>
         invokeUpdateReport({
           bug: context.updateBugReport.bug,
@@ -61,7 +70,7 @@ function Bug(props: any) {
     },
   });
 
-  return <BugList {...state.context} send={send} />;
+  return <BugList {...state.context} send={send} bugType={type}/>;
 }
 
 export default Bug;
