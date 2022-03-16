@@ -33,10 +33,10 @@ function ResourcePlanningTable(props: any) {
 
     function daragableSection(project: any) {
         let scrumResourceProject = props.resourceList.filter((resource: any) => {
-            if (props.scrumResourceProject?.find((o: any) => o.project?.id === project?.id)) {
+            if (props.scrumResourceProject?.find((o: any) => o.project.id === project.id && o.resource.id === resource.id)) {
                 return true;
             }
-            if (!props.scrumResourceProject?.find((o: any) => o.resource?.id === resource?.id)) {
+            if (!props.scrumResourceProject?.find((o: any) => o.resource.id === resource.id)) {
                 if (project.id === null) {
                     return true;
                 }
@@ -45,6 +45,7 @@ function ResourcePlanningTable(props: any) {
         if (!scrumResourceProject.length) {
             scrumResourceProject = [{ id: "0", resource: "", resource_type: { resource_type: "" } }]
         }
+        
         return (
             <Droppable key={project.project} droppableId={project.project}>
                 {(provided, snapshot) => (
