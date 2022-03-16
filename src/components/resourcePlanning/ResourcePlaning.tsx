@@ -8,6 +8,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { ResourcePlaningDragStyle } from './resourcePlaning.style';
 
 function getDate(scrum: string) {
     return new Date(scrum).toLocaleString("default", {
@@ -27,7 +28,7 @@ function ResourcePlanningTable(props: any) {
         const dInd = destination.droppableId;
         if (sInd !== dInd) {
             const data = { moveItem: draggableId, moveFrom: sInd, moveTo: dInd };
-            props.send({type:"onDragEnd", data})
+            props.send({ type: "onDragEnd", data })
         }
     }
 
@@ -45,34 +46,44 @@ function ResourcePlanningTable(props: any) {
         if (!scrumResourceProject.length) {
             scrumResourceProject = [{ id: "0", resource: "", resource_type: { resource_type: "" } }]
         }
-        
+
         return (
-            <Droppable key={project.project} droppableId={project.project}>
-                {(provided, snapshot) => (
-                    <div
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                    >
-                        {scrumResourceProject?.map((resource: any, index: number) => (
-                            <Draggable key={resource.resource} draggableId={resource.resource} index={index}>
-                                {(provided, snapshot) => (
-                                    <div
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                    >
-                                        <>
-                                            <TableCell>{resource.resource}</TableCell>
-                                            <TableCell>{resource.resource_type.resource_type}</TableCell>
-                                        </>
-                                    </div>
-                                )}
-                            </Draggable>
-                        ))}
-                        {provided.placeholder}
-                    </div>
-                )}
-            </Droppable>
+            <ResourcePlaningDragStyle>
+                <Droppable key={project.project} droppableId={project.project}>
+                    {(provided, snapshot) => (
+                        <div
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                            className="droppables"
+                        >
+                            <TableContainer component={Paper}>
+                                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                    {scrumResourceProject?.map((resource: any, index: number) => (
+                                        <TableBody>
+                                            <TableRow>
+                                                <Draggable key={resource.resource} draggableId={resource.resource} index={index}>
+                                                    {(provided, snapshot) => (
+                                                        <div
+                                                            ref={provided.innerRef}
+                                                            {...provided.draggableProps}
+                                                            {...provided.dragHandleProps}
+                                                            className="draggables"
+                                                        >
+                                                            <TableCell className='cells'>{resource.resource}</TableCell>
+                                                            <TableCell className='cells'>{resource.resource_type.resource_type}</TableCell>
+                                                        </div>
+                                                    )}
+                                                </Draggable>
+                                            </TableRow>
+                                        </TableBody>
+                                    ))}
+                                    {provided.placeholder}
+                                </Table>
+                            </TableContainer>
+                        </div>
+                    )}
+                </Droppable>
+            </ResourcePlaningDragStyle>
         );
     }
 
@@ -107,21 +118,7 @@ function ResourcePlanningTable(props: any) {
                 {projectList.map((project: any) =>
                     <>
                         <h2>{project.project}</h2>
-                        <TableContainer component={Paper}>
-                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Name</TableCell>
-                                        <TableCell>Resource Type</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    <TableRow>
-                                        {props.resourceList && daragableSection(project)}
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+                        {props.resourceList && daragableSection(project)}
                     </>
                 )}
             </DragDropContext>
