@@ -12,7 +12,7 @@ function ResourcePlanning(props: any) {
     );
     const services = useServices(props);
     const [state, send] = useMachine(resourcePlanningMachine, { actions, services, guards })
-    console.log(state)
+
     return (
         <ResourcePlanningTable  {...state.context} send={send} />
     )

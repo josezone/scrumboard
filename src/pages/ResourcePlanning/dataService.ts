@@ -113,7 +113,6 @@ function useInvokeScrumResourceProject(graphQLClient: any) {
 
 function useInvokeRemoveScrumResourceProject(graphQLClient: any) {
     return useMutation((removeScrumResourceProjectId: number) => {
-        console.log("111111111111")
         return graphQLClient.request(gql`
             mutation MyMutation {
                 delete_scrum_resource_project(where: {id: {_eq: "${removeScrumResourceProjectId}"}}) {
@@ -128,7 +127,6 @@ function useInvokeRemoveScrumResourceProject(graphQLClient: any) {
 
 function useInvokeInsertScrumResourceProject(graphQLClient: any) {
     return useMutation(({ projectId, resourceId, scrumId }: { projectId: number, resourceId: number, scrumId: number }) => {
-        console.log("2222222222222")
         return graphQLClient.request(gql`
         mutation MyMutation {
             insert_scrum_resource_project(objects: {project_id: ${projectId}, resource_id: ${resourceId}, scrum_id: ${scrumId}}) {
@@ -143,7 +141,6 @@ function useInvokeInsertScrumResourceProject(graphQLClient: any) {
 
 function useInvokeUpdateScrumResourceProject(graphQLClient: any) {
     return useMutation(({ projectId, itemMoveId }: any) => {
-        console.log("33333333333333")
         return graphQLClient.request(gql`
         mutation MyMutation {
             update_scrum_resource_project(where: {id: {_eq: "${itemMoveId}"}}, _set: {project_id: ${projectId}}) {
