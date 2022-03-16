@@ -76,6 +76,49 @@ const assignScrumResourceProject = assign({
     },
 })
 
+const onDragEnd = assign({
+    scrumResourceProject: (context: any, event: any) => {
+        if (event.data.moveFrom !== "Unassigned" && event.data.moveTo === "Unassigned") {
+            return context.scrumResourceProject.filter((item: any) => item.resource.resource !== event.data.moveItem);
+        }
+        if (event.data.moveFrom !== "Unassigned" && event.data.moveTo !== "Unassigned") {
+            const movableItem = context.scrumResourceProject.filter((item: any) => item.resource.resource === event.data.moveItem)[0];
+            const entryRemoved = context.scrumResourceProject.filter((item: any) => item.resource.resource !== event.data.moveItem);
+            const destinationProject = context.projectList.filter((project: any) => project.project === event.data.moveTo)[0];
+            movableItem.project = destinationProject;
+            return [...entryRemoved, movableItem]
+        }
+        // const destinationProject = context.projectList.filter((project: any) => project.project === event.data.moveTo)[0];
+        // const destinationResource = context.resourceList.filter((resource: any) => resource.resource === event.data.moveItem)[0];
+        // return [...context.scrumResourceProject, { resource: destinationResource, project: destinationProject }];
+    },
+    removeScrumResourceProject: (context: any, event: any) => {
+        if (event.data.moveFrom !== "Unassigned" && event.data.moveTo === "Unassigned") {
+            return context.scrumResourceProject.filter((item: any) => item.resource.resource === event.data.moveItem)[0].id;
+        }
+    },
+    updateScrumResourceProject: (context: any, event: any) => {
+        if (event.data.moveFrom !== "Unassigned" && event.data.moveTo !== "Unassigned") {
+            const movableItemList = context.scrumResourceProject.filter((item: any) => item.resource.resource === event.data.moveItem);
+            const destinationProject = context.projectList.filter((project: any) => project.project === event.data.moveTo);
+            return {
+                itemMoveId: movableItemList[0].id,
+                projectId: destinationProject[0].id
+            }
+        }
+    },
+    insertScrumResourceProject: (context: any, event: any) => {
+        if (event.data.moveFrom === "Unassigned" && event.data.moveTo !== "Unassigned") {
+            const projectId = context.projectList.filter((project: any) => project.project === event.data.moveTo)[0].id;
+            const resourceId = context.resourceList.filter((resource: any) => resource.resource === event.data.moveItem)[0].id;
+            return {
+                projectId,
+                resourceId
+            }
+        }
+    }
+})
+
 export const actions = {
     selectDefaultProjectGroup,
     assignResourceList,
@@ -86,5 +129,6 @@ export const actions = {
     updateDefaultScrum,
     assignResourcePlan,
     assignProjectList,
-    assignScrumResourceProject
+    assignScrumResourceProject,
+    onDragEnd
 }

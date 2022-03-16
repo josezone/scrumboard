@@ -12,7 +12,7 @@ export const resourcePlanningMachine = createMachine<any>({
         scrumSelected: undefined,
         scrumList: undefined,
         resourceList: undefined,
-        scrumResourceProject: undefined
+        scrumResourceProject: undefined,
     },
     on: {
         planLeave: {
@@ -49,6 +49,9 @@ export const resourcePlanningMachine = createMachine<any>({
                 "getInitialData.getProjectGroupList.projectGroupChanged.firstGroup.scrumChanged.groupTwo.getScrumResourceProject",
             ],
         },
+        onDragEnd: {
+            actions: "onDragEnd"
+        }
     },
     states: {
         idle: {

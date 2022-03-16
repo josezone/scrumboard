@@ -95,6 +95,7 @@ function useInvokeScrumResourceProject(graphQLClient: any) {
         return graphQLClient.request(gql`
             query MyQuery {
                 scrum_resource_project(where: {scrum_id: {_eq: ${scrumId}}}) {
+                    id
                     project {
                         id
                         project
