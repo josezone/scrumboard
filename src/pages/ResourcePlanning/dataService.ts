@@ -77,6 +77,40 @@ function useInvokeResourcePlan(graphQLClient: any) {
     });
 }
 
+function useGetProjectList(graphQLClient: any) {
+    return useMutation((projectGroupId: number) => {
+        return graphQLClient.request(gql`
+        query MyQuery {
+                project(where: {project_group_id: {_eq: ${projectGroupId}}}) {
+                    id
+                    project
+                }
+            }
+        `);
+    });
+}
+
+function useInvokeScrumResourceProject(graphQLClient: any) {
+    return useMutation((scrumId) => {
+        return graphQLClient.request(gql`
+            query MyQuery {
+                scrum_resource_project(where: {scrum_id: {_eq: ${scrumId}}}) {
+                    project {
+                        id
+                        project
+                    }
+                    resource {
+                        id
+                        resource
+                    }
+                }
+            }
+
+        `);
+    });
+}
+
+
 function useInvokeCreateResourcePlan(graphQLClient: any) {
     return useMutation((scrumId) => {
         return graphQLClient.request(gql`
@@ -138,10 +172,20 @@ export const useServices = (props: any) => {
         props.graphQLClient
     );
 
+    const { mutateAsync: getProjectList } = useGetProjectList(
+        props.graphQLClient
+    );
+
+    const { mutateAsync: invokeScrumResourceProject } = useInvokeScrumResourceProject(
+        props.graphQLClient
+    );
+
     return {
         invokeResourceList: () => invokeResourceList(),
         invokeGetScrumList: (context: any) => invokeGetScrumList(context.projectGroup.id),
         invokeProjectGroupList: () => invokeProjectGroupList(),
         invokeResourcePlan: (context: any) => invokeResourcePlan(context.scrumSelected.id),
+        getProjectList: (context: any) => getProjectList(context.projectGroup.id),
+        invokeScrumResourceProject: (context: any) => invokeScrumResourceProject(context.scrumSelected.id),
     }
 }

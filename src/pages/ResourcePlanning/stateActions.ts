@@ -64,6 +64,18 @@ const assignResourcePlan = assign({
     },
 })
 
+const assignProjectList = assign({
+    projectList: (context: any, event: any) => {
+        return event.data.project;
+    },
+})
+
+const assignScrumResourceProject = assign({
+    scrumResourceProject: (context: any, event: any) => {
+        return event.data["scrum_resource_project"];
+    },
+})
+
 export const actions = {
     selectDefaultProjectGroup,
     assignResourceList,
@@ -72,5 +84,7 @@ export const actions = {
     updateDefaultProjectGroup,
     selectDefaultScrum,
     updateDefaultScrum,
-    assignResourcePlan
+    assignResourcePlan,
+    assignProjectList,
+    assignScrumResourceProject
 }

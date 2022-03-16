@@ -4,6 +4,16 @@ export const resourcePlanningMachine = createMachine<any>({
     id: "main",
     type: "parallel",
     initial: "idle",
+    context: {
+        projectList: [],
+        resourcePlan: undefined,
+        projectGroup: undefined,
+        projectGroupList: undefined,
+        scrumSelected: undefined,
+        scrumList: undefined,
+        resourceList: undefined,
+        scrumResourceProject: undefined
+    },
     on: {
         planLeave: {
             actions: "assignPlanedLeave",
@@ -27,11 +37,17 @@ export const resourcePlanningMachine = createMachine<any>({
         },
         changeProjectGroup: {
             actions: "updateDefaultProjectGroup",
-            target: "getInitialData.getProjectGroupList.scrumList",
+            target: [
+                "getInitialData.getProjectGroupList.projectGroupChanged.firstGroup.scrumList",
+                "getInitialData.getProjectGroupList.projectGroupChanged.secondGroup.getProjectList",
+            ],
         },
         changeScrum: {
             actions: "updateDefaultScrum",
-            target: "getInitialData.getProjectGroupList.getResourcePlan",
+            target: [
+                "getInitialData.getProjectGroupList.projectGroupChanged.firstGroup.scrumChanged.groupOne.getResourcePlan",
+                "getInitialData.getProjectGroupList.projectGroupChanged.firstGroup.scrumChanged.groupTwo.getScrumResourceProject",
+            ],
         },
     },
     states: {
@@ -88,38 +104,108 @@ export const resourcePlanningMachine = createMachine<any>({
                         defaultProjectGroup: {
                             always: {
                                 actions: "selectDefaultProjectGroup",
-                                target: "scrumList",
+                                target: [
+                                    "projectGroupChanged.firstGroup.scrumList",
+                                    "projectGroupChanged.secondGroup.getProjectList",
+                                ],
                             },
                         },
-                        scrumList: {
-                            invoke: {
-                                id: "scrumList",
-                                src: "invokeGetScrumList",
-                                onDone: {
-                                    actions: "assignScrumList",
-                                    target: "defaultScrum",
+                        projectGroupChanged: {
+                            type: "parallel",
+                            states: {
+                                secondGroup: {
+                                    states: {
+                                        getProjectList: {
+                                            invoke: {
+                                                id: "getProjectList",
+                                                src: "getProjectList",
+                                                onDone: {
+                                                    actions: "assignProjectList",
+                                                    target: "end",
+                                                },
+                                                onError: {
+                                                    target: "end",
+                                                },
+                                            },
+                                        },
+                                        end: {
+                                            type: "final",
+                                        },
+                                    },
                                 },
-                                onError: {
-                                    target: "end",
-                                },
-                            },
-                        },
-                        defaultScrum: {
-                            always: {
-                                actions: "selectDefaultScrum",
-                                target: "getResourcePlan",
-                            },
-                        },
-                        getResourcePlan: {
-                            invoke: {
-                                id: "resourcePlan",
-                                src: "invokeResourcePlan",
-                                onDone: {
-                                    actions: "assignResourcePlan",
-                                    target: "end",
-                                },
-                                onError: {
-                                    target: "end",
+                                firstGroup: {
+                                    states: {
+                                        scrumList: {
+                                            invoke: {
+                                                id: "scrumList",
+                                                src: "invokeGetScrumList",
+                                                onDone: {
+                                                    actions: "assignScrumList",
+                                                    target: "defaultScrum",
+                                                },
+                                                onError: {
+                                                    target: "end",
+                                                },
+                                            },
+                                        },
+                                        defaultScrum: {
+                                            always: {
+                                                actions: "selectDefaultScrum",
+                                                target: [
+                                                    "scrumChanged.groupOne.getResourcePlan",
+                                                    "scrumChanged.groupTwo.getScrumResourceProject",
+                                                ],
+                                            },
+                                        },
+                                        scrumChanged: {
+                                            type: "parallel",
+                                            states: {
+                                                groupTwo: {
+                                                    states: {
+                                                        getScrumResourceProject: {
+                                                            invoke: {
+                                                                id: "getScrumResourceProject",
+                                                                src: "invokeScrumResourceProject",
+                                                                onDone: {
+                                                                    actions: "assignScrumResourceProject",
+                                                                    target: "end",
+                                                                },
+                                                                onError: {
+                                                                    target: "end",
+                                                                },
+                                                            },
+                                                        },
+                                                        end: {
+                                                            type: "final",
+                                                        },
+                                                    },
+                                                },
+                                                groupOne: {
+                                                    states: {
+                                                        getResourcePlan: {
+                                                            invoke: {
+                                                                id: "resourcePlan",
+                                                                src: "invokeResourcePlan",
+                                                                onDone: {
+                                                                    actions: "assignResourcePlan",
+                                                                    target: "end",
+                                                                },
+                                                                onError: {
+                                                                    target: "end",
+                                                                },
+                                                            },
+                                                        },
+                                                        end: {
+                                                            type: "final",
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                        end: {
+                                            type: "final",
+                                        },
+                                    },
                                 },
                             },
                         },
