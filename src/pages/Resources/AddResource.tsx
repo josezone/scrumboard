@@ -1,14 +1,16 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
+
+import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import { Button } from "@mui/material";
-import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+
 import ModalComponent from "../../components/modal/modal";
-import * as yup from "yup";
 import { ModalWrapper, AddResourceWrapper } from "./addResource.style";
 import { ModalActionContainer } from "../../components/modal/modal.style";
 // import { send } from "process";
@@ -21,22 +23,37 @@ const schema = yup
   .required();
 
 function AddResources(props: any) {
-  const { editMode, context } = props;
-  const [resourceType, setResourceType] = useState("");
   const {
     reset,
     handleSubmit,
     formState: { errors },
     control,
+    setValue,
   } = useForm({
     resolver: yupResolver(schema),
   });
 
+  const { editMode = false, context, resourceId } = props;
+
+  const editResource =
+    resourceId && editMode
+      ? context?.resourceList?.find((x: any) => x.id === resourceId)
+      : undefined;
+
+  useEffect(() => {
+    if (editMode) {
+      setValue("resourceType",editResource?.resource_type?.id);
+      setValue("resource", editResource?.resource);
+    } else {
+      setValue("resource", "");
+      setValue("resourceType","");
+    }
+  }, [editMode, editResource, context?.updateResourceModal]);
+
   const onSubmit = (e: any) => {
     handleSubmit((data: any) => {
       reset();
-      e.target.reset();
-      setResourceType("");
+      editMode && (data["resourceId"] = editResource.id);
       props.send({ type: "submit", data: data });
     })(e);
   };
@@ -44,26 +61,27 @@ function AddResources(props: any) {
   const resourceModalToggle = (): void => {
     props.send({ type: "closeModal" });
     reset();
-    setResourceType("");
   };
 
   return (
     <Fragment>
-      <AddResourceWrapper>
-        <Button
-          variant="contained"
-          onClick={() => {
-            props.send({ type: "createResource" });
-          }}
-        >
-          Add Resource
-        </Button>
-      </AddResourceWrapper>
+      {!editMode && (
+        <AddResourceWrapper>
+          <Button
+            variant="contained"
+            onClick={() => {
+              props.send({ type: "createResource" });
+            }}
+          >
+            Add Resource
+          </Button>
+        </AddResourceWrapper>
+      )}
 
       <ModalComponent
-        open={context?.resourceModal}
+        open={editMode ? context?.updateResourceModal : context?.resourceModal}
         handleClose={resourceModalToggle}
-        title={"Add Resource"}
+        title={editMode ? "Update Resource" : "Add Resource"}
       >
         <ModalWrapper>
           <form onSubmit={onSubmit}>
@@ -92,11 +110,6 @@ function AddResources(props: any) {
                 render={({ field }) => (
                   <Select
                     {...field}
-                    value={resourceType}
-                    onChange={(e: any) => {
-                      setResourceType(e.target.value);
-                      field.onChange(e);
-                    }}
                     className="newResource"
                     error={errors.resourceType ? true : false}
                   >
@@ -120,7 +133,7 @@ function AddResources(props: any) {
 
             <ModalActionContainer>
               <Button onClick={resourceModalToggle}>Cancel</Button>
-              <Button type="submit">Create</Button>
+              <Button type="submit">{editMode ? "Update" : "Create"}</Button>
             </ModalActionContainer>
           </form>
         </ModalWrapper>

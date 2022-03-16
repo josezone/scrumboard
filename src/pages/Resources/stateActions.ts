@@ -6,7 +6,7 @@ const assignResourceModalToggle = assign({
   },
 });
 
-const assignResourceUpdateModalToggle = assign({
+const assignUpdateResourceModalToggle = assign({
   updateResourceModal: (context: any, event: any) => {
     return !context.updateResourceModal;
   },
@@ -30,22 +30,37 @@ const assignNewResource = assign({
   },
 });
 
+const assignUpdateResource = assign({
+  updateResource: (context: any, event: any) => {
+    return event.data;
+  },
+});
+
 const assignChangingResource = assign({
   changingResource: (context: any, event: any) => {
     return event.data;
   },
 });
+
 const clearChangingResource = assign({
   changingResource: (context: any, event: any) => {
     return {};
   },
 });
+
+const clearUpdateResource = assign({
+  updateResource: (context: any, event: any) => {
+    return {};
+  },
+});
 export const actions = {
-  assignResourceUpdateModalToggle,
+  assignUpdateResourceModalToggle,
   assignResourceModalToggle,
-  assignResourceTypeList,
   assignChangingResource,
   clearChangingResource,
+  assignResourceTypeList,
+  assignUpdateResource,
+  clearUpdateResource,
   assignResourceList,
   assignNewResource,
 };
