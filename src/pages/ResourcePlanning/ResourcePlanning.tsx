@@ -2,7 +2,8 @@ import { useMachine } from "@xstate/react";
 import ResourcePlanningTable from "../../components/resourcePlanning/ResourcePlaning";
 import { useServices } from "./dataService";
 import { resourcePlanningMachine } from "./resourcePlanningMachine";
-import { actions } from "./stateActions"; 
+import { actions } from "./stateActions";
+import { guards } from "./guardService";
 
 function ResourcePlanning(props: any) {
     props.graphQLClient.setHeader(
@@ -10,9 +11,10 @@ function ResourcePlanning(props: any) {
         "Basic " + localStorage.getItem("data")
     );
     const services = useServices(props);
-    const [state, send] = useMachine(resourcePlanningMachine, { actions, services })
+    const [state, send] = useMachine(resourcePlanningMachine, { actions, services, guards })
+    console.log(state)
     return (
-        <ResourcePlanningTable  {...state.context} send={send}/>
+        <ResourcePlanningTable  {...state.context} send={send} />
     )
 }
 

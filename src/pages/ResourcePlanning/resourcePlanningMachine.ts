@@ -50,8 +50,9 @@ export const resourcePlanningMachine = createMachine<any>({
             ],
         },
         onDragEnd: {
-            actions: "onDragEnd"
-        }
+            actions: "onDragEnd",
+            target: "estimateActions.dragAction.idle",
+        },
     },
     states: {
         idle: {
@@ -222,6 +223,89 @@ export const resourcePlanningMachine = createMachine<any>({
         estimateActions: {
             type: "parallel",
             states: {
+                dragAction: {
+                    states: {
+                        idle: {
+                            always: [
+                                {
+                                    target: "parallelInvoke.removeScrumResourceProject.invokeRemoveScrumResourceProject",
+                                    cond: "removeScrumResourceProjectCond",
+                                },
+                                {
+                                    target: "parallelInvoke.updateScrumResourceProject.invokeUpdateScrumResourceProject",
+                                    cond: "updateScrumResourceProjectCond",
+                                },
+                                {
+                                    target: "parallelInvoke.insertScrumResourceProject.invokeInsertScrumResourceProject",
+                                    cond: "insertScrumResourceProjectCond",
+                                },
+                            ],
+                        },
+                        parallelInvoke: {
+                            type: "parallel",
+                            states: {
+                                removeScrumResourceProject: {
+                                    states: {
+                                        invokeRemoveScrumResourceProject: {
+                                            invoke: {
+                                                id: "invokeRemoveScrumResourceProject",
+                                                src: "invokeRemoveScrumResourceProject",
+                                                onDone: {
+                                                    target: "end",
+                                                },
+                                                onError: {
+                                                    target: "end",
+                                                },
+                                            },
+                                        },
+                                        end: {
+                                            type: "final",
+                                        },
+                                    },
+                                },
+                                updateScrumResourceProject: {
+                                    states: {
+                                        invokeUpdateScrumResourceProject: {
+                                            invoke: {
+                                                id: "invokeUpdateScrumResourceProject",
+                                                src: "invokeUpdateScrumResourceProject",
+                                                onDone: {
+                                                    target: "end",
+                                                },
+                                                onError: {
+                                                    target: "end",
+                                                },
+                                            },
+                                        },
+                                        end: {
+                                            type: "final",
+                                        },
+                                    },
+                                },
+                                insertScrumResourceProject: {
+                                    states: {
+                                        invokeInsertScrumResourceProject: {
+                                            invoke: {
+                                                id: "invokeInsertScrumResourceProject",
+                                                src: "invokeInsertScrumResourceProject",
+                                                onDone: {
+                                                    target:
+                                                        "#main.getInitialData.getProjectGroupList.projectGroupChanged.firstGroup.scrumChanged.groupTwo.getScrumResourceProject",
+                                                },
+                                                onError: {
+                                                    target: "end",
+                                                },
+                                            },
+                                        },
+                                        end: {
+                                            type: "final",
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
                 initPlannedLeave: {
                     initial: "createPlannedLeave",
                     states: {

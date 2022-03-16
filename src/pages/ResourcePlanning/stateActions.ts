@@ -94,27 +94,30 @@ const onDragEnd = assign({
     },
     removeScrumResourceProject: (context: any, event: any) => {
         if (event.data.moveFrom !== "Unassigned" && event.data.moveTo === "Unassigned") {
-            return context.scrumResourceProject.filter((item: any) => item.resource.resource === event.data.moveItem)[0].id;
+            const result = context.scrumResourceProject.filter((item: any) => item.resource.resource === event.data.moveItem)[0].id;
+            return result;
         }
     },
     updateScrumResourceProject: (context: any, event: any) => {
         if (event.data.moveFrom !== "Unassigned" && event.data.moveTo !== "Unassigned") {
             const movableItemList = context.scrumResourceProject.filter((item: any) => item.resource.resource === event.data.moveItem);
             const destinationProject = context.projectList.filter((project: any) => project.project === event.data.moveTo);
-            return {
+            const result = {
                 itemMoveId: movableItemList[0].id,
                 projectId: destinationProject[0].id
             }
+            return result;
         }
     },
     insertScrumResourceProject: (context: any, event: any) => {
         if (event.data.moveFrom === "Unassigned" && event.data.moveTo !== "Unassigned") {
             const projectId = context.projectList.filter((project: any) => project.project === event.data.moveTo)[0].id;
             const resourceId = context.resourceList.filter((resource: any) => resource.resource === event.data.moveItem)[0].id;
-            return {
+            const result = {
                 projectId,
                 resourceId
             }
+            return result;
         }
     }
 })

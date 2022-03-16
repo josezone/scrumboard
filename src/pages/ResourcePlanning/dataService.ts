@@ -111,6 +111,50 @@ function useInvokeScrumResourceProject(graphQLClient: any) {
     });
 }
 
+function useInvokeRemoveScrumResourceProject(graphQLClient: any) {
+    return useMutation((removeScrumResourceProjectId: number) => {
+        console.log("111111111111")
+        return graphQLClient.request(gql`
+            mutation MyMutation {
+                delete_scrum_resource_project(where: {id: {_eq: "${removeScrumResourceProjectId}"}}) {
+                    returning {
+                        id
+                    }
+                }
+            }
+        `);
+    });
+}
+
+function useInvokeInsertScrumResourceProject(graphQLClient: any) {
+    return useMutation(({ projectId, resourceId, scrumId }: { projectId: number, resourceId: number, scrumId: number }) => {
+        console.log("2222222222222")
+        return graphQLClient.request(gql`
+        mutation MyMutation {
+            insert_scrum_resource_project(objects: {project_id: ${projectId}, resource_id: ${resourceId}, scrum_id: ${scrumId}}) {
+                    returning {
+                        id
+                    }
+                }
+            }
+        `);
+    });
+}
+
+function useInvokeUpdateScrumResourceProject(graphQLClient: any) {
+    return useMutation(({ projectId, itemMoveId }: any) => {
+        console.log("33333333333333")
+        return graphQLClient.request(gql`
+        mutation MyMutation {
+            update_scrum_resource_project(where: {id: {_eq: "${itemMoveId}"}}, _set: {project_id: ${projectId}}) {
+                    returning {
+                        id
+                    }
+                }
+            }
+        `);
+    });
+}
 
 function useInvokeCreateResourcePlan(graphQLClient: any) {
     return useMutation((scrumId) => {
@@ -181,6 +225,18 @@ export const useServices = (props: any) => {
         props.graphQLClient
     );
 
+    const { mutateAsync: invokeRemoveScrumResourceProject } = useInvokeRemoveScrumResourceProject(
+        props.graphQLClient
+    );
+
+    const { mutateAsync: invokeInsertScrumResourceProject } = useInvokeInsertScrumResourceProject(
+        props.graphQLClient
+    );
+
+    const { mutateAsync: invokeUpdateScrumResourceProject } = useInvokeUpdateScrumResourceProject(
+        props.graphQLClient
+    );
+
     return {
         invokeResourceList: () => invokeResourceList(),
         invokeGetScrumList: (context: any) => invokeGetScrumList(context.projectGroup.id),
@@ -188,5 +244,15 @@ export const useServices = (props: any) => {
         invokeResourcePlan: (context: any) => invokeResourcePlan(context.scrumSelected.id),
         getProjectList: (context: any) => getProjectList(context.projectGroup.id),
         invokeScrumResourceProject: (context: any) => invokeScrumResourceProject(context.scrumSelected.id),
+        invokeRemoveScrumResourceProject: (context: any) => invokeRemoveScrumResourceProject(context.removeScrumResourceProject),
+        invokeInsertScrumResourceProject: (context: any) => invokeInsertScrumResourceProject({
+            projectId: context.insertScrumResourceProject.projectId,
+            resourceId: context.insertScrumResourceProject.resourceId,
+            scrumId: context.scrumSelected.id
+        }),
+        invokeUpdateScrumResourceProject: (context: any) => invokeUpdateScrumResourceProject({
+            projectId: context.updateScrumResourceProject.projectId,
+            itemMoveId: context.updateScrumResourceProject.itemMoveId,
+        }),
     }
 }
