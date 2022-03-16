@@ -5,7 +5,7 @@ import AddResources from "./AddResource";
 function ResourceList(props: any) {
   return (
     <Container>
-        <AddResources {...props}></AddResources>
+      <AddResources {...props}></AddResources>
       <ResourceTable {...props}></ResourceTable>
     </Container>
   );
