@@ -76,6 +76,24 @@ const assignScrumResourceProject = assign({
     },
 })
 
+const assignPlanedLeavePopupEnable = assign({
+    assignPlanedLeavePopup: (context: any, event: any) => {
+        return true;
+    },
+})
+
+const assignPlanedLeavePopupDisable = assign({
+    assignPlanedLeavePopup: (context: any, event: any) => {
+        return false;
+    },
+})
+
+const assignPlannedLeave = assign({
+    plannedLeaveData: (context: any, event: any) => {
+        console.log(event.data)
+    },
+})
+
 const onDragEnd = assign({
     scrumResourceProject: (context: any, event: any) => {
         if (event.data.moveFrom !== "Unassigned" && event.data.moveTo === "Unassigned") {
@@ -133,5 +151,8 @@ export const actions = {
     assignResourcePlan,
     assignProjectList,
     assignScrumResourceProject,
-    onDragEnd
+    onDragEnd,
+    assignPlanedLeavePopupEnable,
+    assignPlanedLeavePopupDisable,
+    assignPlannedLeave
 }

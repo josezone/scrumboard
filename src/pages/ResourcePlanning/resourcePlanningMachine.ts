@@ -13,11 +13,16 @@ export const resourcePlanningMachine = createMachine<any>({
         scrumList: undefined,
         resourceList: undefined,
         scrumResourceProject: undefined,
+        removeScrumResourceProject: undefined,
+        updateScrumResourceProject: undefined,
+        insertScrumResourceProject: undefined,
+        assignPlanedLeavePopup: false,
+        plannedLeaveData: undefined,
     },
     on: {
         planLeave: {
-            actions: "assignPlanedLeave",
-            target: "estimateActions.initPlannedLeave",
+            actions: "assignPlanedLeavePopupEnable",
+            target: "estimateActions.initPlannedLeave.addDataToPlannedLeave",
         },
         planHalfLeave: {
             actions: "assignPlanedHalfLeave",
@@ -52,6 +57,9 @@ export const resourcePlanningMachine = createMachine<any>({
         onDragEnd: {
             actions: "onDragEnd",
             target: "estimateActions.dragAction.idle",
+        },
+        onPlanedLeavePopupDisable: {
+            actions: "assignPlanedLeavePopupDisable",
         },
     },
     states: {
@@ -228,15 +236,18 @@ export const resourcePlanningMachine = createMachine<any>({
                         idle: {
                             always: [
                                 {
-                                    target: "parallelInvoke.removeScrumResourceProject.invokeRemoveScrumResourceProject",
+                                    target:
+                                        "parallelInvoke.removeScrumResourceProject.invokeRemoveScrumResourceProject",
                                     cond: "removeScrumResourceProjectCond",
                                 },
                                 {
-                                    target: "parallelInvoke.updateScrumResourceProject.invokeUpdateScrumResourceProject",
+                                    target:
+                                        "parallelInvoke.updateScrumResourceProject.invokeUpdateScrumResourceProject",
                                     cond: "updateScrumResourceProjectCond",
                                 },
                                 {
-                                    target: "parallelInvoke.insertScrumResourceProject.invokeInsertScrumResourceProject",
+                                    target:
+                                        "parallelInvoke.insertScrumResourceProject.invokeInsertScrumResourceProject",
                                     cond: "insertScrumResourceProjectCond",
                                 },
                             ],
@@ -307,14 +318,24 @@ export const resourcePlanningMachine = createMachine<any>({
                     },
                 },
                 initPlannedLeave: {
-                    initial: "createPlannedLeave",
                     states: {
+                        addDataToPlannedLeave: {
+                            on: {
+                                addDataToPlannedLeave: {
+                                    actions: "assignPlannedLeave",
+                                    target: "createPlannedLeave",
+                                },
+                            },
+                        },
                         createPlannedLeave: {
                             invoke: {
                                 id: "createPlannedLeave",
                                 src: "invokePlannedLeave",
                                 onDone: {
-                                    actions: "assignPlannedLeave",
+                                    actions: [
+                                        "assignPlannedLeave",
+                                        "assignPlanedLeavePopupDisable",
+                                    ],
                                     target: "end",
                                 },
                                 onError: {

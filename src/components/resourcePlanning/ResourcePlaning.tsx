@@ -1,3 +1,7 @@
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import StaticDatePicker from "@mui/lab/StaticDatePicker";
+import { Button } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
 import Select from '@mui/material/Select';
@@ -5,9 +9,11 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import TextField from "@mui/material/TextField";
+import isWeekend from "date-fns/isWeekend";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import ModalComponent from '../modal/modal';
 import { ResourcePlaningDragStyle } from './resourcePlaning.style';
 
 function getDate(scrum: string) {
@@ -47,6 +53,25 @@ function ResourcePlanningTable(props: any) {
             scrumResourceProject = [{ id: "0", resource: "", resource_type: { resource_type: "" } }]
         }
 
+        const openPlannedLeavePopup = () => {
+            props.send({ type: "planLeave" })
+        }
+
+        const closePlannedLeavePopup = () => {
+            props.send({ type: "onPlanedLeavePopupDisable" })
+        }
+
+        const addPlannedLeave = (project: any, resource: any) => (newValue: any) => {
+            props.send({
+                type: "addDataToPlannedLeave",
+                data: {
+                    leaveDate: newValue,
+                    resource: resource.id,
+                    scrumId: props.scrumSelected.id,
+                    projectId: project
+                }
+            });
+        }
         return (
             <ResourcePlaningDragStyle>
                 <Droppable key={project.project} droppableId={project.project}>
@@ -71,6 +96,34 @@ function ResourcePlanningTable(props: any) {
                                                         >
                                                             <TableCell className='cells'>{resource.resource}</TableCell>
                                                             <TableCell className='cells'>{resource.resource_type.resource_type}</TableCell>
+                                                            <TableCell className='cells'>
+                                                                <TableRow>
+                                                                    <TableCell className='cells'>
+                                                                        {resource.resource && <div>
+                                                                            <Button variant="outlined" onClick={openPlannedLeavePopup}>Add Planed Leave</Button>
+                                                                            <ModalComponent
+                                                                                open={props.assignPlanedLeavePopup}
+                                                                                handleClose={handlePlannedLeaveModalClose}
+                                                                                title="PlannedLeave"
+                                                                            >
+                                                                                <>
+                                                                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                                                        <StaticDatePicker
+                                                                                            orientation="landscape"
+                                                                                            openTo="day"
+                                                                                            value={props.scrumCreateData}
+                                                                                            shouldDisableDate={isWeekend}
+                                                                                            onChange={addPlannedLeave(project, resource)}
+                                                                                            renderInput={(params) => <TextField {...params} />}
+                                                                                        />
+                                                                                    </LocalizationProvider>
+                                                                                    <Button variant="outlined" onClick={closePlannedLeavePopup}>Cancel</Button>
+                                                                                </>
+                                                                            </ModalComponent>
+                                                                        </div>}
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            </TableCell>
                                                         </div>
                                                     )}
                                                 </Draggable>
@@ -96,6 +149,10 @@ function ResourcePlanningTable(props: any) {
         const selectedScrum = props.scrumList.filter((scrum: any) => scrum.id === event.target.value)[0];
         props.send({ type: "changeScrum", data: selectedScrum });
     };
+
+    const handlePlannedLeaveModalClose = () => {
+
+    }
 
     const projectList = [...props.projectList, { id: null, project: "Unassigned" }];
     return (
