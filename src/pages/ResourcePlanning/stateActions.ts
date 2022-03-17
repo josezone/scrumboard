@@ -95,7 +95,6 @@ const assignPlanedLeavePopupDisable = assign({
 
 const assignPlannedLeave = assign({
     plannedLeaveData: (context: any, event: any) => {
-        console.log(event.data)
         return event.data
     },
 })

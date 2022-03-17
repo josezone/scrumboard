@@ -8,9 +8,11 @@ import StaticDatePicker from "@mui/lab/StaticDatePicker";
 import TextField from "@mui/material/TextField";
 import isWeekend from "date-fns/isWeekend";
 import { initPlannedLeaveData } from '../../constants/constants';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import { PlaningCellStyle } from './planniingCell.style';
 
-
-function ModalChild(props: any) {
+function LocalCalendar(props: any) {
     return (
         <>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -24,6 +26,7 @@ function ModalChild(props: any) {
                     minDate={props.minDate}
                     maxDate={props.maxDate}
                     showToolbar={false}
+                    allowSameDateSelection={true}
                 />
             </LocalizationProvider>
             <Button variant="outlined" onClick={props.closePlannedLeavePopup}>Cancel</Button>
@@ -47,33 +50,57 @@ function PlanningCell(props: any) {
                 leaveDate: newValue,
                 resource: resource.id,
                 scrumId: props.scrumSelected.id,
-                projectId: project
+                projectId: project.id
             }
         });
     }
-    const projectmodal: any = { data: props.project, enableProps: true }
 
+    const halfDayClicked = (planId: number, currentHalfDayVal: boolean) => () => {
+        console.log(planId, currentHalfDayVal)
+    }
+
+    const leaveTakenClicked = (planId: number, currentLeaveTakenVal: boolean) => () => {
+        console.log(planId, currentLeaveTakenVal)
+    }
+
+    const projectmodal: any = { data: props.project, enableProps: true }
+    const resourcePlan = props.resourcePlan?.filter((plan: any) => plan.resource.id === props.resource.id);
     return (
-        <TableRow>
-            <TableCell className='cells'>
-                {props.resource.resource && <div>
-                    <Button variant="outlined" onClick={openPlannedLeavePopup(props.resource.resource)}>Add Planed Leave</Button>
-                    <ModalComponent
-                        open={props.assignPlanedLeavePopup[props.resource.resource]}
-                        handleClose={closePlannedLeavePopup}
-                        title="PlannedLeave"
-                        componentsProps={projectmodal}
-                    >
-                        <ModalChild resource={props.resource}
-                            addPlannedLeave={addPlannedLeave}
-                            closePlannedLeavePopup={closePlannedLeavePopup}
-                            leaveDate={props.plannedLeaveData?.leaveDate}
-                            minDate={initPlannedLeaveData.leaveDate}
-                            maxDate={Date.now() + (45 * 24 * 60 * 60 * 1000)} />
-                    </ModalComponent>
-                </div>}
-            </TableCell>
-        </TableRow>
+        <PlaningCellStyle>
+            <div className="container">
+                <div className='sectionBegin'>
+                    {props.resource.resource && <div>
+                        <Button variant="outlined" onClick={openPlannedLeavePopup(props.resource.resource)}>Add Planed Leave</Button>
+                        <ModalComponent
+                            open={props.assignPlanedLeavePopup[props.resource.resource]}
+                            handleClose={closePlannedLeavePopup}
+                            title="PlannedLeave"
+                            componentsProps={projectmodal}
+                        >
+                            <LocalCalendar resource={props.resource}
+                                addPlannedLeave={addPlannedLeave}
+                                closePlannedLeavePopup={closePlannedLeavePopup}
+                                leaveDate={props.plannedLeaveData?.leaveDate}
+                                minDate={initPlannedLeaveData.leaveDate}
+                                maxDate={Date.now() + (45 * 24 * 60 * 60 * 1000)} />
+                        </ModalComponent>
+                    </div>}
+                </div>
+                {resourcePlan?.map((plan: any) => (
+                    <div className='sectionNext'>
+                        <div className="plannedDate">
+                            {plan.planned_leave}
+                        </div>
+                        <div>
+                            <FormControlLabel control={<Checkbox checked={plan.planned_half_day} onChange={halfDayClicked(plan.id, plan.planned_half_day)} />} label="Half Day" />
+                        </div>
+                        <div>
+                            <FormControlLabel control={<Checkbox checked={plan.leave_taken} onChange={leaveTakenClicked(plan.id, plan.leave_taken)} />} label="Leave Taken" />
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </PlaningCellStyle>
     )
 }
 

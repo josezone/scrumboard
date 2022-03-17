@@ -2,10 +2,17 @@ import styled from "styled-components";
 
 export const ResourcePlaningDragStyle = styled.div`
  width:100%;
- .draggables{
-     display:flex;
+ display:flex;
+ @media (max-width: 1560px) {
+    .cells{
+        flex-grow:1;
+        width:calc(100vw/4)
+    }
  }
- .cells{
-     flex-grow:1;
- }
+ @media (min-width: 1561px) {
+    .cells{
+        flex-grow:1;
+        width:calc(100vw/3.2)
+    }
+}
 `;

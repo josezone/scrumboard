@@ -337,7 +337,6 @@ export const resourcePlanningMachine = createMachine<any>({
                                 id: "createPlannedLeave",
                                 src: "invokePlannedLeave",
                                 onDone: {
-                                    actions: "assignPlanedLeavePopupDisable",
                                     target: "end",
                                 },
                                 onError: {
