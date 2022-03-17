@@ -4,14 +4,9 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useRef, useState } from "react";
 
 function ReportComponent(props: any) {
-  console.log(">>>>>>>>", props);
   const contentRef = useRef<any>(null);
   const [btnText, setBtnText] = useState<string>("Copy");
   const { reportItems, title } = props;
-  // const issueToReport = props?.dailyReport?.filter(
-  //   (issue: any) => issue.report
-  // );
-  // const items =
   const byProject: any = groupArray(
     reportItems,
     "ticket.sprint.project.project",

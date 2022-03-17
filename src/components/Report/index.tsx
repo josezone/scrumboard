@@ -10,7 +10,6 @@ interface IReport {
 }
 
 const DailyReport: FC<IReport> = (props) => {
-  console.log(props);
   const { title, reportItems } = props;
 
   return (
