@@ -1,5 +1,5 @@
 import { useMachine } from "@xstate/react";
-import DailyReportComponent from "../../components/dailyReport";
+import DailyReportComponent from "../../components/Report";
 import { dailyReportMachine } from "./DailyReportMachine";
 import { useInvokeGetDailyReport } from "./dataService";
 import { actions } from "./stateActions";
@@ -9,7 +9,7 @@ function DailyReport(props: any) {
     "Authorization",
     "Basic " + localStorage.getItem("data")
   );
-  
+
   const { mutateAsync: invokeGetDailyReport } = useInvokeGetDailyReport(
     props.graphQLClient
   );
@@ -21,7 +21,17 @@ function DailyReport(props: any) {
     },
   });
 
-  return <DailyReportComponent {...state.context}/>;
+  const dailyReportTitle = `Daily Report for Scrum: ${
+    state?.context?.scrumName?.split("T")[0]
+  }`;
+
+  return (
+    <DailyReportComponent
+      // {...state.context}
+      reportItems={state.context.dailyReport}
+      title={dailyReportTitle}
+    />
+  );
 }
 
 export default DailyReport;
