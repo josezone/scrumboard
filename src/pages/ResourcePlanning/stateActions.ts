@@ -1,4 +1,5 @@
 import { assign } from "xstate";
+import { initPlannedLeaveData } from "../../constants/constants";
 
 const assignResourceList = assign({
     resourceList: (context: any, event: any) => {
@@ -78,8 +79,12 @@ const assignScrumResourceProject = assign({
 
 const assignPlanedLeavePopupEnable = assign({
     assignPlanedLeavePopup: (context: any, event: any) => {
-        return true;
+        return {
+            ...context.assignPlanedLeavePopup,
+            [event.data]: true
+        };
     },
+    plannedLeaveData: () => initPlannedLeaveData
 })
 
 const assignPlanedLeavePopupDisable = assign({
@@ -91,6 +96,7 @@ const assignPlanedLeavePopupDisable = assign({
 const assignPlannedLeave = assign({
     plannedLeaveData: (context: any, event: any) => {
         console.log(event.data)
+        return event.data
     },
 })
 
