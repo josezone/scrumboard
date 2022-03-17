@@ -1,4 +1,5 @@
 import { createMachine } from "xstate";
+import { initPlannedLeaveData } from "../../constants/constants";
 
 export const resourcePlanningMachine = createMachine<any>({
     id: "main",
@@ -17,7 +18,7 @@ export const resourcePlanningMachine = createMachine<any>({
         updateScrumResourceProject: undefined,
         insertScrumResourceProject: undefined,
         assignPlanedLeavePopup: false,
-        plannedLeaveData: undefined,
+        plannedLeaveData: initPlannedLeaveData,
     },
     on: {
         planLeave: {
@@ -60,6 +61,7 @@ export const resourcePlanningMachine = createMachine<any>({
         },
         onPlanedLeavePopupDisable: {
             actions: "assignPlanedLeavePopupDisable",
+            target: "estimateActions.initPlannedLeave.end",
         },
     },
     states: {
@@ -322,7 +324,10 @@ export const resourcePlanningMachine = createMachine<any>({
                         addDataToPlannedLeave: {
                             on: {
                                 addDataToPlannedLeave: {
-                                    actions: "assignPlannedLeave",
+                                    actions: [
+                                        "assignPlannedLeave",
+                                        "assignPlanedLeavePopupDisable",
+                                    ],
                                     target: "createPlannedLeave",
                                 },
                             },
@@ -332,10 +337,7 @@ export const resourcePlanningMachine = createMachine<any>({
                                 id: "createPlannedLeave",
                                 src: "invokePlannedLeave",
                                 onDone: {
-                                    actions: [
-                                        "assignPlannedLeave",
-                                        "assignPlanedLeavePopupDisable",
-                                    ],
+                                    actions: "assignPlanedLeavePopupDisable",
                                     target: "end",
                                 },
                                 onError: {

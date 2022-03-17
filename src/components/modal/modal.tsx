@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { cloneElement, FC } from 'react';
 
 import Backdrop from '@mui/material/Backdrop';
 import Modal from '@mui/material/Modal';
@@ -8,12 +8,12 @@ import { ModalStyleWrapper, ModalContentStyle } from "./modal.style";
 
 interface IModalComponent extends ModalProps{
     handleClose: () => void,
-    title: string
+    title: string,
+    componentsProps?: any
   }
 
  const ModalComponent: FC<IModalComponent> =  (props) => {
-    const { children, title, handleClose, ...rest  } = props;
-
+    const { children, title, handleClose, componentsProps, ...rest  } = props;
     return (
         <ModalStyleWrapper>
             <Modal
@@ -32,7 +32,7 @@ interface IModalComponent extends ModalProps{
                         <Typography id="modal-modal-title" variant="h6" component="h2">{title}</Typography>
                         </div>
                       
-                        {children}
+                        {cloneElement(children, { modalProps:  componentsProps?.data})}
                     </ModalContentStyle>
         
             </Modal>
