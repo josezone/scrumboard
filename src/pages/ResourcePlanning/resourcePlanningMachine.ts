@@ -24,8 +24,13 @@ export const resourcePlanningMachine = createMachine<any>({
         assignUnplanedLeavePopup: false,
         unplannedLeaveData: undefined,
         halfUnplannedData: undefined,
+        storyPointUpdateData: undefined,
     },
     on: {
+        updateStoryPoint: {
+            actions: "assignUpdateStoryPoint",
+            target: "estimateActions.alterStoryPoint.invokeAlterStoryPoint"
+        },
         planLeave: {
             actions: "assignPlanedLeavePopupEnable",
             target: "estimateActions.initPlannedLeave.addDataToPlannedLeave",
@@ -242,6 +247,25 @@ export const resourcePlanningMachine = createMachine<any>({
         estimateActions: {
             type: "parallel",
             states: {
+                alterStoryPoint: {
+                    states: {
+                        invokeAlterStoryPoint: {
+                            invoke: {
+                                id: "invokeAlterStoryPoint",
+                                src: "invokeAlterStoryPoint",
+                                onDone: {
+                                    target: "end",
+                                },
+                                onError: {
+                                    target: "end",
+                                },
+                            },
+                        },
+                        end: {
+                            type: "final",
+                        },
+                    }
+                },
                 dragAction: {
                     states: {
                         idle: {

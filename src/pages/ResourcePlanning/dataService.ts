@@ -96,6 +96,7 @@ function useInvokeScrumResourceProject(graphQLClient: any) {
             query MyQuery {
                 scrum_resource_project(where: {scrum_id: {_eq: ${scrumId}}}) {
                     id
+                    story
                     project {
                         id
                         project
@@ -223,6 +224,19 @@ function useInvokeLeaveTaken(graphQLClient: any) {
     });
 }
 
+function useInvokeAlterStoryPoint(graphQLClient: any) {
+    return useMutation(({ storyPoint, id }: any) => {
+        return graphQLClient.request(gql`
+        mutation MyMutation {
+            update_scrum_resource_project(where: {id: {_eq: "${id}"}}, _set: {story: ${storyPoint}}) {
+                    returning {
+                        id
+                    }
+                }
+            }
+        `);
+    });
+}
 
 export const useServices = (props: any) => {
 
@@ -265,7 +279,7 @@ export const useServices = (props: any) => {
         props.graphQLClient
     );
 
-    const { mutateAsync: invokeHalfUnplannedLeave } =useInvokeHalfUnplannedLeave(
+    const { mutateAsync: invokeHalfUnplannedLeave } = useInvokeHalfUnplannedLeave(
         props.graphQLClient
     );
 
@@ -278,6 +292,10 @@ export const useServices = (props: any) => {
     );
 
     const { mutateAsync: invokeLeaveTaken } = useInvokeLeaveTaken(
+        props.graphQLClient
+    );
+
+    const { mutateAsync: invokeAlterStoryPoint } = useInvokeAlterStoryPoint(
         props.graphQLClient
     );
 
@@ -301,7 +319,8 @@ export const useServices = (props: any) => {
         invokePlannedLeave: (context: any) => invokePlannedLeave({ ...context.plannedLeaveData }),
         invokeUnplannedLeave: (context: any) => invokeUnplannedLeave({ ...context.unplannedLeaveData }),
         invokeHalfPlannedLeave: (context: any) => invokeHalfPlannedLeave({ ...context.halfPlanData }),
-        invokeHalfUnplannedLeave: (context: any) =>  invokeHalfUnplannedLeave({ ...context.halfUnplannedData }),
+        invokeHalfUnplannedLeave: (context: any) => invokeHalfUnplannedLeave({ ...context.halfUnplannedData }),
         invokeLeaveTaken: (context: any) => invokeLeaveTaken({ ...context.leaveTakenData }),
+        invokeAlterStoryPoint: (context: any) => invokeAlterStoryPoint({ ...context.storyPointUpdateData }),
     }
 }

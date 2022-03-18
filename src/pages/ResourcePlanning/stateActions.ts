@@ -164,6 +164,12 @@ const assignLeaveTaken = assign({
     }
 })
 
+const assignUpdateStoryPoint = assign({
+    storyPointUpdateData: (context: any, event: any) => {
+        return event.data
+    },
+})
+
 const onDragEnd = assign({
     scrumResourceProject: (context: any, event: any) => {
         if (event.data.moveFrom !== "Unassigned" && event.data.moveTo === "Unassigned") {
@@ -230,5 +236,6 @@ export const actions = {
     assignEmergencyLeavePopupEnable,
     assignUnplannedLeavePopupDisable,
     assignUnplannedLeave,
-    assignEmergencyHalfLeave
+    assignEmergencyHalfLeave,
+    assignUpdateStoryPoint
 }
