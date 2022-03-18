@@ -11,6 +11,14 @@ export const estimateMachine = createMachine<any>({
     estimateDate: undefined,
     selectedEstimate: undefined,
     updatedPoint: undefined,
+    projectGroupList: undefined,
+    selectedProjectGroup: undefined,
+  },
+  on: {
+    changeProjectGroup: {
+      actions: "updateProjectGroup",
+      target: "home.groupList.ticketList.getTicketList",
+    },
   },
   states: {
     home: {
@@ -27,8 +35,27 @@ export const estimateMachine = createMachine<any>({
           type: "parallel",
           states: {
             ticketList: {
-              initial: "getTicketList",
+              initial: "getProjectGroupList",
               states: {
+                getProjectGroupList: {
+                  invoke: {
+                    id: "getProjectGroupList",
+                    src: "invokeGetProjectGroupList",
+                    onDone: {
+                      actions: "assignProjectGroupList",
+                      target: "setDefaultProjectGroup",
+                    },
+                    onError: {
+                      target: "end",
+                    },
+                  },
+                },
+                setDefaultProjectGroup: {
+                  always: {
+                    actions: "assignDefaultProjectGroup",
+                    target: "getTicketList",
+                  },
+                },
                 getTicketList: {
                   invoke: {
                     id: "getTicketList",
