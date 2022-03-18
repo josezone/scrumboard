@@ -167,10 +167,31 @@ function useInvokePlannedLeave(graphQLClient: any) {
     });
 }
 
-function useInvokeCreateResourcePlan(graphQLClient: any) {
-    return useMutation((scrumId) => {
+function useInvokeUnplannedLeave(graphQLClient: any) {
+    return useMutation(({ leaveDate, resource, scrumId }: any) => {
         return graphQLClient.request(gql`
-                `);
+        mutation MyMutation {
+            insert_resource_plan(objects: {unplanned_leave: "${leaveDate.toISOString()}", user_id: ${resource}, scrum_id: ${scrumId}}) {
+                    returning {
+                        id
+                    }
+                }
+            }
+        `);
+    });
+}
+
+function useInvokeHalfUnplannedLeave(graphQLClient: any) {
+    return useMutation(({ planId, val }: any) => {
+        return graphQLClient.request(gql`
+        mutation MyMutation {
+            update_resource_plan(where: {id: {_eq: "${planId}"}}, _set: {unplanned_half_day: ${val}}) {
+                    returning {
+                        id
+                    }
+                }
+            }
+        `);
     });
 }
 
@@ -199,20 +220,6 @@ function useInvokeLeaveTaken(graphQLClient: any) {
                 }
             }
         `);
-    });
-}
-
-function useInvokeUnplannedLeave(graphQLClient: any) {
-    return useMutation(() => {
-        return graphQLClient.request(gql`
-              `);
-    });
-}
-
-function useInvokeHalfUnplannedLeave(graphQLClient: any) {
-    return useMutation(() => {
-        return graphQLClient.request(gql`
-              `);
     });
 }
 
@@ -254,6 +261,14 @@ export const useServices = (props: any) => {
         props.graphQLClient
     );
 
+    const { mutateAsync: invokeUnplannedLeave } = useInvokeUnplannedLeave(
+        props.graphQLClient
+    );
+
+    const { mutateAsync: invokeHalfUnplannedLeave } =useInvokeHalfUnplannedLeave(
+        props.graphQLClient
+    );
+
     const { mutateAsync: invokeUpdateScrumResourceProject } = useInvokeUpdateScrumResourceProject(
         props.graphQLClient
     );
@@ -284,7 +299,9 @@ export const useServices = (props: any) => {
             itemMoveId: context.updateScrumResourceProject.itemMoveId,
         }),
         invokePlannedLeave: (context: any) => invokePlannedLeave({ ...context.plannedLeaveData }),
+        invokeUnplannedLeave: (context: any) => invokeUnplannedLeave({ ...context.unplannedLeaveData }),
         invokeHalfPlannedLeave: (context: any) => invokeHalfPlannedLeave({ ...context.halfPlanData }),
+        invokeHalfUnplannedLeave: (context: any) =>  invokeHalfUnplannedLeave({ ...context.halfUnplannedData }),
         invokeLeaveTaken: (context: any) => invokeLeaveTaken({ ...context.leaveTakenData }),
     }
 }

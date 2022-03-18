@@ -8,16 +8,27 @@ import LocalCalendar from './localCalendar';
 
 function NewCell(props: any) {
     const openEmergencyLeavePopup = (resource: any) => () => {
+        props.send({ type: "emergencyLeave", data: resource });
     }
 
     const closeEmergencyLeavePopup = () => {
+        props.send({ type: "onUnplanedLeavePopupDisable" });
     }
 
-    const addEmergencyLeave = () => {
+    const addEmergencyLeave = (project: any, resource: any) => (newValue: any) => {
+        props.send({
+            type: "addDataToUnplannedLeave",
+            data: {
+                leaveDate: newValue,
+                resource: resource.id,
+                scrumId: props.scrumSelected.id,
+                projectId: project.id
+            }
+        });
     }
 
-    const halfDayClicked  = (planId: number, currentHalfDayVal: boolean) => () => {
-
+    const halfDayClicked = (planId: number, currentHalfDayVal: boolean) => () => {
+        props.send({ type: "emergencyHalfLeave", data: { planId, val: !currentHalfDayVal } });
     }
 
 
@@ -28,9 +39,9 @@ function NewCell(props: any) {
             <div className="container">
                 <div className='sectionBegin'>
                     {props.resource.resource && <div>
-                        <Button variant="outlined" onClick={openEmergencyLeavePopup(props.resource.resource)}>Add Emergency Leave</Button>
+                        <Button variant="outlined" onClick={openEmergencyLeavePopup(props.resource.resource)}>Add Unplaned Leave</Button>
                         <ModalComponent
-                            open={props.assignEmergencyLeavePopup && props.assignEmergencyLeavePopup[props.resource.resource]}
+                            open={props.assignUnplanedLeavePopup && props.assignUnplanedLeavePopup[props.resource.resource]}
                             handleClose={closeEmergencyLeavePopup}
                             title="PlannedLeave"
                             componentsProps={projectmodal}
