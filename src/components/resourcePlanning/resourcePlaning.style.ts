@@ -6,13 +6,13 @@ export const ResourcePlaningDragStyle = styled.div`
  @media (max-width: 1560px) {
     .cells{
         flex-grow:1;
-        width:calc(100vw/4)
+        width:calc(100vw/5)
     }
  }
  @media (min-width: 1561px) {
     .cells{
         flex-grow:1;
-        width:calc(100vw/3.2)
+        width:calc(100vw/4.4)
     }
 }
 `;

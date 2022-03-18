@@ -1,38 +1,10 @@
 import { Button } from '@mui/material';
-import TableCell from '@mui/material/TableCell';
-import TableRow from '@mui/material/TableRow';
 import ModalComponent from '../modal/modal';
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import StaticDatePicker from "@mui/lab/StaticDatePicker";
-import TextField from "@mui/material/TextField";
-import isWeekend from "date-fns/isWeekend";
 import { initPlannedLeaveData } from '../../constants/constants';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { PlaningCellStyle } from './planniingCell.style';
-
-function LocalCalendar(props: any) {
-    return (
-        <>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <StaticDatePicker
-                    orientation="landscape"
-                    openTo="day"
-                    value={props.leaveDate}
-                    shouldDisableDate={isWeekend}
-                    onChange={props.addPlannedLeave(props.modalProps, props.resource)}
-                    renderInput={(params) => <TextField {...params} />}
-                    minDate={props.minDate}
-                    maxDate={props.maxDate}
-                    showToolbar={false}
-                    allowSameDateSelection={true}
-                />
-            </LocalizationProvider>
-            <Button variant="outlined" onClick={props.closePlannedLeavePopup}>Cancel</Button>
-        </>
-    )
-}
+import LocalCalendar from './localCalendar';
 
 function PlanningCell(props: any) {
     const openPlannedLeavePopup = (resource: any) => () => {
@@ -86,7 +58,7 @@ function PlanningCell(props: any) {
                         </ModalComponent>
                     </div>}
                 </div>
-                {resourcePlan?.map((plan: any) => (
+                {resourcePlan?.filter((plan: any) => plan.planned_leave).map((plan: any) => (
                     <div className='sectionNext'>
                         <div className="plannedDate">
                             {plan.planned_leave}

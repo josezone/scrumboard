@@ -21,6 +21,7 @@ export const resourcePlanningMachine = createMachine<any>({
         plannedLeaveData: initPlannedLeaveData,
         halfPlanData: undefined,
         leaveTakenData: undefined,
+        assignEmergencyLeavePopup: undefined
     },
     on: {
         planLeave: {
