@@ -56,11 +56,11 @@ function PlanningCell(props: any) {
     }
 
     const halfDayClicked = (planId: number, currentHalfDayVal: boolean) => () => {
-        console.log(planId, currentHalfDayVal)
+        props.send({ type: "planHalfLeave", data: { planId, val: !currentHalfDayVal } });
     }
 
     const leaveTakenClicked = (planId: number, currentLeaveTakenVal: boolean) => () => {
-        console.log(planId, currentLeaveTakenVal)
+        props.send({ type: "leaveTaken", data: { planId, val: !currentLeaveTakenVal } });
     }
 
     const projectmodal: any = { data: props.project, enableProps: true }

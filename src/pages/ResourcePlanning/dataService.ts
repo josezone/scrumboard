@@ -175,16 +175,30 @@ function useInvokeCreateResourcePlan(graphQLClient: any) {
 }
 
 function useInvokeHalfPlannedLeave(graphQLClient: any) {
-    return useMutation(() => {
+    return useMutation(({ planId, val }: any) => {
         return graphQLClient.request(gql`
-              `);
+        mutation MyMutation {
+            update_resource_plan(where: {id: {_eq: "${planId}"}}, _set: {planned_half_day: ${val}}) {
+                    returning {
+                        id
+                    }
+                }
+            }
+        `);
     });
 }
 
 function useInvokeLeaveTaken(graphQLClient: any) {
-    return useMutation(() => {
+    return useMutation(({ planId, val }: any) => {
         return graphQLClient.request(gql`
-              `);
+        mutation MyMutation {
+            update_resource_plan(where: {id: {_eq: "${planId}"}}, _set: {leave_taken: ${val}}) {
+                returning {
+                        id
+                    }
+                }
+            }
+        `);
     });
 }
 
@@ -244,6 +258,14 @@ export const useServices = (props: any) => {
         props.graphQLClient
     );
 
+    const { mutateAsync: invokeHalfPlannedLeave } = useInvokeHalfPlannedLeave(
+        props.graphQLClient
+    );
+
+    const { mutateAsync: invokeLeaveTaken } = useInvokeLeaveTaken(
+        props.graphQLClient
+    );
+
     return {
         invokeResourceList: () => invokeResourceList(),
         invokeGetScrumList: (context: any) => invokeGetScrumList(context.projectGroup.id),
@@ -261,6 +283,8 @@ export const useServices = (props: any) => {
             projectId: context.updateScrumResourceProject.projectId,
             itemMoveId: context.updateScrumResourceProject.itemMoveId,
         }),
-        invokePlannedLeave: (context: any) => invokePlannedLeave({...context.plannedLeaveData})
+        invokePlannedLeave: (context: any) => invokePlannedLeave({ ...context.plannedLeaveData }),
+        invokeHalfPlannedLeave: (context: any) => invokeHalfPlannedLeave({ ...context.halfPlanData }),
+        invokeLeaveTaken: (context: any) => invokeLeaveTaken({ ...context.leaveTakenData }),
     }
 }

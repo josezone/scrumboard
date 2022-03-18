@@ -61,6 +61,7 @@ const updateDefaultProjectGroup = assign({
 
 const assignResourcePlan = assign({
     resourcePlan: (context: any, event: any) => {
+        console.log("??????????")
         return event.data["resource_plan"];
     },
 })
@@ -97,6 +98,34 @@ const assignPlannedLeave = assign({
     plannedLeaveData: (context: any, event: any) => {
         return event.data
     },
+})
+
+const assignPlanedHalfLeave = assign({
+    resourcePlan: (context: any, event: any) => {
+        return context.resourcePlan.map((plan: any) => {
+            if (plan.id === event.data.planId) {
+                plan.planned_half_day = event.data.val
+            }
+            return plan
+        });
+    },
+    halfPlanData: (context: any, event: any) => {
+        return event.data;
+    }
+})
+
+const assignLeaveTaken = assign({
+    resourcePlan: (context: any, event: any) => {
+        return context.resourcePlan.map((plan: any) => {
+            if (plan.id === event.data.planId) {
+                plan.leave_taken = event.data.val
+            }
+            return plan
+        });
+    },
+    leaveTakenData: (context: any, event: any) => {
+        return event.data;
+    }
 })
 
 const onDragEnd = assign({
@@ -159,5 +188,7 @@ export const actions = {
     onDragEnd,
     assignPlanedLeavePopupEnable,
     assignPlanedLeavePopupDisable,
-    assignPlannedLeave
+    assignPlannedLeave,
+    assignPlanedHalfLeave,
+    assignLeaveTaken
 }
