@@ -8,7 +8,7 @@ export function useInvokeGetEstimateReport(graphQLClient: any) {
         bugs(
           where: {
             estimate_bug: { _neq: "null" }
-            ticket: { sprint: { scrum: { active: { _eq: true } } } }
+            ticket: { estimation: { _eq: true } }
           }
         ) {
           estimate_bug
