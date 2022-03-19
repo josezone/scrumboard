@@ -6,6 +6,7 @@ function ProjectGroup(props: any) {
     const handleChange = (event: any) => {
         props.send({ type: "changeProjectGroup", data: event.target.value });
     };
+
     return (
         <>
             {props.selectedProjectGroup && <Select

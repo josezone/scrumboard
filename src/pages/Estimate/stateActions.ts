@@ -32,19 +32,19 @@ const assignPoints = assign({
     },
 });
 
-const assignProjectGroupList = assign({
+export const assignProjectGroupList = assign({
     projectGroupList: (context: any, event: any) => {
         return event.data["project_group"];
     }
 })
 
-const assignDefaultProjectGroup = assign({
+export const assignDefaultProjectGroup = assign({
     selectedProjectGroup: (context: any, event: any) => {
         return context.projectGroupList[0];
     }
 })
 
-const updateProjectGroup = assign({
+export const updateProjectGroup = assign({
     selectedProjectGroup: (context: any, event: any) => {
         return context.projectGroupList.filter((item: any) => item.id === event.data)[0];
     }

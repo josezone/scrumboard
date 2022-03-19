@@ -1,7 +1,7 @@
 import { useMachine } from "@xstate/react";
 import ReportComponent from "../../components/Report";
+import { useServices } from "./dataService";
 import { estimateReportMachine } from "./EstimateReportMachine";
-import { useInvokeGetEstimateReport } from "./dataService";
 import { actions } from "./stateActions";
 
 function EstimateReport(props: any) {
@@ -10,21 +10,19 @@ function EstimateReport(props: any) {
     "Basic " + localStorage.getItem("data")
   );
 
-  const { mutateAsync: invokeGetEstimateReport } = useInvokeGetEstimateReport(
-    props.graphQLClient
-  );
+  const services = useServices(props);
 
   const [state, send] = useMachine(estimateReportMachine, {
     actions,
-    services: {
-      invokeGetEstimateReport: () => invokeGetEstimateReport(),
-    },
+    services
   });
 
   return (
     <ReportComponent
       // {...state.context}
       // isEstimate={true}
+      {...state.context}
+      send={send}
       reportItems={state.context.estimateReport}
       title={"Estimate Report"}
     />

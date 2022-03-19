@@ -119,7 +119,7 @@ export function useInvokeUpdatePoints(graphQLClient: any) {
     });
 }
 
-function useInvokeGetProjectGroupList(graphQLClient: any) {
+export function useInvokeGetProjectGroupList(graphQLClient: any) {
     return useMutation(() => {
         return graphQLClient.request(gql`
             query MyQuery {
