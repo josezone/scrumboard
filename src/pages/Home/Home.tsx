@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import HomeSelection from "../../components/homeSelection/HomeSelection";
 import ScrumBoard from "../../components/scrumBoard/ScrumBoard";
 import ScrumItem from "../../components/scrumBoard/ScrumItem";
-import AppBar from "../../components/appBar/AppBar";
+import AppBar from "../../components/appBarHome/AppBar";
 import {
   useGetCountryList,
   useGetProjectList,
@@ -78,11 +78,11 @@ function Home(props: any) {
     navigate("/estimate");
   }
 
-  function clickResourcePlan(){
+  function clickResourcePlan() {
     navigate("/resource-planning");
   }
 
-  function clickSprintReport(){
+  function clickSprintReport() {
     navigate("/sprintReport");
   }
 
@@ -306,7 +306,11 @@ function Home(props: any) {
           ticketId: context.estimateToggleId.id,
           estimate: context.estimateToggleId.estimation,
         }),
-      invokecreateEstimateList: (context: any) => invokecreateEstimateList({ projectId: context.newProjectId, resourceTypeList: context.resourceTypeList })
+      invokecreateEstimateList: (context: any) =>
+        invokecreateEstimateList({
+          projectId: context.newProjectId,
+          resourceTypeList: context.resourceTypeList,
+        }),
     },
   });
   const activateScrum = () => {
@@ -319,17 +323,18 @@ function Home(props: any) {
         <Tab label="Scrum" />
         <Tab label="Resources" />
       </Tabs>
-      <Button variant="text" className="reportHead" onClick={clickDailyReport}>
-        Daily Report
-      </Button>
       <Button variant="text" className="reportHead" onClick={clickEstimate}>
         Estimate
       </Button>
       <Button variant="text" className="reportHead" onClick={clickResourcePlan}>
         Resource Plan
       </Button>
-      <Button variant="text" className="reportHead" onClick={clickSprintReport}>
-        Sprint Report
+      <Button
+        variant="text"
+        className="reportHead"
+        onClick={() => navigate("/report")}
+      >
+        Report
       </Button>
 
       <TabPanel value={value} index={0}>
