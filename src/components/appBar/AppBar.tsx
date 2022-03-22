@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -21,6 +21,9 @@ type sprintItem = { key: number; value: number; label: string };
 function AppBarHeader(props: any) {
   const [projectModal, setProjectModal] = useState<boolean>(false);
   const [editSprint, setEditSprint] = useState(false);
+
+  useEffect(() => {
+  }, [JSON.stringify(props.sprintList)])
 
   const handleSprintEdit = (): void => {
     setEditSprint((m) => !m);
@@ -63,6 +66,14 @@ function AppBarHeader(props: any) {
     };
   });
 
+  const projectGroups: Array<any> = props.projectGroupList?.map((projectGroup: any) => {
+    return {
+      key: projectGroup.id,
+      value: projectGroup?.id,
+      label: projectGroup.name,
+    };
+  });
+
   const onYearChange = (event: any) => {
     props.send({ type: "yearChanged", prop: event.target.value });
   };
@@ -82,6 +93,7 @@ function AppBarHeader(props: any) {
     );
     if (selectedSprintNew.length) {
       props.send({ type: "sprintChanged", prop: selectedSprintNew[0] });
+      props.send({ type: "setVersion", prop: selectedSprintNew[0].version });
     }
   };
   const onProjectChanged = (event: any) => {
@@ -90,6 +102,24 @@ function AppBarHeader(props: any) {
     );
     if (project.length) {
       props.send({ type: "projectChanged", prop: project[0] });
+    }
+  };
+
+  const onProjectGroupChanged = (event: any) => {
+    const projectGroup = props?.projectGroupList?.filter(
+      (projectGroup: any) => projectGroup.id === Number(event.target.value)
+    );
+    if (projectGroup.length) {
+      props.send({ type: "projectGroupChanged", prop: projectGroup[0] });
+    }
+  };
+
+  const onCountryChanged = (event: any) => {
+    const countries = props?.countryList?.filter(
+      (country: any) => country.id === Number(event.target.value)
+    );
+    if (countries.length) {
+      props.send({ type: "countryChanged", prop: countries[0] });
     }
   };
 
@@ -108,6 +138,22 @@ function AppBarHeader(props: any) {
         <Container maxWidth={false}>
           <Toolbar>
             <Box sx={{ flexGrow: 1, display: "flex" }}>
+
+            <ItemSelect
+                items={projectGroups}
+                defaultItem={props.selectedProjectGroup?.id}
+                onChange={onProjectGroupChanged}
+                name="Project Group"
+                id="selectProjectGroup"
+                showList={
+                  props.selectedProjectGroup &&
+                  props.projectGroupList &&
+                  props.projectGroupList.length
+                }
+              >
+                <AddNew addNew={handleProjectModal}></AddNew>
+              </ItemSelect>
+
               <ItemSelect
                 items={scrumItems}
                 defaultItem={props.selectedScrum?.id}
@@ -124,45 +170,28 @@ function AppBarHeader(props: any) {
                 <AddNew addNew={openCreateScrum}></AddNew>
               </ItemSelect>
 
-              {props.selectedProject && (
-                <ItemSelect
-                  items={sprintItems}
-                  defaultItem={props.selectedSprint?.id}
-                  onChange={onSprintChange}
-                  name="Sprint"
-                  id="selectSprintNative"
-                  showList={
-                    props.selectedSprint &&
-                    props.sprintList &&
-                    props.sprintList.length &&
-                    true
-                  }
-                >
-                  <EditIconWrapper>
-                    <EditIcon
-                      color="primary"
-                      onClick={handleSprintEdit}
-                    ></EditIcon>
-                  </EditIconWrapper>
-                  <AddNew addNew={openCreateSprint}></AddNew>
-                </ItemSelect>
-              )}
-
               <ItemSelect
-                items={projectItems}
-                defaultItem={props.selectedProject?.id}
-                onChange={onProjectChanged}
-                name="Project"
-                id="selectProjectNative"
+                items={sprintItems}
+                defaultItem={props.selectedSprint?.id}
+                onChange={onSprintChange}
+                name="Sprint"
+                id="selectSprintNative"
                 showList={
-                  props.selectedProject &&
-                  props.projectList &&
-                  props.projectList.length &&
+                  props.selectedSprint &&
+                  props.sprintList &&
+                  props.sprintList.length &&
                   true
                 }
               >
-                <AddNew addNew={handleProjectModal}></AddNew>
+                <EditIconWrapper>
+                  <EditIcon
+                    color="primary"
+                    onClick={handleSprintEdit}
+                  ></EditIcon>
+                </EditIconWrapper>
+                <AddNew addNew={openCreateSprint}></AddNew>
               </ItemSelect>
+
             </Box>
 
             <Box sx={{ flexGrow: 0 }}>
@@ -189,6 +218,8 @@ function AppBarHeader(props: any) {
         {...props}
         editMode={editSprint}
         handleEditMode={handleSprintEdit}
+        onProjectChanged={onProjectChanged}
+        onCountryChanged={onCountryChanged}
       ></SprintSelection>
     </AppBarWrapper>
   );

@@ -16,7 +16,6 @@ function DailyReport(props: any) {
     },
   });
 
-  console.log(state.context)
   return <DailyReportComponent {...state.context}/>;
 }
 

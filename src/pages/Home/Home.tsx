@@ -40,6 +40,7 @@ import {
   useChangeSprintTicket,
   useInvokeChangeEstimate,
   useInvokeUpdateSprint,
+  useGetProjectGroupList,
 } from "./dataService";
 import { HomeStyle } from "./home.style";
 import { homeMachine } from "./homeMachine";
@@ -83,6 +84,7 @@ function Home(props: any) {
     "Basic " + localStorage.getItem("data")
   );
 
+  const { mutateAsync: getProjectGroupList } = useGetProjectGroupList(props.graphQLClient);
   const { mutateAsync: getScrumList } = useGetScrumList(props.graphQLClient);
   const { mutateAsync: getCountryList } = useGetCountryList(
     props.graphQLClient
@@ -193,21 +195,22 @@ function Home(props: any) {
   const [state, send] = useMachine(homeMachine, {
     actions,
     services: {
-      invokeGetScrumList: (context: any) => getScrumList(context.year),
+      invokeGetScrumList: (context: any) => getScrumList(context),
+      invokeProjectGroupList: (context: any) => getProjectGroupList(),
       invokegetCountryList: () => getCountryList(),
-      invokegetProjectList: () => getProjectList(),
+      invokegetProjectList: (context: any) => {
+        return getProjectList({selectedProjectGroupId: context.selectedProjectGroup.id})
+      },
       invokeReloadProject: () => invokeReloadProject(),
       invokeResourceList: () => invokeResourceList(),
       invokeScopeList: () => invokeScopeList(),
       invokeGetSprintStatusList: () => invokeGetSprintStatusList(),
       invokeGetSprintList: (context: any) =>
         invokeGetSprintList({
-          projectId: context?.selectedProject?.id,
           scrumId: context?.selectedScrum?.id,
         }),
       invokeReloadSprintList: (context: any) =>
         invokeReloadSprintList({
-          projectId: context?.selectedProject?.id,
           scrumId: context?.selectedScrum?.id,
         }),
       invokeGetTicketsList: (context: any) =>
@@ -215,20 +218,24 @@ function Home(props: any) {
       invokeActivate: (context: any) =>
         invokeActivate({
           activateId: context?.activateDeactivateScrum?.activate,
+          projectGroupId: context?.selectedProjectGroup.id
         }),
       invokeMakeScrum: (context: any) =>
         invokeMakeScrum({
           scrum: context.scrumCreateData || new Date().toISOString(),
+          project_group_id: context.selectedProjectGroup.id
         }),
       invokeMakeProject: (context: any) =>
-        invokeMakeProject({ project: context.newProject }),
-      invokeCreateNewSprint: (context: any) =>
-        invokeCreateNewSprint({
+        invokeMakeProject({ project: context.newProject, project_group_id: context.selectedProjectGroup.id }),
+      invokeCreateNewSprint: (context: any) => {
+        return invokeCreateNewSprint({
           sprint: context.newSprint.sprint,
           projectId: context.selectedProject.id,
           scrumId: context.selectedScrum.id,
           countryId: context.newSprint.country,
-        }),
+          verisonId: context.newSprint.version
+        })
+      },
       invokeCreateNewCountry: (context: any) =>
         invokeCreateNewCountry({ country: context.newCountry }),
       invokeReloadCountryList: () => invokeReloadCountryList(),
@@ -237,17 +244,19 @@ function Home(props: any) {
           ticketId: context.remoteStatusUpdateData.ticket,
           statusId: context.remoteStatusUpdateData.status,
         }),
-      invokeGetVersionList: (context: any) =>
-        invokeGetVersionList({
+      invokeGetVersionList: (context: any) => {
+        return invokeGetVersionList({
           countryId: context?.selectedCountry?.id,
           projectId: context?.selectedProject?.id,
-        }),
-      invokeCreateVersion: (context: any) =>
-        invokeCreateVersion({
+        })
+      },
+      invokeCreateVersion: (context: any) =>{
+        return invokeCreateVersion({
           version: context.versionCreateData,
           countryId: context.selectedCountry?.id,
           projectId: context.selectedProject?.id,
-        }),
+        })
+      },
       invokeCreateNewTickets: (context: any) =>
         invokeCreateNewTickets({
           sprintId: context?.selectedSprint?.id,
@@ -295,7 +304,6 @@ function Home(props: any) {
         }),
     },
   });
-  // console.log(state);
   const activateScrum = () => {
     send({ type: "activateScrum" });
   };

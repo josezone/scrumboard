@@ -46,55 +46,75 @@ export function useInvokeGetTicketsList(graphQLClient: any) {
                 id
               }
             }
-            estimation
+            estimation,
+            link
           }
         }
     `);
   });
 }
 
-export function useGetScrumList(graphQLClient: any) {
-  return useMutation((year: number) => {
+export function useGetProjectGroupList(graphQLClient: any) {
+  return useMutation(() => {
     return graphQLClient.request(gql`
-    query MyQuery {
-        scrum(where: {scrum: {_gte: "${year}-01-01", _lte: "${year}-12-31"}}) {
-          scrum
+      query GetProjectGroup {
+        project_group {
           id
-          active
+          name
         }
       }
     `);
   });
 }
 
+export function useGetScrumList(graphQLClient: any) {
+  return useMutation(
+    ({ year, selectedProjectGroup }: { [key: string]: any }) => {
+      return graphQLClient.request(gql`
+    query getScrumList {
+        scrum(where: {scrum: {_gte: "${year}-01-01", _lte: "${year}-12-31"}, project_group_id: {_eq: ${selectedProjectGroup.id}}}) {
+          scrum
+          id
+          active
+        }
+      }
+    `);
+    }
+  );
+}
+
 export function useInvokeGetSprintList(graphQLClient: any) {
-  return useMutation(({ projectId, scrumId }: { [key: string]: number }) => {
-    if (!projectId || !scrumId) {
+  return useMutation(({ scrumId }: { [key: string]: number }) => {
+    if (!scrumId) {
       return Promise.resolve([]);
     }
     return graphQLClient.request(gql`
-        query MyQuery {
-            sprint(where: {project_id: {_eq: ${projectId}}, scrum_id: {_eq: ${scrumId}}}) {
-                sprint
-                id
-                country{
-                    id
-                    country
-                }
-            }
+      query GetSprint {
+        sprint(where: { scrum_id: { _eq: ${scrumId} } }) {
+          sprint
+          id
+          country {
+            id
+            country
+          }
+          version {
+            id
+            version
+          }
         }
+      }
     `);
   });
 }
 
 export function useInvokeReloadSprintList(graphQLClient: any) {
-  return useMutation(({ projectId, scrumId }: { [key: string]: number }) => {
-    if (!projectId || !scrumId) {
+  return useMutation(({ scrumId }: { [key: string]: number }) => {
+    if (!scrumId) {
       return Promise.resolve([]);
     }
     return graphQLClient.request(gql`
         query MyQuery {
-            sprint(where: {project_id: {_eq: ${projectId}}, scrum_id: {_eq: ${scrumId}}}) {
+            sprint(where: {scrum_id: {_eq: ${scrumId}}}) {
                 sprint
                 id
                 country{
@@ -147,12 +167,14 @@ export function useInvokeReloadCountryList(graphQLClient: any) {
 }
 
 export function useGetProjectList(graphQLClient: any) {
-  return useMutation(() => {
+  return useMutation(({ selectedProjectGroupId }: any) => {
     return graphQLClient.request(gql`
-      query MyQuery {
-        project {
-          project
-          id
+      query GetProjects {
+        project_group(where: {id: {_eq: ${selectedProjectGroupId}}}) {
+          projects {
+            project
+            id
+          }
         }
       }
     `);
@@ -162,8 +184,8 @@ export function useGetProjectList(graphQLClient: any) {
 export function useInvokeReloadProject(graphQLClient: any) {
   return useMutation(() => {
     return graphQLClient.request(gql`
-      query MyQuery {
-        project {
+      query getProjects {
+        project(where: { project_group_id: { _eq: 2 } }) {
           project
           id
         }
@@ -187,10 +209,10 @@ export function useInvokePriorityList(graphQLClient: any) {
 }
 
 export function useInvokeActivate(graphQLClient: any) {
-  return useMutation(({ activateId }: any) => {
+  return useMutation(({ activateId, projectGroupId }: any) => {
     return graphQLClient.request(gql`
       mutation MyMutation {
-        u1: update_scrum(where: { active: { _eq: ${true} } }, _set: { active: false }) {
+        u1: update_scrum(where: { active: { _eq: ${true} }, project_group_id: { _eq: ${projectGroupId}} }, _set: { active: false }) {
           returning {
             id
           }
@@ -206,10 +228,10 @@ export function useInvokeActivate(graphQLClient: any) {
 }
 
 export function useInvokeMakeScrum(graphQLClient: any) {
-  return useMutation(({ scrum }: any) => {
+  return useMutation(({ scrum, project_group_id }: any) => {
     return graphQLClient.request(gql`
-      mutation MyMutation {
-        insert_scrum(objects: {scrum: "${scrum}", active: false, status: true}) {
+      mutation createScrum {
+        insert_scrum(objects: {scrum: "${scrum}", active: false, status: true, project_group_id: ${project_group_id}}) {
           returning {
             id
           }
@@ -220,10 +242,10 @@ export function useInvokeMakeScrum(graphQLClient: any) {
 }
 
 export function useInvokeMakeProject(graphQLClient: any) {
-  return useMutation(({ project }: any) => {
+  return useMutation(({ project, project_group_id }: any) => {
     return graphQLClient.request(gql`
-      mutation MyMutation {
-        insert_project(objects: {project: "${project}", status: true}) {
+      mutation createProject {
+        insert_project(objects: {project: "${project}", status: true, project_group_id: ${project_group_id}}) {
           returning {
             id
           }
@@ -234,17 +256,19 @@ export function useInvokeMakeProject(graphQLClient: any) {
 }
 
 export function useInvokeCreateNewSprint(graphQLClient: any) {
-  return useMutation(({ sprint, projectId, scrumId, countryId }: any) => {
-    return graphQLClient.request(gql`
+  return useMutation(
+    ({ sprint, projectId, scrumId, countryId, verisonId }: any) => {
+      return graphQLClient.request(gql`
       mutation MyMutation {
-        insert_sprint(objects: {sprint: "${sprint}", project_id: ${projectId}, scrum_id: ${scrumId}, country_id:${countryId}}) {
+        insert_sprint(objects: {sprint: "${sprint}", project_id: ${projectId}, scrum_id: ${scrumId}, country_id:${countryId}, verison_id: ${verisonId}}) {
           returning {
             id
           }
         }
       }
     `);
-  });
+    }
+  );
 }
 
 export function useInvokeCreateNewCountry(graphQLClient: any) {
@@ -350,10 +374,11 @@ export function useInvokeCreateNewTickets(graphQLClient: any) {
       beSpill,
       feSpill,
       qaSpill,
+      link
     }: any) => {
       return graphQLClient.request(gql`
       mutation MyMutation {
-        insert_ticket(objects: {ticket: "${ticket}", sprint_id: ${sprintId}, scope_id: ${scopeId}, version_id: ${versionId}, priority_id: ${priorityId}, status_id: ${statusId}, spill:${spill}, fe_story: ${feStory}, fe_spill: ${feSpill}, be_story: ${beStory}, be_spill: ${beSpill}, qa_story: ${qaStory}, qa_spill: ${qaSpill}}) {
+        insert_ticket(objects: {ticket: "${ticket}", link: "${link}", sprint_id: ${sprintId}, scope_id: ${scopeId}, version_id: ${versionId}, priority_id: ${priorityId}, status_id: ${statusId}, spill:${spill}, fe_story: ${feStory}, fe_spill: ${feSpill}, be_story: ${beStory}, be_spill: ${beSpill}, qa_story: ${qaStory}, qa_spill: ${qaSpill}}) {
           returning {
             id
           }
@@ -394,6 +419,10 @@ export function useInvokeUpdateTicket(graphQLClient: any) {
 
 export function useGetSprintListForMovingSprint(graphQLClient: any) {
   return useMutation((variables: any) => {
+    if (!variables.countryId || !variables.currentSprintId) {
+      return Promise.resolve([]);
+    }
+
     const query = gql`
       query getSprints(
         $countryId: Int!

@@ -14,7 +14,7 @@ const assignReloadCountryList = assign({
 
 const assignPprojectList = assign({
   projectList: (context: any, event: any) => {
-    return event.data.project;
+    return event.data.project_group[0].projects;
   },
 });
 
@@ -36,6 +36,18 @@ const assignScrumList = assign({
   },
 });
 
+const assignProjectGroupList = assign({
+  projectGroupList: (context: any, event: any) => {
+    return event.data.project_group;
+  },
+});
+
+const assignProjectList = assign({
+  projectGroupList: (context: any, event: any) => {
+    return event.data.project;
+  },
+});
+
 const assignSelectedScrum = assign({
   selectedScrum: (context: any, event: any) => {
     const scrum = context.scrumList.filter(
@@ -47,13 +59,20 @@ const assignSelectedScrum = assign({
 
 const assignSelectedProject = assign({
   selectedProject: (context: any, event: any) => {
-    return context.projectList[0];
+    return context.projectList[context.projectList.length - 1];
+  },
+});
+
+
+const assignSelectedProjectGroup = assign({
+  selectedProjectGroup: (context: any, event: any) => {
+    return context.projectGroupList[0];
   },
 });
 
 const assignSprintList = assign({
   sprintList: (context: any, event: any) => {
-    return event.data.sprint;
+    return event.data?.sprint || [];
   },
 });
 
@@ -96,6 +115,9 @@ const assignSelectedSprint = assign({
       currentSprintId,
     };
   },
+  selectedVersion: (context: any, event: any) => {
+    return context.sprintList ? context.sprintList[0]?.version : {};
+  }
 });
 
 const assignSelectedUpdatedSprint = assign({
@@ -198,6 +220,21 @@ const assignNewScrum = assign({
 const updateProject = assign({
   selectedProject: (context: any, event: any) => {
     return event.prop;
+  },
+});
+
+const updateProjectGroup = assign({
+  selectedProjectGroup: (context: any, event: any) => {
+    return event.prop;
+  },
+  scrumList: (context: any, event: any) => {
+    return [];
+  },
+  projectList: (context: any, event: any) => {
+    return [];
+  },
+  sprintList: (context: any, event: any) => {
+    return [];
   },
 });
 
@@ -390,6 +427,19 @@ const assignEstimateStatus = assign({
   },
 });
 
+
+const updateCountry = assign({
+  selectedCountry: (context: any, event: any) => {
+    return event.prop || {};
+  },
+});
+
+const updateVersion = assign({
+  selectedVersion: (context: any, event: any) => {
+    return event.prop || {};
+  },
+});
+
 export const actions = {
   assignNewResource,
   assignResourceTypeList,
@@ -440,4 +490,9 @@ export const actions = {
   assignUpdateSprint,
   clearUpdateSprint,
   assignSelectedUpdatedSprint,
+  assignProjectGroupList,
+  assignSelectedProjectGroup,
+  updateProjectGroup,
+  updateCountry,
+  updateVersion
 };

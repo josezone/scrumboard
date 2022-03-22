@@ -29,10 +29,10 @@ const schema = yup
     ticket: yup.string().required(),
     priority: yup.string().required(),
     scope: yup.string().required(),
-    version: yup.string().required(),
     beStory: yup.number().nullable(true),
     feStory: yup.number().nullable(true),
     qaStory: yup.number().nullable(true),
+    link: yup.string().required()
   })
   .required();
 
@@ -129,8 +129,9 @@ function NewTicket(props: any) {
         ticket: {
           ticket: data.ticket,
           scopeId: data.scope,
-          versionId: data.version,
+          versionId: props.selectedVersion.id,
           priorityId: data.priority,
+          link: data.link,
           spill: data.spill ? true : false,
           beStory: data.spill ? null : data.beStory ? data.beStory : null,
           feStory: data.spill ? null : data.feStory ? data.feStory : null,
@@ -141,7 +142,6 @@ function NewTicket(props: any) {
         },
         resources,
       };
-      console.log(newData);
 
       if (isEditTicket) props?.handleEditSubmit(newData);
       else props.send({ type: "newTicket", prop: newData });
@@ -252,72 +252,6 @@ function NewTicket(props: any) {
                       {formProps.formState.errors?.priority?.message}
                     </FormHelperText>
                   </FormControl>
-                </Grid>
-
-                <Grid item md={6} sm={12}>
-                  <FormControl fullWidth>
-                    <InputLabel id="version">Version</InputLabel>
-                    <Controller
-                      name="version"
-                      control={formProps.control}
-                      render={({ field }) => (
-                        <Select
-                          labelId="version"
-                          id="version"
-                          label="version"
-                          fullWidth
-                          className="textConatiner"
-                          {...field}
-                          value={version}
-                          onChange={(e) => {
-                            setVersion(e.target.value);
-                            field.onChange(e);
-                          }}
-                          error={
-                            formProps.formState.errors?.version ? true : false
-                          }
-                        >
-                          <MenuItem value="">
-                            <em>None</em>
-                          </MenuItem>
-                          {props.versionList?.map((version: any) => {
-                            return (
-                              <MenuItem
-                                value={version.id}
-                                key={version.version}
-                              >
-                                {version.version}
-                              </MenuItem>
-                            );
-                          })}
-                        </Select>
-                      )}
-                    />
-                    <FormHelperText>
-                      {formProps.formState.errors?.version?.message}
-                    </FormHelperText>
-                  </FormControl>
-                </Grid>
-
-                <Grid item md={6} sm={12}>
-                  <TextField
-                    id="standard-basic"
-                    label="New Version"
-                    variant="outlined"
-                    fullWidth
-                    className="newVer"
-                    value={newVersion}
-                    onChange={(e) => {
-                      setNewVersion(e.target.value);
-                    }}
-                    InputProps={{
-                      endAdornment: (
-                        <IconButton onClick={createNewVersion}>
-                          <AddIcon color="primary" />
-                        </IconButton>
-                      ),
-                    }}
-                  />
                 </Grid>
 
                 <Grid item md={6} sm={12}>
@@ -436,6 +370,25 @@ function NewTicket(props: any) {
                       )}
                     />
                   )}
+                </Grid>
+
+                <Grid item md={6} sm={12}>
+                  <Controller
+                    name="link"
+                    control={formProps.control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        id="standard-basic"
+                        label="Jira Link"
+                        variant="outlined"
+                        className="textConatiner"
+                        fullWidth
+                        error={formProps.formState.errors.link ? true : false}
+                        helperText={formProps.formState.errors?.link?.message}
+                      />
+                    )}
+                  />
                 </Grid>
 
                 <Grid item md={6} sm={12}>

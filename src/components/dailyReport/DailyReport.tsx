@@ -10,7 +10,6 @@ function DailyReportComponent(props: any) {
     "ticket.sprint.sprint",
     "ticket.ticket"
   );
-  console.log(byProject);
   return (
     <div>
       {Object.keys(byProject)?.map((projectIdx: any) => {
