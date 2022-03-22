@@ -19,27 +19,37 @@ export const resourcePlanningMachine = createMachine<any>({
         insertScrumResourceProject: undefined,
         assignPlanedLeavePopup: false,
         plannedLeaveData: initPlannedLeaveData,
+        halfPlanData: undefined,
+        leaveTakenData: undefined,
+        assignUnplanedLeavePopup: false,
+        unplannedLeaveData: undefined,
+        halfUnplannedData: undefined,
+        storyPointUpdateData: undefined,
     },
     on: {
+        updateStoryPoint: {
+            actions: "assignUpdateStoryPoint",
+            target: "estimateActions.alterStoryPoint.invokeAlterStoryPoint"
+        },
         planLeave: {
             actions: "assignPlanedLeavePopupEnable",
             target: "estimateActions.initPlannedLeave.addDataToPlannedLeave",
         },
         planHalfLeave: {
             actions: "assignPlanedHalfLeave",
-            target: "estimateActions.initPlannedHalfLeave",
+            target: "estimateActions.initPlannedHalfLeave.createHalfPlannedLeave",
         },
         leaveTaken: {
             actions: "assignLeaveTaken",
-            target: "estimateActions.initLeaveTaken",
+            target: "estimateActions.initLeaveTaken.createLeaveTaken",
         },
         emergencyLeave: {
-            actions: "assignEmergencyLeave",
-            target: "estimateActions.initUnplannedLeave",
+            actions: "assignEmergencyLeavePopupEnable",
+            target: "estimateActions.initUnplannedLeave.addDataToUnplannedLeave",
         },
         emergencyHalfLeave: {
             actions: "assignEmergencyHalfLeave",
-            target: "estimateActions.initUnplannedHalfLeave",
+            target: "estimateActions.initUnplannedHalfLeave.createHalfUnplannedLeave",
         },
         changeProjectGroup: {
             actions: "updateDefaultProjectGroup",
@@ -62,6 +72,10 @@ export const resourcePlanningMachine = createMachine<any>({
         onPlanedLeavePopupDisable: {
             actions: "assignPlanedLeavePopupDisable",
             target: "estimateActions.initPlannedLeave.end",
+        },
+        onUnplanedLeavePopupDisable: {
+            actions: "assignUnplannedLeavePopupDisable",
+            target: "estimateActions.initUnplannedLeave.end",
         },
     },
     states: {
@@ -233,6 +247,25 @@ export const resourcePlanningMachine = createMachine<any>({
         estimateActions: {
             type: "parallel",
             states: {
+                alterStoryPoint: {
+                    states: {
+                        invokeAlterStoryPoint: {
+                            invoke: {
+                                id: "invokeAlterStoryPoint",
+                                src: "invokeAlterStoryPoint",
+                                onDone: {
+                                    target: "end",
+                                },
+                                onError: {
+                                    target: "end",
+                                },
+                            },
+                        },
+                        end: {
+                            type: "final",
+                        },
+                    }
+                },
                 dragAction: {
                     states: {
                         idle: {
@@ -337,8 +370,7 @@ export const resourcePlanningMachine = createMachine<any>({
                                 id: "createPlannedLeave",
                                 src: "invokePlannedLeave",
                                 onDone: {
-                                    actions: "assignPlanedLeavePopupDisable",
-                                    target: "end",
+                                    target: "#main.getInitialData.getProjectGroupList.projectGroupChanged.firstGroup.scrumChanged.groupOne.getResourcePlan",
                                 },
                                 onError: {
                                     target: "end",
@@ -351,14 +383,12 @@ export const resourcePlanningMachine = createMachine<any>({
                     },
                 },
                 initPlannedHalfLeave: {
-                    initial: "createHalfPlannedLeave",
                     states: {
                         createHalfPlannedLeave: {
                             invoke: {
                                 id: "createHalfPlannedLeave",
                                 src: "invokeHalfPlannedLeave",
                                 onDone: {
-                                    actions: "assignHalfPlannedLeave",
                                     target: "end",
                                 },
                                 onError: {
@@ -372,14 +402,12 @@ export const resourcePlanningMachine = createMachine<any>({
                     },
                 },
                 initLeaveTaken: {
-                    initial: "createLeaveTaken",
                     states: {
                         createLeaveTaken: {
                             invoke: {
                                 id: "createLeaveTaken",
                                 src: "invokeLeaveTaken",
                                 onDone: {
-                                    actions: "assignLeaveTaken",
                                     target: "end",
                                 },
                                 onError: {
@@ -393,15 +421,24 @@ export const resourcePlanningMachine = createMachine<any>({
                     },
                 },
                 initUnplannedLeave: {
-                    initial: "createUnplannedLeave",
                     states: {
+                        addDataToUnplannedLeave: {
+                            on: {
+                                addDataToUnplannedLeave: {
+                                    actions: [
+                                        "assignUnplannedLeave",
+                                        "assignUnplannedLeavePopupDisable",
+                                    ],
+                                    target: "createUnplannedLeave",
+                                },
+                            },
+                        },
                         createUnplannedLeave: {
                             invoke: {
                                 id: "createUnplannedLeave",
                                 src: "invokeUnplannedLeave",
                                 onDone: {
-                                    actions: "assignUnplannedLeave",
-                                    target: "end",
+                                    target: "#main.getInitialData.getProjectGroupList.projectGroupChanged.firstGroup.scrumChanged.groupOne.getResourcePlan",
                                 },
                                 onError: {
                                     target: "end",
@@ -414,14 +451,12 @@ export const resourcePlanningMachine = createMachine<any>({
                     },
                 },
                 initUnplannedHalfLeave: {
-                    initial: "createHalfUnplannedLeave",
                     states: {
                         createHalfUnplannedLeave: {
                             invoke: {
                                 id: "createHalfUnplannedLeave",
                                 src: "invokeHalfUnplannedLeave",
                                 onDone: {
-                                    actions: "assignHalfUnplannedLeave",
                                     target: "end",
                                 },
                                 onError: {

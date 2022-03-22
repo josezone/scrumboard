@@ -1,4 +1,5 @@
 import { assign } from "xstate";
+import { assignProjectGroupList, updateProjectGroup, assignDefaultProjectGroup } from "../Estimate/stateActions";
 
 const assignEstimateReport = assign({
   estimateReport: (context: any, event: any) => {
@@ -11,4 +12,7 @@ const assignEstimateReport = assign({
 
 export const actions = {
   assignEstimateReport,
+  updateProjectGroup,
+  assignProjectGroupList,
+  assignDefaultProjectGroup
 };

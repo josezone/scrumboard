@@ -3,6 +3,7 @@ import { Tree, TreeNode } from "react-organizational-chart";
 import { EstimateGraphStyled } from "./EstimateGraph.style";
 import GraphLeaf from "./GraphLeaf";
 import ProjectCard from "./ProjectCard";
+import ProjectGroup from "./ProjectGroup";
 
 function EstimateGraph(props: any) {
   const result: any = groupArray(
@@ -14,7 +15,9 @@ function EstimateGraph(props: any) {
   return (
     <EstimateGraphStyled>
       <Tree
-        label={<div className="title">Projects</div>}
+        label={<div className="title">
+          <ProjectGroup {...props}/>
+        </div>}
         lineColor={"rgba(0, 0, 0, 0.12)"}
       >
         {Object.keys(result)?.map((project) => {

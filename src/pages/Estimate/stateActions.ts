@@ -32,9 +32,31 @@ const assignPoints = assign({
     },
 });
 
+export const assignProjectGroupList = assign({
+    projectGroupList: (context: any, event: any) => {
+        return event.data["project_group"];
+    }
+})
+
+export const assignDefaultProjectGroup = assign({
+    selectedProjectGroup: (context: any, event: any) => {
+        return context.projectGroupList[0];
+    }
+})
+
+export const updateProjectGroup = assign({
+    selectedProjectGroup: (context: any, event: any) => {
+        return context.projectGroupList.filter((item: any) => item.id === event.data)[0];
+    }
+})
+
+
 export const actions = {
     assignTicketList,
     removeTicketAction,
     assignEstimateList,
-    assignPoints
+    assignPoints,
+    assignProjectGroupList,
+    assignDefaultProjectGroup,
+    updateProjectGroup
 }

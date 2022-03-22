@@ -61,6 +61,7 @@ const updateDefaultProjectGroup = assign({
 
 const assignResourcePlan = assign({
     resourcePlan: (context: any, event: any) => {
+        console.log("??????????")
         return event.data["resource_plan"];
     },
 })
@@ -87,15 +88,84 @@ const assignPlanedLeavePopupEnable = assign({
     plannedLeaveData: () => initPlannedLeaveData
 })
 
+const assignEmergencyLeavePopupEnable= assign({
+    assignUnplanedLeavePopup: (context: any, event: any) => {
+        return {
+            ...context.assignUnplanedLeavePopup,
+            [event.data]: true
+        };
+    },
+})
+
 const assignPlanedLeavePopupDisable = assign({
     assignPlanedLeavePopup: (context: any, event: any) => {
         return false;
     },
 })
 
+const assignUnplannedLeavePopupDisable = assign({
+    assignUnplanedLeavePopup: (context: any, event: any) => {
+        return false;
+    },
+})
+
 const assignPlannedLeave = assign({
     plannedLeaveData: (context: any, event: any) => {
-        console.log(event.data)
+        return event.data
+    },
+})
+
+const assignUnplannedLeave = assign({
+    unplannedLeaveData: (context: any, event: any) => {
+        return event.data
+    },
+})
+
+
+const assignPlanedHalfLeave = assign({
+    resourcePlan: (context: any, event: any) => {
+        return context.resourcePlan.map((plan: any) => {
+            if (plan.id === event.data.planId) {
+                plan.planned_half_day = event.data.val
+            }
+            return plan
+        });
+    },
+    halfPlanData: (context: any, event: any) => {
+        return event.data;
+    }
+})
+
+const assignEmergencyHalfLeave = assign({
+    resourcePlan: (context: any, event: any) => {
+        return context.resourcePlan.map((plan: any) => {
+            if (plan.id === event.data.planId) {
+                plan.unplanned_half_day = event.data.val
+            }
+            return plan
+        });
+    },
+    halfUnplannedData: (context: any, event: any) => {
+        return event.data;
+    }
+})
+
+const assignLeaveTaken = assign({
+    resourcePlan: (context: any, event: any) => {
+        return context.resourcePlan.map((plan: any) => {
+            if (plan.id === event.data.planId) {
+                plan.leave_taken = event.data.val
+            }
+            return plan
+        });
+    },
+    leaveTakenData: (context: any, event: any) => {
+        return event.data;
+    }
+})
+
+const assignUpdateStoryPoint = assign({
+    storyPointUpdateData: (context: any, event: any) => {
         return event.data
     },
 })
@@ -160,5 +230,12 @@ export const actions = {
     onDragEnd,
     assignPlanedLeavePopupEnable,
     assignPlanedLeavePopupDisable,
-    assignPlannedLeave
+    assignPlannedLeave,
+    assignPlanedHalfLeave,
+    assignLeaveTaken,
+    assignEmergencyLeavePopupEnable,
+    assignUnplannedLeavePopupDisable,
+    assignUnplannedLeave,
+    assignEmergencyHalfLeave,
+    assignUpdateStoryPoint
 }
