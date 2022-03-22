@@ -9,11 +9,12 @@ const graphQLClient = new GraphQLClient(
 const Home = lazy(() => import("../pages/Home/Home"));
 const Login = lazy(() => import("../pages/Login/Login"));
 const Bug = lazy(() => import("../pages/Bug/Bug"));
-const DailyReport = lazy(() => import("../pages/DailyReport/DailyReport"));
-const SprintReport = lazy(() => import("../pages/SprintReport/sprintReport"));
+
 const ResourcePlanning = lazy(
   () => import("../pages/ResourcePlanning/ResourcePlanning")
 );
+const TotalSP = lazy(() => import("../pages/TotalSP/TotalSP"));
+const Report = lazy(() => import("../pages/Report/Report"));
 
 function Routing() {
   const loginData = localStorage.getItem("data");
@@ -29,20 +30,20 @@ function Routing() {
               element={<Bug graphQLClient={graphQLClient} />}
             />
             <Route
-              path="/dailyreport"
-              element={<DailyReport graphQLClient={graphQLClient} />}
-            />
-            <Route
               path="/estimate"
               element={<Estimate graphQLClient={graphQLClient} />}
             />
             <Route
-              path="/sprintReport"
-              element={<SprintReport graphQLClient={graphQLClient} />}
-            />
-            <Route
               path="/resource-planning"
               element={<ResourcePlanning graphQLClient={graphQLClient} />}
+            />
+            <Route
+              path="/totalSP"
+              element={<TotalSP graphQLClient={graphQLClient} />}
+            />
+            <Route
+              path="/report"
+              element={<Report graphQLClient={graphQLClient} />}
             />
           </>
         )}
