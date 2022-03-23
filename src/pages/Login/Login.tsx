@@ -34,7 +34,7 @@ function Login() {
         "data",
         Buffer.from(`${data.username}:${data.password}`).toString("base64")
       );
-      navigate("/ticket");
+      navigate("/");
     })(e);
   };
 

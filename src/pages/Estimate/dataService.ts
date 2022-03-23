@@ -49,10 +49,10 @@ function useEstimateLimit(graphQLClient: any) {
 }
 
 function useInvokeGetTicketsList(graphQLClient: any) {
-  return useMutation(() => {
+  return useMutation((projectGroup) => {
     return graphQLClient.request(gql`
       query getTickets {
-        ticket(where: { estimation: { _eq: true } }) {
+        ticket(where: {estimation: {_eq: true}, sprint: {project: {project_group_id: {_eq: ${projectGroup}}}}}) {
           be_spill
           be_story
           fe_spill
@@ -105,26 +105,60 @@ function useInvokeGetTicketsList(graphQLClient: any) {
   });
 }
 
+export function useInvokeUpdatePoints(graphQLClient: any) {
+    return useMutation(({ id, story }: any) => {
+        return graphQLClient.request(gql`
+            mutation MyMutation {
+                update_estimation_limit(where: {id: {_eq: ${id}}}, _set: {story: ${story}}) {
+                    returning {
+                        id
+                    }
+                }
+            }
+        `);
+    });
+}
+
+export function useInvokeGetProjectGroupList(graphQLClient: any) {
+    return useMutation(() => {
+        return graphQLClient.request(gql`
+            query MyQuery {
+                project_group {
+                    name
+                    id
+                }
+            }
+        `);
+    });
+}
+
 export const useServices = (props: any) => {
-  const { mutateAsync: invokeGetTicketList } = useInvokeGetTicketsList(
-    props.graphQLClient
-  );
-  const { mutateAsync: invokeRemoveTicket } = useInvokeRemoveTicket(
-    props.graphQLClient
-  );
-  const { mutateAsync: invokeEstimateLimit } = useEstimateLimit(
-    props.graphQLClient
-  );
+    const { mutateAsync: invokeGetProjectGroupList } = useInvokeGetProjectGroupList(
+        props.graphQLClient
+    );
+    const { mutateAsync: invokeUpdatePoints } = useInvokeUpdatePoints(
+        props.graphQLClient
+    );
+    const { mutateAsync: invokeGetTicketList } = useInvokeGetTicketsList(
+        props.graphQLClient
+    );
+    const { mutateAsync: invokeRemoveTicket } = useInvokeRemoveTicket(
+        props.graphQLClient
+    );
+    const { mutateAsync: invokeEstimateLimit } = useEstimateLimit(
+        props.graphQLClient
+    );
 
   const { mutateAsync: invokeEstimateDate } = useEstimateDate(
     props.graphQLClient
   );
 
-  return {
-    invokeGetTicketList: () => invokeGetTicketList(),
-    invokeRemoveTicket: (context: any) =>
-      invokeRemoveTicket({ ticketId: context.selectedTicketId }),
-    invokeGetEstimateList: () => invokeEstimateLimit(),
-    invokeEstimateDate: () => invokeEstimateDate(),
-  };
-};
+    return {
+        invokeGetProjectGroupList: () => invokeGetProjectGroupList(),
+        invokeGetTicketList: (context: any) => invokeGetTicketList(context.selectedProjectGroup.id),
+        invokeRemoveTicket: (context: any) => invokeRemoveTicket({ ticketId: context.selectedTicketId }),
+        invokeGetEstimateList: () => invokeEstimateLimit(),
+        invokeEstimateDate: () => invokeEstimateDate(),
+        invokeUpdatePoints: (context: any) => invokeUpdatePoints(context.updatedPoint),
+    }
+}

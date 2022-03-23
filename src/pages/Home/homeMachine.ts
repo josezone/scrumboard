@@ -41,7 +41,8 @@ export const homeMachine = createMachine<any>({
     updateSprint: undefined,
     projectGroupList: [],
     selectedProjectGroup: 0,
-    selectedVersion: null
+    selectedVersion: null,
+    newProjectId: undefined,
   },
   states: {
     home: {
@@ -604,6 +605,19 @@ export const homeMachine = createMachine<any>({
           invoke: {
             id: "makeProject",
             src: "invokeMakeProject",
+            onDone: {
+              target: "createEstimateList",
+              actions: "assignNewProjectId",
+            },
+            onError: {
+              target: "idle",
+            },
+          },
+        },
+        createEstimateList: {
+          invoke: {
+            id: "createEstimateList",
+            src: "invokecreateEstimateList",
             onDone: {
               target: "reloadProject",
             },

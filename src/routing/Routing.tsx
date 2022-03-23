@@ -1,34 +1,53 @@
 import { lazy } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { GraphQLClient } from "graphql-request";
 import Estimate from "../pages/Estimate/Estimate";
+
 const graphQLClient = new GraphQLClient(
   process.env.REACT_APP_API_URL as string
 );
-
 const Home = lazy(() => import("../pages/Home/Home"));
 const Login = lazy(() => import("../pages/Login/Login"));
 const Bug = lazy(() => import("../pages/Bug/Bug"));
-const DailyReport = lazy(() => import("../pages/DailyReport/DailyReport"));
+
+const ResourcePlanning = lazy(
+  () => import("../pages/ResourcePlanning/ResourcePlanning")
+);
+const TotalSP = lazy(() => import("../pages/TotalSP/TotalSP"));
+const Report = lazy(() => import("../pages/Report/Report"));
 
 function Routing() {
+  const loginData = localStorage.getItem("data");
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          path="/"
-          element={<Home graphQLClient={graphQLClient} />}
-        />
-        <Route
-          path="/issue/:id"
-          element={<Bug graphQLClient={graphQLClient} />}
-        />
-        <Route
-          path="/dailyreport"
-          element={<DailyReport graphQLClient={graphQLClient} />}
-        />
         <Route path="/login" element={<Login />} />
-        <Route path="/estimate" element={<Estimate graphQLClient={graphQLClient} />} />
+        {loginData && (
+          <>
+            <Route path="/" element={<Home graphQLClient={graphQLClient} />} />
+            <Route
+              path="/issue/:id"
+              element={<Bug graphQLClient={graphQLClient} />}
+            />
+            <Route
+              path="/estimate"
+              element={<Estimate graphQLClient={graphQLClient} />}
+            />
+            <Route
+              path="/resource-planning"
+              element={<ResourcePlanning graphQLClient={graphQLClient} />}
+            />
+            <Route
+              path="/totalSP"
+              element={<TotalSP graphQLClient={graphQLClient} />}
+            />
+            <Route
+              path="/report"
+              element={<Report graphQLClient={graphQLClient} />}
+            />
+          </>
+        )}
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </BrowserRouter>
   );

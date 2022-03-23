@@ -437,6 +437,12 @@ const updateCountry = assign({
 const updateVersion = assign({
   selectedVersion: (context: any, event: any) => {
     return event.prop || {};
+  }
+})
+
+const assignNewProjectId = assign({
+  newProjectId: (context: any, event: any) => {
+    return event.data.insert_project.returning[0].id
   },
 });
 
@@ -494,5 +500,6 @@ export const actions = {
   assignSelectedProjectGroup,
   updateProjectGroup,
   updateCountry,
-  updateVersion
+  updateVersion,
+  assignNewProjectId
 };

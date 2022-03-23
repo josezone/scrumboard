@@ -1,5 +1,6 @@
 import { ProjectCardStyled } from "./ProjectCard.style";
 import Divider from '@mui/material/Divider';
+import TextField from '@mui/material/TextField';
 
 function storyPoint(props: any) {
     let el = {};
@@ -30,6 +31,10 @@ function storyPoint(props: any) {
     return { storyFe, storyBe, storyQa };
 }
 
+const pointsChanged = (item: any, send: any) => (event: any) => {
+    send({ type: "updatePoints", data: { id: item.id, story: event.target.value } })
+}
+
 function ProjectCard(props: any) {
     let fePoint = 0;
     let bePoint = 0;
@@ -48,15 +53,14 @@ function ProjectCard(props: any) {
     let el = estimate?.map((item: any) => {
         return (
             <div className={item["resource_type"]["resource_type"]} key={item["resource_type"]["resource_type"]}>
-                <span>max {item["resource_type"]["resource_type"]}:</span>
-                {item.story}
+                <TextField label={"max " + item['resource_type']['resource_type']} value={item.story} variant="outlined" onChange={pointsChanged(item, props.send)} type="number" />
             </div>
         );
     })
     const maxTotal = estimate?.reduce((acc: any, val: any) => {
-        return acc + val.story;
+        return acc + Number(val.story);
     }, 0)
-    
+
     return (
         <ProjectCardStyled>
             <div className="cardHead">

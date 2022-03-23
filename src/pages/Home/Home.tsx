@@ -5,10 +5,9 @@ import { useMachine } from "@xstate/react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import HomeSelection from "../../components/homeSelection/HomeSelection";
-import Resources from "../../components/resources/Resources";
 import ScrumBoard from "../../components/scrumBoard/ScrumBoard";
 import ScrumItem from "../../components/scrumBoard/ScrumItem";
-import AppBar from "../../components/appBar/AppBar";
+import AppBar from "../../components/appBarHome/AppBar";
 import {
   useGetCountryList,
   useGetProjectList,
@@ -41,11 +40,12 @@ import {
   useInvokeChangeEstimate,
   useInvokeUpdateSprint,
   useGetProjectGroupList,
+  useInvokecreateEstimateList,
 } from "./dataService";
 import { HomeStyle } from "./home.style";
 import { homeMachine } from "./homeMachine";
 import { actions } from "./stateActions";
-
+import Resources from "../Resources/Resource";
 function TabPanel(props: any) {
   const { children, value, index, ...other } = props;
 
@@ -77,6 +77,14 @@ function Home(props: any) {
 
   function clickEstimate() {
     navigate("/estimate");
+  }
+
+  function clickResourcePlan() {
+    navigate("/resource-planning");
+  }
+
+  function clickSprintReport() {
+    navigate("/sprintReport");
   }
 
   props.graphQLClient.setHeader(
@@ -192,6 +200,11 @@ function Home(props: any) {
   const { mutateAsync: invokeUpdateSprint } = useInvokeUpdateSprint(
     props.graphQLClient
   );
+
+  const { mutateAsync: invokecreateEstimateList } = useInvokecreateEstimateList(
+    props.graphQLClient
+  );
+
   const [state, send] = useMachine(homeMachine, {
     actions,
     services: {
@@ -302,6 +315,11 @@ function Home(props: any) {
           ticketId: context.estimateToggleId.id,
           estimate: context.estimateToggleId.estimation,
         }),
+      invokecreateEstimateList: (context: any) =>
+        invokecreateEstimateList({
+          projectId: context.newProjectId,
+          resourceTypeList: context.resourceTypeList,
+        }),
     },
   });
   const activateScrum = () => {
@@ -314,11 +332,18 @@ function Home(props: any) {
         <Tab label="Scrum" />
         <Tab label="Resources" />
       </Tabs>
-      <Button variant="text" className="reportHead" onClick={clickDailyReport}>
-        Daily Report
-      </Button>
       <Button variant="text" className="reportHead" onClick={clickEstimate}>
         Estimate
+      </Button>
+      <Button variant="text" className="reportHead" onClick={clickResourcePlan}>
+        Resource Plan
+      </Button>
+      <Button
+        variant="text"
+        className="reportHead"
+        onClick={() => navigate("/report")}
+      >
+        Report
       </Button>
 
       <TabPanel value={value} index={0}>
@@ -333,7 +358,7 @@ function Home(props: any) {
         <ScrumBoard {...state.context} send={send} ScrumItem={ScrumItem} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Resources {...state.context} send={send} />
+        <Resources graphQLClient={props.graphQLClient}></Resources>
       </TabPanel>
     </HomeStyle>
   );
