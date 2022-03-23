@@ -7,8 +7,10 @@ import Tabs from "@mui/material/Tabs";
 import { actions } from "./stateActions";
 import { estimateMachine } from "./estimateMachine";
 import { useServices } from "./dataService";
+
 import EstimateGraph from "../../components/estimateGraph/EstimateGraph";
 import EstimateReport from "../EstimateReport/EstimateReport";
+import NavigationBar from "../../components/NavigationBar/NavigationBar";
 
 function TabPanel(props: any) {
   const { children, value, index, ...other } = props;
@@ -41,6 +43,7 @@ function Estimate(props: any) {
   const [state, send] = useMachine(estimateMachine, { actions, services });
   return (
     <Fragment>
+      <NavigationBar />
       <Tabs value={value} onChange={handleChange} className="tabBar">
         <Tab label="Estimate" />
         <Tab label="Report" />
