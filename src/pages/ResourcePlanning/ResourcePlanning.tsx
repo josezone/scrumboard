@@ -1,10 +1,12 @@
+import { Fragment } from "react";
+
 import { useMachine } from "@xstate/react";
 import ResourcePlanningTable from "../../components/resourcePlanning/ResourcePlaning";
 import { useServices } from "./dataService";
 import { resourcePlanningMachine } from "./resourcePlanningMachine";
 import { actions } from "./stateActions";
 import { guards } from "./guardService";
-
+import NavigationBar from "../../components/NavigationBar/NavigationBar"
 function ResourcePlanning(props: any) {
     props.graphQLClient.setHeader(
         "Authorization",
@@ -14,7 +16,10 @@ function ResourcePlanning(props: any) {
     const [state, send] = useMachine(resourcePlanningMachine, { actions, services, guards })
 
     return (
-        <ResourcePlanningTable  {...state.context} send={send} />
+        <Fragment>
+            <NavigationBar/>
+            <ResourcePlanningTable  {...state.context} send={send} />
+        </Fragment>
     )
 }
 
