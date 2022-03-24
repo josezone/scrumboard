@@ -15,6 +15,43 @@ export const CreateSprintStyle = styled.div`
   #mui-component-select-country{
     width: 11em;
   }
+
+  .selectProject {
+    .MuiInputBase-root {
+      width: 100%;
+    }
+  }
+
+  .displayInline {
+    display: flex;
+    .MuiFormControl-root {
+      width: 100px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+
+    p.MuiFormHelperText-root {
+      margin: 0;
+      padding: 0;
+      font-size: x-small;
+      font-weight: 500;
+    }
+  }
+
+  .selectCountry .MuiInputBase-root {
+    width: 100%;
+  }
+
+  .selectVersion .MuiInputBase-root {
+    width: 100%;
+  }
+
+  .projecMessage {
+    margin: 0;
+    font-size: smaller;
+    color: #5c5c5c;
+  }
+
 `;
 
 export const ModalActionContainer = styled.div`

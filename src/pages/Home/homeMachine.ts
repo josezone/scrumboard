@@ -6,9 +6,9 @@ export const homeMachine = createMachine<any>({
   initial: "home",
   context: {
     year: new Date().getFullYear(),
-    scrumList: undefined,
+    scrumList: [],
     selectedScrum: undefined,
-    projectList: undefined,
+    projectList: [],
     selectedProject: undefined,
     selectedSprint: undefined,
     ticketList: undefined,
@@ -16,14 +16,14 @@ export const homeMachine = createMachine<any>({
     newProject: undefined,
     countryList: undefined,
     selectedCountry: undefined,
-    sprintStatusList: undefined,
+    sprintStatusList: [],
     activateDeactivateScrum: undefined,
     scrumCreateOpen: false,
     scrumCreateData: undefined,
     newSprintPopup: false,
     newSprint: undefined,
     newCountry: undefined,
-    sprintList: undefined,
+    sprintList: [],
     remoteStatusUpdateData: undefined,
     priorityList: undefined,
     scopeList: undefined,
@@ -39,6 +39,9 @@ export const homeMachine = createMachine<any>({
     changeSprintPayload: undefined,
     estimateToggleId: undefined,
     updateSprint: undefined,
+    projectGroupList: [],
+    selectedProjectGroup: 0,
+    selectedVersion: null,
     newProjectId: undefined,
   },
   states: {
@@ -56,10 +59,10 @@ export const homeMachine = createMachine<any>({
         },
         projectChanged: {
           actions: "updateProject",
-          target: "home.sprintList",
+          target: "home.getVersions",
         },
         sprintChanged: {
-          actions: "updateSprint",
+          actions: "updateSprints",
           target: "home.getTickets",
         },
         updateSprint: {
@@ -70,18 +73,41 @@ export const homeMachine = createMachine<any>({
           target: "newSprint.createNewCountry",
           actions: "assignNewCountry",
         },
+        projectGroupChanged: {
+          actions: "updateProjectGroup",
+          target: "home.getProjectList",
+        },
+        countryChanged: {
+          actions: "updateCountry",
+          target: "home.getVersions",
+        },
+        setVersion: {
+          actions: "updateVersion",
+          target: "home.getVersions",
+        }
       },
       states: {
         idle: {
           always: {
             target: [
               "getGroupList.getCountryList",
-              "getGroupList.getProjectList",
               "getGroupList.getSprintStatusList",
               "getGroupList.priorityList",
               "getGroupList.scopeList",
               "getGroupList.resourceList",
             ],
+          },
+        },
+        getVersions: {
+          invoke: {
+            id: "getVersionListHome",
+            src: "invokeGetVersionList",
+            onDone: {
+              actions: "assignVersionList",
+            },
+            onError: {
+              target: "idle",
+            },
           },
         },
         getGroupList: {
@@ -193,33 +219,6 @@ export const homeMachine = createMachine<any>({
                 },
               },
             },
-            getProjectList: {
-              initial: "start",
-              states: {
-                start: {
-                  invoke: {
-                    id: "getProjectList",
-                    src: "invokegetProjectList",
-                    onDone: {
-                      actions: "assignPprojectList",
-                      target: "projectSelect",
-                    },
-                    onError: {
-                      target: "#home.failiure",
-                    },
-                  },
-                },
-                projectSelect: {
-                  always: {
-                    target: "end",
-                    actions: "assignSelectedProject",
-                  },
-                },
-                end: {
-                  type: "final",
-                },
-              },
-            },
             getSprintStatusList: {
               initial: "start",
               states: {
@@ -243,7 +242,52 @@ export const homeMachine = createMachine<any>({
             },
           },
           onDone: {
-            target: "#home.getScrumList",
+            target: "#home.getProjectGroup",
+          },
+        },
+        getProjectGroup: {
+          invoke: [
+            {
+              id: "getProjectGroupList",
+              src: "invokeProjectGroupList",
+              onDone: {
+                actions: "assignProjectGroupList",
+                target: "projectGroupSelect",
+              },
+              onError: {
+                target: "failiure",
+              },
+            },
+          ],
+        },
+        projectGroupSelect: {
+          always: {
+            target: "getProjectList",
+            actions: "assignSelectedProjectGroup",
+          },
+        },
+        getProjectList: {
+          initial: "start",
+          states: {
+            start: {
+              invoke: {
+                id: "getProjectList",
+                src: "invokegetProjectList",
+                onDone: {
+                  actions: "assignPprojectList",
+                  target: "projectSelect",
+                },
+                onError: {
+                  target: "#home.failiure",
+                },
+              },
+            },
+            projectSelect: {
+              always: {
+                target: "#home.getScrumList",
+                actions: "assignSelectedProject",
+              },
+            },
           },
         },
         getScrumList: {
@@ -623,11 +667,10 @@ export const homeMachine = createMachine<any>({
         },
         getVersionList: {
           invoke: {
-            id: "getVersionList",
+            id: "getVersionListNewVersion",
             src: "invokeGetVersionList",
             onDone: {
               actions: "assignVersionList",
-              target: "idle",
             },
             onError: {
               target: "idle",

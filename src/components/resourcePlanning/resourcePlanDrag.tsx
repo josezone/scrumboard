@@ -32,7 +32,7 @@ function ResourcePlanDrag(props: any) {
                     <TableContainer component={Paper}>
                         <Table sx={{ minWidth: 650 }} aria-label="simple table">
                             {scrumResourceProject?.map((resource: any, index: number) => (
-                                <TableBody>
+                                <TableBody key={resource.resource + index}>
                                     <TableRow>
                                         <Draggable key={resource.resource} draggableId={resource.resource} index={index}>
                                             {(provided, snapshot) => (

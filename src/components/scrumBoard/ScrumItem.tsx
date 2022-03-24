@@ -62,6 +62,7 @@ function storyPoint(props: any) {
 function ScrumItem(props: any) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
@@ -93,6 +94,11 @@ function ScrumItem(props: any) {
 
   const estimateClicked = () => {
     props.restProps.send({ type: "toggleEstimate", prop: { id: props.id, estimation: props.estimation ? false : true } });
+  }
+
+  const navigateToTicket = () => {
+    if (!props.link) return;
+    window.open(props.link, "_blank")
   }
 
   function menuList() {
@@ -162,7 +168,7 @@ function ScrumItem(props: any) {
         </div>
         <div className="dndItem">
           <div className="ticketContainer">
-            <div className="ticketNumberStyle">{props.ticket}</div>
+            <div className="ticketNumberStyle" onClick={navigateToTicket}>{props.ticket}</div>
             <div>{props.scope.scope}</div>
           </div>
           <div className="ticketVersion">
