@@ -203,7 +203,7 @@ function Home(props: any) {
       invokegetProjectList: (context: any) => {
         return getProjectList({ selectedProjectGroupId: context.selectedProjectGroup.id })
       },
-      invokeReloadProject: () => invokeReloadProject(),
+      invokeReloadProject: (context: any) => invokeReloadProject({ selectedProjectGroupId: context.selectedProjectGroup.id }),
       invokeResourceList: () => invokeResourceList(),
       invokeScopeList: () => invokeScopeList(),
       invokeGetSprintStatusList: () => invokeGetSprintStatusList(),

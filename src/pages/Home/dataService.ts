@@ -182,10 +182,10 @@ export function useGetProjectList(graphQLClient: any) {
 }
 
 export function useInvokeReloadProject(graphQLClient: any) {
-  return useMutation(() => {
+  return useMutation(({selectedProjectGroupId}: any) => {
     return graphQLClient.request(gql`
       query getProjects {
-        project(where: { project_group_id: { _eq: 2 } }) {
+        project(where: { project_group_id: { _eq: ${selectedProjectGroupId} } }) {
           project
           id
         }
@@ -245,7 +245,7 @@ export function useInvokeMakeProjectGroup(graphQLClient: any) {
   return useMutation(({ newProjectGroup }: any) => {
     return graphQLClient.request(gql`
       mutation createNewProjectGroup {
-        insert_project_group(objects: { name: ${newProjectGroup} }) {
+        insert_project_group(objects: { name: "${newProjectGroup}" }) {
           returning {
             id
           }

@@ -125,6 +125,7 @@ export const homeMachine = createMachine<any>({
               src: "invokeProjectGroupList",
               onDone: {
                 actions: "assignProjectGroupList",
+                target: "projectGroupSelect"
               },
               onError: {
                 target: "failiure",
