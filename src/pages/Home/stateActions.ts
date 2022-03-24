@@ -262,12 +262,15 @@ const assignNewCountry = assign({
   },
 });
 
-const updateSprint = assign({
+const updateSprints = assign({
   selectedSprint: (context: any, event: any) => {
     return event.prop;
   },
   selectedCountry: (context: any, event: any) => {
     return event?.prop?.country || context?.selectedCountry;
+  },
+  selectedVersion: (context: any, event: any) => {
+    return event.prop?.version || context?.selectedVersion
   },
   sprintListMovingPayload: (context: any, event: any) => {
     return {
@@ -481,7 +484,7 @@ export const actions = {
   assignReloadSprintList,
   assignNewCountry,
   assignReloadCountryList,
-  updateSprint,
+  updateSprints,
   selectSprintNull,
   updateTicketStatus,
   assignRemoteUpdate,

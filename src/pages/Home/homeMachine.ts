@@ -62,7 +62,7 @@ export const homeMachine = createMachine<any>({
           target: "home.getVersions",
         },
         sprintChanged: {
-          actions: "updateSprint",
+          actions: "updateSprints",
           target: "home.getTickets",
         },
         updateSprint: {
