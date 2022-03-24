@@ -2,12 +2,11 @@ import Button from "@mui/material/Button";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import { useMachine } from "@xstate/react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import HomeSelection from "../../components/homeSelection/HomeSelection";
+import { Fragment, useState } from "react";
 import ScrumBoard from "../../components/scrumBoard/ScrumBoard";
 import ScrumItem from "../../components/scrumBoard/ScrumItem";
 import AppBar from "../../components/appBarHome/AppBar";
+import NavigationBar from "../../components/NavigationBar/NavigationBar";
 import {
   useGetCountryList,
   useGetProjectList,
@@ -47,6 +46,8 @@ import { HomeStyle } from "./home.style";
 import { homeMachine } from "./homeMachine";
 import { actions } from "./stateActions";
 import Resources from "../Resources/Resource";
+import { guards } from "./guardService";
+
 function TabPanel(props: any) {
   const { children, value, index, ...other } = props;
 
@@ -69,24 +70,6 @@ function Home(props: any) {
   const handleChange = (event: any, newValue: any) => {
     setValue(newValue);
   };
-
-  const navigate = useNavigate();
-
-  function clickDailyReport() {
-    navigate("/dailyReport");
-  }
-
-  function clickEstimate() {
-    navigate("/estimate");
-  }
-
-  function clickResourcePlan() {
-    navigate("/resource-planning");
-  }
-
-  function clickSprintReport() {
-    navigate("/sprintReport");
-  }
 
   props.graphQLClient.setHeader(
     "Authorization",
@@ -328,46 +311,37 @@ function Home(props: any) {
         }),
       invokeMakeProjectGroup: (context: any) => invokeMakeProjectGroup({ newProjectGroup: context.newProjectGroup })
     },
+    guards
   });
   const activateScrum = () => {
     send({ type: "activateScrum" });
   };
 
   return (
-    <HomeStyle>
-      <Tabs value={value} onChange={handleChange} className="tabBar">
-        <Tab label="Scrum" />
-        <Tab label="Resources" />
-      </Tabs>
-      <Button variant="text" className="reportHead" onClick={clickEstimate}>
-        Estimate
-      </Button>
-      <Button variant="text" className="reportHead" onClick={clickResourcePlan}>
-        Resource Plan
-      </Button>
-      <Button
-        variant="text"
-        className="reportHead"
-        onClick={() => navigate("/report")}
-      >
-        Report
-      </Button>
+    <Fragment>
+      <NavigationBar />
+      <HomeStyle>
+        <Tabs value={value} onChange={handleChange} className="tabBar">
+          <Tab label="Scrum" />
+          <Tab label="Resources" />
+        </Tabs>
 
-      <TabPanel value={value} index={0}>
-        <AppBar {...state.context} send={send} />
-        {state.context.selectedScrum && !state.context.selectedScrum.active && (
-          <div>
-            <Button variant="contained" onClick={activateScrum}>
-              Activate Scrum
-            </Button>
-          </div>
-        )}
-        <ScrumBoard {...state.context} send={send} ScrumItem={ScrumItem} />
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <Resources graphQLClient={props.graphQLClient}></Resources>
-      </TabPanel>
-    </HomeStyle>
+        <TabPanel value={value} index={0}>
+          <AppBar {...state.context} send={send} />
+          {state.context.selectedScrum && !state.context.selectedScrum.active && (
+            <div>
+              <Button variant="contained" onClick={activateScrum}>
+                Activate Scrum
+              </Button>
+            </div>
+          )}
+          <ScrumBoard {...state.context} send={send} ScrumItem={ScrumItem} />
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <Resources graphQLClient={props.graphQLClient}></Resources>
+        </TabPanel>
+      </HomeStyle>
+    </Fragment>
   );
 }
 
