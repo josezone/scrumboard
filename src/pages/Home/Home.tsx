@@ -45,6 +45,8 @@ import { HomeStyle } from "./home.style";
 import { homeMachine } from "./homeMachine";
 import { actions } from "./stateActions";
 import Resources from "../Resources/Resource";
+import { guards } from "./guardService";
+
 function TabPanel(props: any) {
   const { children, value, index, ...other } = props;
 
@@ -193,7 +195,7 @@ function Home(props: any) {
       invokeProjectGroupList: (context: any) => getProjectGroupList(),
       invokegetCountryList: () => getCountryList(),
       invokegetProjectList: (context: any) => {
-        return getProjectList({selectedProjectGroupId: context.selectedProjectGroup.id})
+        return getProjectList({ selectedProjectGroupId: context.selectedProjectGroup.id })
       },
       invokeReloadProject: () => invokeReloadProject(),
       invokeResourceList: () => invokeResourceList(),
@@ -244,7 +246,7 @@ function Home(props: any) {
           projectId: context?.selectedProject?.id,
         })
       },
-      invokeCreateVersion: (context: any) =>{
+      invokeCreateVersion: (context: any) => {
         return invokeCreateVersion({
           version: context.versionCreateData,
           countryId: context.selectedCountry?.id,
@@ -302,6 +304,7 @@ function Home(props: any) {
           resourceTypeList: context.resourceTypeList,
         }),
     },
+    guards
   });
   const activateScrum = () => {
     send({ type: "activateScrum" });

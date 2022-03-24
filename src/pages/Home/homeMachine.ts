@@ -264,6 +264,7 @@ export const homeMachine = createMachine<any>({
           always: {
             target: "getProjectList",
             actions: "assignSelectedProjectGroup",
+            cond: "checkPrjectGroupExists",
           },
         },
         getProjectList: {
