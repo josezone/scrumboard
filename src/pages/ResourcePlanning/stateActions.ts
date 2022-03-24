@@ -61,7 +61,6 @@ const updateDefaultProjectGroup = assign({
 
 const assignResourcePlan = assign({
     resourcePlan: (context: any, event: any) => {
-        console.log("??????????")
         return event.data["resource_plan"];
     },
 })

@@ -41,6 +41,7 @@ import {
   useInvokeUpdateSprint,
   useGetProjectGroupList,
   useInvokecreateEstimateList,
+  useInvokeMakeProjectGroup,
 } from "./dataService";
 import { HomeStyle } from "./home.style";
 import { homeMachine } from "./homeMachine";
@@ -205,6 +206,11 @@ function Home(props: any) {
     props.graphQLClient
   );
 
+  const { mutateAsync: invokeMakeProjectGroup } = useInvokeMakeProjectGroup(
+    props.graphQLClient
+  );
+
+
   const [state, send] = useMachine(homeMachine, {
     actions,
     services: {
@@ -212,7 +218,7 @@ function Home(props: any) {
       invokeProjectGroupList: (context: any) => getProjectGroupList(),
       invokegetCountryList: () => getCountryList(),
       invokegetProjectList: (context: any) => {
-        return getProjectList({selectedProjectGroupId: context.selectedProjectGroup.id})
+        return getProjectList({ selectedProjectGroupId: context.selectedProjectGroup.id })
       },
       invokeReloadProject: () => invokeReloadProject(),
       invokeResourceList: () => invokeResourceList(),
@@ -263,7 +269,7 @@ function Home(props: any) {
           projectId: context?.selectedProject?.id,
         })
       },
-      invokeCreateVersion: (context: any) =>{
+      invokeCreateVersion: (context: any) => {
         return invokeCreateVersion({
           version: context.versionCreateData,
           countryId: context.selectedCountry?.id,
@@ -320,6 +326,7 @@ function Home(props: any) {
           projectId: context.newProjectId,
           resourceTypeList: context.resourceTypeList,
         }),
+      invokeMakeProjectGroup: (context: any) => invokeMakeProjectGroup({ newProjectGroup: context.newProjectGroup })
     },
   });
   const activateScrum = () => {

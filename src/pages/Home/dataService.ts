@@ -241,6 +241,20 @@ export function useInvokeMakeScrum(graphQLClient: any) {
   });
 }
 
+export function useInvokeMakeProjectGroup(graphQLClient: any) {
+  return useMutation(({ newProjectGroup }: any) => {
+    return graphQLClient.request(gql`
+      mutation createNewProjectGroup {
+        insert_project_group(objects: { name: ${newProjectGroup} }) {
+          returning {
+            id
+          }
+        }
+      }
+    `);
+  });
+}
+
 export function useInvokeMakeProject(graphQLClient: any) {
   return useMutation(({ project, project_group_id }: any) => {
     return graphQLClient.request(gql`
@@ -333,8 +347,9 @@ export function useInvokeGetVersionList(graphQLClient: any) {
   return useMutation(({ countryId, projectId }: any) => {
     return graphQLClient.request(gql`
       query MyQuery {
-        version(where: { country_id: { _eq: ${countryId || 0
-      } }, project_id: { _eq: ${projectId || 0} } }) {
+        version(where: { country_id: { _eq: ${
+          countryId || 0
+        } }, project_id: { _eq: ${projectId || 0} } }) {
           id
           version
         }
@@ -373,7 +388,7 @@ export function useInvokeCreateNewTickets(graphQLClient: any) {
       beSpill,
       feSpill,
       qaSpill,
-      link
+      link,
     }: any) => {
       return graphQLClient.request(gql`
       mutation MyMutation {
@@ -465,24 +480,26 @@ export function useChangeSprintTicket(graphQLClient: any) {
 
 function estimateList(projectId: any, resourceTypeList: any) {
   return resourceTypeList.map((item: any) => {
-    return `{project_id: ${projectId}, resource_type_id: ${item.id}}`
-  })
+    return `{project_id: ${projectId}, resource_type_id: ${item.id}}`;
+  });
 }
 
 export function useInvokecreateEstimateList(graphQLClient: any) {
   return useMutation(({ projectId, resourceTypeList }: any) => {
     return graphQLClient.request(gql`
       mutation MyMutation {
-        insert_estimation_limit(objects: [${estimateList(projectId, resourceTypeList)}]) {
+        insert_estimation_limit(objects: [${estimateList(
+          projectId,
+          resourceTypeList
+        )}]) {
           returning {
             id
           }
         }
       }
     `);
-  })
+  });
 }
-
 
 function getResourceList(resourceList: any, ticketId: string) {
   const insertArray = resourceList.map((resource: any) => {
@@ -496,9 +513,9 @@ export function useInvokeTicketResource(graphQLClient: any) {
     const query = gql`
       mutation MyMutation {
         insert_ticket_resource(objects: [${getResourceList(
-      resources,
-      ticketId
-    )}]) {
+          resources,
+          ticketId
+        )}]) {
           returning {
             id
           }
@@ -585,4 +602,3 @@ export function useInvokeUpdateSprint(graphQLClient: any) {
     `);
   });
 }
-

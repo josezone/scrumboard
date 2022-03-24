@@ -43,6 +43,7 @@ export const homeMachine = createMachine<any>({
     selectedProjectGroup: 0,
     selectedVersion: null,
     newProjectId: undefined,
+    newProjectGroup: undefined
   },
   states: {
     home: {
@@ -84,7 +85,11 @@ export const homeMachine = createMachine<any>({
         setVersion: {
           actions: "updateVersion",
           target: "home.getVersions",
-        }
+        },
+        createProjectGroup: {
+          actions: "assignNewProjectGroup",
+          target: "home.makeNewProjectGroup",
+        },
       },
       states: {
         idle: {
@@ -97,6 +102,35 @@ export const homeMachine = createMachine<any>({
               "getGroupList.resourceList",
             ],
           },
+        },
+        makeNewProjectGroup: {
+          invoke: {
+            id: "makeProjectGroup",
+            src: "invokeMakeProjectGroup",
+            onDone: [
+              {
+                target: "getProjectGroupList",
+                actions: "assignNewProjectGroup",
+              },
+            ],
+            onError: {
+              target: "failiure",
+            },
+          },
+        },
+        getProjectGroupList: {
+          invoke: [
+            {
+              id: "getProjectGroupList",
+              src: "invokeProjectGroupList",
+              onDone: {
+                actions: "assignProjectGroupList",
+              },
+              onError: {
+                target: "failiure",
+              },
+            },
+          ],
         },
         getVersions: {
           invoke: {
