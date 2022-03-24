@@ -262,6 +262,12 @@ const assignNewCountry = assign({
   },
 });
 
+const assignNewProjectGroup = assign({
+  newProjectGroup: (context: any, event: any) => {
+    return event.prop || undefined;
+  },
+});
+
 const updateSprints = assign({
   selectedSprint: (context: any, event: any) => {
     return event.prop;
@@ -504,5 +510,6 @@ export const actions = {
   updateProjectGroup,
   updateCountry,
   updateVersion,
-  assignNewProjectId
+  assignNewProjectId,
+  assignNewProjectGroup
 };

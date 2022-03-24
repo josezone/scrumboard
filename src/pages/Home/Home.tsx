@@ -40,6 +40,7 @@ import {
   useInvokeUpdateSprint,
   useGetProjectGroupList,
   useInvokecreateEstimateList,
+  useInvokeMakeProjectGroup,
 } from "./dataService";
 import { HomeStyle } from "./home.style";
 import { homeMachine } from "./homeMachine";
@@ -188,6 +189,11 @@ function Home(props: any) {
     props.graphQLClient
   );
 
+  const { mutateAsync: invokeMakeProjectGroup } = useInvokeMakeProjectGroup(
+    props.graphQLClient
+  );
+
+
   const [state, send] = useMachine(homeMachine, {
     actions,
     services: {
@@ -197,7 +203,7 @@ function Home(props: any) {
       invokegetProjectList: (context: any) => {
         return getProjectList({ selectedProjectGroupId: context.selectedProjectGroup.id })
       },
-      invokeReloadProject: () => invokeReloadProject(),
+      invokeReloadProject: (context: any) => invokeReloadProject({ selectedProjectGroupId: context.selectedProjectGroup.id }),
       invokeResourceList: () => invokeResourceList(),
       invokeScopeList: () => invokeScopeList(),
       invokeGetSprintStatusList: () => invokeGetSprintStatusList(),
@@ -303,6 +309,7 @@ function Home(props: any) {
           projectId: context.newProjectId,
           resourceTypeList: context.resourceTypeList,
         }),
+      invokeMakeProjectGroup: (context: any) => invokeMakeProjectGroup({ newProjectGroup: context.newProjectGroup })
     },
     guards
   });

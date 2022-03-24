@@ -13,6 +13,7 @@ import HomeSelection from "../homeSelection/HomeSelection";
 import { AppBarWrapper, EditIconWrapper } from "./AppBar.style";
 import ScrumSelection from "../homeSelection/ScrumSelection";
 import SprintSelection from "../homeSelection/SprintSelection";
+import ProjectGroupSelection from "../homeSelection/projectGroupSelection";
 
 type yearItem = { key: number; value: number; label: number };
 type scrumItem = { key: number; value: number; label: number };
@@ -20,6 +21,7 @@ type sprintItem = { key: number; value: number; label: string };
 
 function AppBarHeader(props: any) {
   const [projectModal, setProjectModal] = useState<boolean>(false);
+  const [projectGroupModal, setProjectGroupModal] = useState<boolean>(false);
   const [editSprint, setEditSprint] = useState(false);
 
   const handleSprintEdit = (): void => {
@@ -129,6 +131,11 @@ function AppBarHeader(props: any) {
   const handleProjectModal = (): void => {
     setProjectModal((m) => !m);
   };
+
+  const handleProjectGroupModal = (): void => {
+    setProjectGroupModal((m) => !m);
+  }
+
   return (
     <AppBarWrapper>
       <AppBar position="static">
@@ -148,7 +155,7 @@ function AppBarHeader(props: any) {
                   props.projectGroupList.length
                 }
               >
-                <AddNew addNew={handleProjectModal}></AddNew>
+                <AddNew addNew={() => setProjectGroupModal(true)}></AddNew>
               </ItemSelect>
 
               <ItemSelect
@@ -210,6 +217,7 @@ function AppBarHeader(props: any) {
         projectModal={projectModal}
         handleProjectModal={handleProjectModal}
       ></HomeSelection>
+      <ProjectGroupSelection {...props} projectGroupModal={projectGroupModal} handleProjectGroupModal={handleProjectGroupModal}/>
       <ScrumSelection {...props}></ScrumSelection>
       <SprintSelection
         {...props}
