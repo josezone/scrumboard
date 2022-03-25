@@ -34,7 +34,7 @@ function Report(props: any) {
     <Fragment>
       <NavigationBar />
       <Tabs value={value} onChange={handleChange} className="tabBar">
-        <Tab label="Project SP" />
+        <Tab label="Total SP" />
         <Tab label="Daily Report" />
         <Tab label="Sprint Report" />
       </Tabs>

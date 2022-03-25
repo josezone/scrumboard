@@ -16,10 +16,10 @@ export function useGetScrumList(graphQLClient: any) {
 }
 
 export function useGetTicketList(graphQLClient: any) {
-  return useMutation((scrum: number) => {
+  return useMutation(({ scrum, projectGroup }: any) => {
     return graphQLClient.request(gql`
       query MyQuery {
-        ticket(where: {sprint: {scrum_id: {_eq: ${scrum}}}},order_by: {sprint: {project: {project: asc}}}) {
+        ticket(where: {sprint: {scrum_id: {_eq: ${scrum}}, project: {project_group_id: {_eq: ${projectGroup}}}}}, order_by: {sprint: {project: {project: asc}}}) {
           fe_story
           be_story
           qa_story
@@ -35,3 +35,38 @@ export function useGetTicketList(graphQLClient: any) {
   });
 }
 
+export function useGetProjectGroups(graphQLClient: any) {
+  return useMutation(() => {
+    return graphQLClient.request(gql`
+      query MyQuery {
+        project_group {
+          name
+          id
+        }
+      }
+    `);
+  });
+}
+
+export function useGetResourcePlanningList(graphQLClient: any) {
+  return useMutation(({ scrum, projectGroup }: any) => {
+    return graphQLClient.request(gql`
+      query MyQuery {
+        scrum_resource_project(
+          where: { scrum: { project_group_id: { _eq: ${scrum}}, id: { _eq: ${projectGroup} } } }
+          order_by: { project: { project: asc } }
+        ) {
+          story
+          resource {
+            resource_type {
+              resource_type
+            }
+          }
+          project {
+            project
+          }
+        }
+      }
+    `);
+  });
+}
