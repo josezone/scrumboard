@@ -7,13 +7,14 @@ const assignResourceList = assign({
     },
 });
 
-const assignScrumList = assign({
+export const assignScrumList = assign({
     scrumList: (context: any, event: any) => {
+        console.log(context)
         return event.data.scrum;
     },
 });
 
-const selectDefaultScrum = assign({
+export const selectDefaultScrum = assign({
     scrumSelected: (context: any, event: any) => {
         if (context.scrumList.length) {
             let selectedScrum = context.scrumList.filter((scrum: any) => scrum.active);
@@ -35,7 +36,7 @@ const selectDefaultScrum = assign({
     },
 });
 
-const updateDefaultScrum = assign({
+export const updateDefaultScrum = assign({
     scrumSelected: (context: any, event: any) => {
         return event.data;
     },

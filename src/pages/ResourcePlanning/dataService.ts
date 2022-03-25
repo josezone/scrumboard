@@ -18,7 +18,7 @@ function useInvokeResourceList(graphQLClient: any) {
     });
 }
 
-function useInvokeGetScrumList(graphQLClient: any) {
+export function useInvokeGetScrumList(graphQLClient: any) {
     return useMutation((projectGroupId: number) => {
         return graphQLClient.request(gql`
                     query MyQuery {

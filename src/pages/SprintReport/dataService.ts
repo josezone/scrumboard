@@ -1,11 +1,13 @@
 import { gql } from "graphql-request";
 import { useMutation } from "react-query";
+import { useInvokeGetProjectGroupList } from "../Estimate/dataService";
+import { useInvokeGetScrumList } from "../ResourcePlanning/dataService";
 
 export function useGetSprintReport(graphQLClient: any) {
-    return useMutation(({ ticketId, statusId }: any) => {
-      return graphQLClient.request(gql`
+  return useMutation(({ projectGroupId, scrumId }: any) => {
+    return graphQLClient.request(gql`
       {
-        scrum(where: {active: {_eq: true}}) {
+        scrum(where: {active: {_eq: true}, project_group_id: {_eq: ${projectGroupId}}, id: {_eq: ${scrumId}}}) {
           scrum
           sprints {
             sprint
@@ -32,5 +34,25 @@ export function useGetSprintReport(graphQLClient: any) {
         }
       }
       `);
-    });
+  });
+}
+
+export const useServices = (props: any) => {
+  const { mutateAsync: getSprintReport } = useGetSprintReport(
+    props.graphQLClient
+  );
+
+  const { mutateAsync: invokeGetProjectGroupList } = useInvokeGetProjectGroupList(
+    props.graphQLClient
+  );
+
+  const { mutateAsync: invokeGetScrumList } = useInvokeGetScrumList(
+    props.graphQLClient
+  );
+
+  return {
+    invokeGetProjectGroupList: () => invokeGetProjectGroupList(),
+    invokeGetScrumList: (context: any) => invokeGetScrumList(context.selectedProjectGroup.id),
+    getSprintReport: (context: any) => getSprintReport({ projectGroupId: context.selectedProjectGroup.id, scrumId: context.scrumSelected.id })
   }
+}

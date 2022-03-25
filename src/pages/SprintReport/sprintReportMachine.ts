@@ -1,42 +1,98 @@
 import { createMachine } from "xstate";
 
-export enum SprintReportMachineEvents {
-    INVOKE_GET_SPRINT_REPORT = "INVOKE_GET_SPRINT_REPORT"
-}
-
-
 export const SprintReportMachine = createMachine<any, any, any>({
     id: "SprintReportMachine",
-    initial: "idle",
+    initial:"mainGroup",
+    type: "parallel",
     context: {
         sprintReportList: {},
-        loading: true,
-        sprintName: null
+        sprintName: null,
+        projectGroup: undefined,
+        projectGroupList: undefined,
+        scrumSelected: undefined,
+        scrumList: undefined,
     },
     states: {
-        idle: {
-            on: {
-                [SprintReportMachineEvents.INVOKE_GET_SPRINT_REPORT]: {
-                    target: "GET_SPRINT_LIST",
-                    actions: "assignLoader"
-                }
-            }
-        },
-        GET_SPRINT_LIST: {
-            invoke: {
-                src: "getSprintReport",
-                onDone: {
-                    target: "idle",
-                    actions: "assignSprintReportSuccess"
+        changeGroup: {
+            initial: "idle",
+            states: {
+                idle: {
+                    on: {
+                        changeProjectGroup: {
+                            actions: "updateProjectGroup",
+                            target: "#SprintReportMachine.mainGroup.scrumList",
+                        },
+                        changeScrum: {
+                            actions: "updateDefaultScrum",
+                            target: "#SprintReportMachine.mainGroup.getSprintList",
+                        },
+                    },
                 },
-                onError: {
-                    target: "idle",
-                    actions: "assignSprintReportFaild"
-                }
-            }
-        }
-    }
+            },
+        },
+        mainGroup: {
+            initial: "idle",
+            states: {
+                idle: {
+                    always: {
+                        target: "getProjectGroupList",
+                    },
+                },
+                getProjectGroupList: {
+                    invoke: {
+                        id: "getProjectGroupList",
+                        src: "invokeGetProjectGroupList",
+                        onDone: {
+                            actions: "assignProjectGroupList",
+                            target: "setDefaultProjectGroup",
+                        },
+                        onError: {
+                            target: "end",
+                        },
+                    },
+                },
+                setDefaultProjectGroup: {
+                    always: {
+                        actions: "assignDefaultProjectGroup",
+                        target: "scrumList",
+                    },
+                },
+                scrumList: {
+                    invoke: {
+                        id: "scrumList",
+                        src: "invokeGetScrumList",
+                        onDone: {
+                            actions: "assignScrumList",
+                            target: "defaultScrum",
+                        },
+                        onError: {
+                            target: "end",
+                        },
+                    },
+                },
+                defaultScrum: {
+                    always: {
+                        actions: "selectDefaultScrum",
+                        target: "getSprintList",
+                    },
+                },
+                getSprintList: {
+                    invoke: {
+                        src: "getSprintReport",
+                        onDone: {
+                            target: "end",
+                            actions: "assignSprintReportSuccess",
+                        },
+                        onError: {
+                            target: "end",
+                            actions: "assignSprintReportFaild",
+                        },
+                    },
+                },
+                end: {
+                    type: "final",
+                },
+            },
+        },
+    },
 });
-
-
-

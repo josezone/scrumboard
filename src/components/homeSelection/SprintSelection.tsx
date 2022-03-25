@@ -271,7 +271,7 @@ function SprintSelection(props: any) {
                           <MenuItem value={0}>
                             <em>None</em>
                           </MenuItem>
-                          {props.versionList.map((version: any) => {
+                          {props.versionList?.map((version: any) => {
                             return (
                               <MenuItem
                                 value={version.id}

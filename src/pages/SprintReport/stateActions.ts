@@ -1,5 +1,7 @@
 import { assign } from "xstate";
 import groupArray from "group-array";
+import { assignProjectGroupList, updateProjectGroup, assignDefaultProjectGroup } from "../Estimate/stateActions";
+import { assignScrumList, selectDefaultScrum, updateDefaultScrum } from "../ResourcePlanning/stateActions";
 
 const assignSprintReportSuccess = assign({
     sprintReportList: (context: any, event: any) => {
@@ -7,7 +9,7 @@ const assignSprintReportSuccess = assign({
         return groupArray(sprints, "project.project") || {}
     },
     loading: false,
-    sprintName:  (context: any, event: any) => {
+    sprintName: (context: any, event: any) => {
         const scrum = event?.data?.scrum[0] || {};
         return scrum.scrum || null;
     },
@@ -27,7 +29,13 @@ const assignSprintReportFaild = assign({
 });
 
 export const actions = {
+    assignProjectGroupList,
+    updateProjectGroup,
+    assignDefaultProjectGroup,
     assignSprintReportSuccess,
     assignLoader,
-    assignSprintReportFaild
+    assignSprintReportFaild,
+    assignScrumList,
+    selectDefaultScrum,
+    updateDefaultScrum
 }
