@@ -7,10 +7,11 @@ import { Controller, useForm } from "react-hook-form";
 
 import ModalComponent from "../modal/modal";
 import { ProjectSelectionStyle } from "./projectSelection.style";
+import { useState } from "react";
 
 const schema = yup
   .object({
-    projectGroup: yup.string().required(),
+    projectGroup: yup.string().min(1).required(),
   })
   .required();
 
@@ -24,14 +25,13 @@ function ProjectGroupSelection(props: any) {
     resolver: yupResolver(schema),
   });
 
+  const [projectGroup, setProjectGorup] = useState<string>('')
 
-  const onSubmit = (e: any) => {
-    handleSubmit((data: any) => {
-      reset();
-      e.target.reset();
-      props.send({ type: "createProjectGroup", prop: data.projectGroup.toString() });
-    })(e);
+  const onSubmit = (data: any) => {
+    reset();
+    setProjectGorup('');
     props.handleProjectGroupModal();
+    props.send({ type: "createProjectGroup", prop: data.projectGroup.toString() });
   };
 
   return (
@@ -42,7 +42,7 @@ function ProjectGroupSelection(props: any) {
     >
       <ProjectSelectionStyle>
         <div className="projectContainer">
-          <form onSubmit={onSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <Controller
               name="projectGroup"
               control={control}
@@ -52,6 +52,11 @@ function ProjectGroupSelection(props: any) {
                   label="New Project Group"
                   variant="standard"
                   className="newProj"
+                  value={projectGroup}
+                  onChange={e => {
+                    field.onChange(e);
+                    setProjectGorup(e.target.value);
+                  }}
                   error={errors.projectGroup ? true : false}
                   helperText={errors?.projectGroup?.message}
                 />

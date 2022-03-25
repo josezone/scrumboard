@@ -21,17 +21,18 @@ import { useEffect } from "react";
 const schema = yup
   .object({
     sprint: yup.string().required(),
-    country: yup.string().required(),
-    project: yup.string().required(),
-    version: yup.string().required()
+    country: yup.string().notOneOf(["0", undefined, null]).required(),
+    project: yup.string().notOneOf(["0", undefined, null]).required(),
+    version: yup.string().notOneOf(["0", undefined, null]).required()
   })
   .required();
 
 function SprintSelection(props: any) {
-  const { editMode = false, handleEditMode, selectedSprint, selectedProject } = props;
+  const { editMode = false, handleEditMode, selectedSprint, selectedProject, selectedCountry, selectedVersion } = props;
   const {
     reset,
     handleSubmit,
+    resetField,
     formState: { errors },
     control,
     setValue,
@@ -39,26 +40,23 @@ function SprintSelection(props: any) {
     resolver: yupResolver(schema),
   });
 
-  const [countrySelect, setCountrySelect] = useState<string | undefined>(undefined);
-  const [newCountry, setNewCountry] = useState<string | undefined>(undefined);
-  const [projectSelected, setProjectSelected] = useState("");
+  const [newCountry, setNewCountry] = useState<string>('');
+  
   const [newProject, setNewProject] = useState("");
   const [newVersion, setNewVersion] = useState("");
-  const [versionSelected, setVersionSelected] = useState<string | undefined>(undefined);
   const [sprint, setSprintName] = useState("");
 
   useEffect(() => {
     if (editMode) {
       const spitName = selectedSprint?.sprint.split('-');
-      setProjectSelected(selectedProject?.id)
-      setCountrySelect(selectedSprint?.country?.id);
+      
       setValue("sprint", spitName[spitName.length - 1]);
       setValue("country", selectedSprint?.country?.id);
       setValue("project", selectedProject?.id)
     } else {
-      setValue("sprint", "");
-      setValue("country", undefined);
-      setValue("project", selectedProject?.id || undefined);
+      setValue("country", selectedCountry?.id || 0);
+      setValue("project", selectedProject?.id || 0)
+      setValue("version", selectedVersion?.id || 0)
     }
   }, [selectedSprint?.sprint, editMode, selectedSprint?.country?.id, selectedProject?.id]);
 
@@ -66,40 +64,40 @@ function SprintSelection(props: any) {
     if (newCountry) {
       props.send({ type: "assignNewCountry", prop: newCountry });
       setNewCountry("");
+      resetField('country');
     }
   };
-
+  
   const addProject = (event: any) => {
     if (newProject) {
       props.send({ type: "createProject", prop: newProject });
       setNewCountry("");
     }
   };
-
+  
   const addVersion = (event: any) => {
     if (newVersion) {
       props.send({ type: "newVersion", prop: newVersion });
       setNewVersion("");
     }
   };
-
+  
   const newCountryChange = (event: any) => {
     setNewCountry(event.target.value);
   };
-
+  
   const handleClose = () => {
     reset();
-    setCountrySelect("");
-    setNewCountry("");
+    setValue('country', 0);
+    setSprintName("");
     props.send({ type: "createSprintPopupClose" });
   };
 
   const onSubmit = (e: any) => {
-    // if (!countrySelect || !projectSelected || !versionSelected || sprint === '') 
     handleSubmit((data: any) => {
       reset();
+      setSprintName("");
       e.target.reset();
-      setCountrySelect("");
       if (!editMode) {
         props.send({ type: "assignNewSprint", prop: { ...data, sprint: getName() } });
       } else {
@@ -110,13 +108,13 @@ function SprintSelection(props: any) {
   };
 
   const isDisabled = () => {
-    return (countrySelect === undefined || projectSelected === undefined) ? true : false
+    return (!selectedCountry || !selectedProject) ? true : false
   }
 
   const getName = () => {
     if (!props.countryList) return '';
-    const countryName = props.countryList?.find((country: { country: string, id: any }) => country.id == countrySelect)?.country;
-    const versionName = props.versionList?.find((version: any) => version.id === versionSelected)?.version;
+    const countryName = props.countryList?.find((country: { country: string, id: any }) => country.id == selectedCountry?.id)?.country;
+    const versionName = props.versionList?.find((version: any) => version.id === selectedVersion?.id)?.version;
     let sprintName = '';
     sprintName += countryName ? `${countryName}-` : '';
     sprintName += selectedProject?.project ? `${selectedProject?.project}-` : '';
@@ -125,9 +123,11 @@ function SprintSelection(props: any) {
     return sprintName
   }
 
-  const onVersionSelect = (version: string) => {
-    setVersionSelected(version);
-    props.send({ type: "setVersion", prop: version });
+  const onVersionSelect = (event: any) => {
+    const selectedversion = props?.versionList?.filter(
+      (version: any) => version.id === Number(event.target.value)
+    );
+    props.send({ type: "setVersion", prop: selectedversion[0] });
   }
 
   return (
@@ -164,47 +164,46 @@ function SprintSelection(props: any) {
                       )}
                     />
                   </div>
-                  {props.countryList && props.countryList.length > 0 && (
-                    <div className="selectCountry">
-                      <InputLabel
-                        variant="standard"
-                        htmlFor="selectSprintNative"
-                      >
-                        Country
-                      </InputLabel>
-                      <Controller
-                        name="country"
-                        control={control}
-                        render={({ field }) => (
-                          <Select
-                            id="country"
-                            {...field}
-                            value={countrySelect}
-                            onChange={(e: any) => {
-                              setCountrySelect(e.target.value);
-                              props.onCountryChanged(e);
-                              field.onChange(e);
-                            }}
-                            error={errors.country ? true : false}
-                          >
-                            {/* <MenuItem value="">
+
+                  <div className="selectCountry">
+                    <InputLabel
+                      variant="standard"
+                      htmlFor="selectSprintNative"
+                    >
+                      Country
+                    </InputLabel>
+                    <Controller
+                      name="country"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          id="country"
+                          {...field}
+                          value={selectedCountry?.id || 0}
+                          onChange={(e: any) => {
+                            props.onCountryChanged(e);
+                            field.onChange(e);
+                          }}
+                          error={errors.country ? true : false}
+                        >
+                          <MenuItem value={0}>
                               <em>None</em>
-                            </MenuItem> */}
-                            {props.countryList.map((country: any) => {
-                              return (
-                                <MenuItem
-                                  value={country.id}
-                                  key={country + country.country}
-                                >
-                                  {country.country}
-                                </MenuItem>
-                              );
-                            })}
-                          </Select>
-                        )}
-                      />
-                    </div>
-                  )}
+                            </MenuItem>
+                          {props.countryList.map((country: any) => {
+                            return (
+                              <MenuItem
+                                value={country.id}
+                                key={country + country.country}
+                              >
+                                {country.country}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
+                      )}
+                    />
+                  </div>
+
 
                   <div className="selectProject">
                     <InputLabel
@@ -214,23 +213,22 @@ function SprintSelection(props: any) {
                       Project
                     </InputLabel>
                     <Controller
-                      name="Project"
+                      name="project"
                       control={control}
                       render={({ field }) => (
                         <Select
                           id="project"
                           {...field}
-                          value={selectedProject?.id}
+                          value={selectedProject?.id || 0}
                           onChange={(e: any) => {
-                            setProjectSelected(e.target.value);
                             props.onProjectChanged(e);
                             field.onChange(e);
                           }}
                           error={errors.project ? true : false}
                         >
-                          {/* <MenuItem value={selectedProject}>
-                              <em>{selectedProject}</em>
-                            </MenuItem> */}
+                          <MenuItem value={0}>
+                              <em>None</em>
+                            </MenuItem>
                           {props.projectList.map((project: any) => {
                             return (
                               <MenuItem
@@ -263,14 +261,14 @@ function SprintSelection(props: any) {
                         <Select
                           id="version"
                           {...field}
-                          value={versionSelected}
+                          value={selectedVersion?.id || 0}
                           onChange={(e: any) => {
-                            onVersionSelect(e.target.value);
+                            onVersionSelect(e);
                             field.onChange(e);
                           }}
                           error={errors.version ? true : false}
                         >
-                          <MenuItem value="">
+                          <MenuItem value={0}>
                             <em>None</em>
                           </MenuItem>
                           {props.versionList.map((version: any) => {
@@ -291,6 +289,7 @@ function SprintSelection(props: any) {
                 </div>
                 <div className="createProjectSection" />
                 <div className="createSction">
+                  {/* // * add country */}
                   <div>
                     <InputLabel variant="standard" id="newCountry">
                       New Country
@@ -301,7 +300,6 @@ function SprintSelection(props: any) {
                         <AddIcon />
                       </Fab>
                     </div>
-
                   </div>
 
                   <div>
