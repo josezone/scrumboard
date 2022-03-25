@@ -2,6 +2,7 @@ import { lazy } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { GraphQLClient } from "graphql-request";
 import Estimate from "../pages/Estimate/Estimate";
+import NavigationBar from "../components/NavigationBar/NavigationBar";
 
 const graphQLClient = new GraphQLClient(
   process.env.REACT_APP_API_URL as string
@@ -20,6 +21,7 @@ function Routing() {
   const loginData = localStorage.getItem("data");
   return (
     <BrowserRouter>
+    <NavigationBar />
       <Routes>
         <Route path="/login" element={<Login />} />
         {loginData && (

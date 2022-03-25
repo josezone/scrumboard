@@ -6,7 +6,7 @@ import { useServices } from "./dataService";
 import { resourcePlanningMachine } from "./resourcePlanningMachine";
 import { actions } from "./stateActions";
 import { guards } from "./guardService";
-import NavigationBar from "../../components/NavigationBar/NavigationBar"
+
 function ResourcePlanning(props: any) {
     props.graphQLClient.setHeader(
         "Authorization",
@@ -17,7 +17,6 @@ function ResourcePlanning(props: any) {
 
     return (
         <Fragment>
-            <NavigationBar/>
             <ResourcePlanningTable  {...state.context} send={send} />
         </Fragment>
     )

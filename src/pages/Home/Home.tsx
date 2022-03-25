@@ -6,7 +6,6 @@ import { Fragment, useState } from "react";
 import ScrumBoard from "../../components/scrumBoard/ScrumBoard";
 import ScrumItem from "../../components/scrumBoard/ScrumItem";
 import AppBar from "../../components/appBarHome/AppBar";
-import NavigationBar from "../../components/NavigationBar/NavigationBar";
 import {
   useGetCountryList,
   useGetProjectList,
@@ -319,7 +318,6 @@ function Home(props: any) {
 
   return (
     <Fragment>
-      <NavigationBar />
       <HomeStyle>
         <Tabs value={value} onChange={handleChange} className="tabBar">
           <Tab label="Scrum" />

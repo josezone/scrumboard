@@ -3,7 +3,6 @@ import { Fragment, useState } from "react";
 import DailyReport from "../DailyReport/DailyReport";
 import SprintReport from "../SprintReport/sprintReport";
 import TotalSP from "../TotalSP/TotalSP";
-import NavigationBar from "../../components/NavigationBar/NavigationBar";
 
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
@@ -32,7 +31,6 @@ function Report(props: any) {
   };
   return (
     <Fragment>
-      <NavigationBar />
       <Tabs value={value} onChange={handleChange} className="tabBar">
         <Tab label="Project SP" />
         <Tab label="Daily Report" />
