@@ -10,42 +10,47 @@ import Paper from "@mui/material/Paper";
 import { SPTableWrapper } from "./totalSPTable.style";
 import groupArray from "group-array";
 
-function TotalSPTable(props: any) {
-  const { ticketList } = props;
+function ResourceSPTable(props: any) {
+  const { resourcePlanningList } = props;
 
-  const tickets: Record<any, any> =
-    ticketList && groupArray(ticketList, "sprint.project.project");
-  const projects = tickets && Object.keys(tickets);
-
+  const resourcePlanning: Record<any, any> =
+    resourcePlanningList && groupArray(resourcePlanningList, "project.project");
+  const projects = resourcePlanning && Object.keys(resourcePlanning);
   const getSPList = (el: any) => {
     let spObj: Record<any, any> = {};
-    let ticketsArr = tickets[el];
+    let resourcePlanningArr = resourcePlanning[el];
     spObj["project"] = el;
-    const fe = ticketsArr.reduce((acc: any, curr: any) => {
-      return acc + (curr?.fe_story || 0);
-    }, 0);
-    const be = ticketsArr.reduce((acc: any, curr: any) => {
-      return acc + (curr?.be_story || 0);
-    }, 0);
-    const qa = ticketsArr.reduce((acc: any, curr: any) => {
-      return acc + (curr?.qa_story || 0);
-    }, 0);
-    let total = fe + be + qa || 0;
-    spObj["fe"] = fe;
-    spObj["be"] = be;
-    spObj["qa"] = qa;
-    spObj["total"] = total;
-    return spObj;
+    spObj = resourcePlanningArr.reduce(
+      (acc: any, curr: any) => {
+        switch (curr?.resource?.resource_type.resource_type) {
+          case "FE":
+            return { ...acc, fe: acc.fe + curr.story };
+          case "BE":
+            return { ...acc, be: acc.be + curr.story };
+          case "QA":
+            return { ...acc, qa: acc.qa + curr.story };
+          default:
+            return acc;
+        }
+      },
+      { fe: 0, be: 0, qa: 0 }
+    );
+    return {
+      fe: spObj.fe,
+      be: spObj.be,
+      qa: spObj.qa,
+      project: el,
+      total: spObj.fe + spObj.be + spObj.qa,
+    };
   };
 
   const spList = projects.map((el: string) => {
     return getSPList(el);
   });
-
   return (
     <SPTableWrapper>
       <Container>
-        <h1>Project SP</h1>
+        <h1>Resource SP</h1>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
@@ -94,4 +99,4 @@ function TotalSPTable(props: any) {
   );
 }
 
-export default TotalSPTable;
+export default ResourceSPTable;

@@ -11,12 +11,19 @@ export const totalSPMachine = createMachine<any>({
     ticketList: [],
     selectedScrum: undefined,
     year: year,
+    projectGroups: [],
+    selectedProjectGroup: undefined,
+    resourcePlanningList: [],
   },
   states: {
     idle: {
       on: {
         scrumChanged: {
           actions: "assignSelectedScrum",
+          target: "getTicketList",
+        },
+        projectGroupChanged: {
+          actions: "assignSelectedProjectGroup",
           target: "getTicketList",
         },
       },
@@ -27,6 +34,19 @@ export const totalSPMachine = createMachine<any>({
         src: "invokeGetScrumList",
         onDone: {
           actions: "assignScrumList",
+          target: "getProjectGroups",
+        },
+        onError: {
+          target: "idle",
+        },
+      },
+    },
+    getProjectGroups: {
+      invoke: {
+        id: "getProjectGroups",
+        src: "invokeGetProjectGroups",
+        onDone: {
+          actions: "assignProjectGroups",
           target: "getTicketList",
         },
         onError: {
@@ -41,6 +61,19 @@ export const totalSPMachine = createMachine<any>({
         src: "invokeGetTicketList",
         onDone: {
           actions: "assignTicketList",
+          target: "getResourcePlanningList",
+        },
+        onError: {
+          target: "idle",
+        },
+      },
+    },
+    getResourcePlanningList: {
+      invoke: {
+        id: "getResourcePlanningList",
+        src: "invokeGetResourcePlanningList",
+        onDone: {
+          actions: "assignResourcePlanningList",
           target: "idle",
         },
         onError: {
