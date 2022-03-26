@@ -98,9 +98,9 @@ function SprintSelection(props: any) {
   const onSubmit = (e: any) => {
     handleSubmit((data: any) => {
       if (!editMode) {
-        props.send({ type: "assignNewSprint", prop: { ...data, sprint: name } });
+        props.send({ type: "assignNewSprint", prop: { ...data, sprint: getName() } });
       } else {
-        props.send({ type: "updateSprint", prop: { ...data, sprint: name } });
+        props.send({ type: "updateSprint", prop: { ...data, sprint: getName() } });
         handleEditMode();
       }
       setSprintName("");
