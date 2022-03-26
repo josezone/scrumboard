@@ -60,7 +60,7 @@ export const homeMachine = createMachine<any>({
         },
         projectChanged: {
           actions: "updateProject",
-          target: "home.getVersions",
+          target: "home.resetSelectedVersion",
         },
         sprintChanged: {
           actions: "updateSprints",
@@ -80,7 +80,7 @@ export const homeMachine = createMachine<any>({
         },
         countryChanged: {
           actions: "updateCountry",
-          target: "home.getVersions",
+          target: "home.resetSelectedVersion",
         },
         setVersion: {
           actions: "updateVersion",
@@ -138,11 +138,17 @@ export const homeMachine = createMachine<any>({
             id: "getVersionListHome",
             src: "invokeGetVersionList",
             onDone: {
-              actions: "assignVersionList",
+              actions: "assignVersionList"
             },
             onError: {
               target: "idle",
             },
+          },
+        },
+        resetSelectedVersion: {
+          always: {
+            actions: "resetSelectedVersion",
+            target: "getVersions"
           },
         },
         getGroupList: {
@@ -789,7 +795,7 @@ export const homeMachine = createMachine<any>({
             id: "reloadCountryList",
             src: "invokeReloadCountryList",
             onDone: {
-              target: "#newSprint.end",
+              target: "assignNewSprintCountry",
               actions: "assignReloadCountryList",
             },
             onError: {

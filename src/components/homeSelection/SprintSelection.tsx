@@ -48,17 +48,19 @@ function SprintSelection(props: any) {
 
   useEffect(() => {
     if (editMode) {
-      const spitName = selectedSprint?.sprint.split('-');
-      
-      setValue("sprint", spitName[spitName.length - 1]);
+      let sprintName = selectedSprint?.sprint.split('-');
+      sprintName = sprintName[sprintName.length - 1]
+      setSprintName(sprintName);
+      setValue("sprint", sprintName);
       setValue("country", selectedSprint?.country?.id);
       setValue("project", selectedProject?.id)
     } else {
-      setValue("country", selectedCountry?.id || 0);
-      setValue("project", selectedProject?.id || 0)
-      setValue("version", selectedVersion?.id || 0)
+      setValue("sprint", "");
+      setValue("country", selectedSprint?.country?.id || 0);
+      setValue("project", selectedProject?.id || 0);
+      setValue("version", selectedVersion?.id || 0);
     }
-  }, [selectedSprint?.sprint, editMode, selectedSprint?.country?.id, selectedProject?.id]);
+  }, [selectedSprint?.sprint, editMode, selectedSprint?.country?.id, selectedProject?.id, props?.newSprintPopup]);
 
   const addCountry = (event: any) => {
     if (newCountry) {
@@ -95,15 +97,15 @@ function SprintSelection(props: any) {
 
   const onSubmit = (e: any) => {
     handleSubmit((data: any) => {
-      reset();
-      setSprintName("");
-      e.target.reset();
       if (!editMode) {
-        props.send({ type: "assignNewSprint", prop: { ...data, sprint: getName() } });
+        props.send({ type: "assignNewSprint", prop: { ...data, sprint: name } });
       } else {
-        props.send({ type: "updateSprint", prop: { ...data, sprint: getName() } });
+        props.send({ type: "updateSprint", prop: { ...data, sprint: name } });
         handleEditMode();
       }
+      setSprintName("");
+      reset();
+      e.target.reset();
     })(e);
   };
 
