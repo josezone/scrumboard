@@ -60,7 +60,15 @@ function SprintSelection(props: any) {
       setValue("project", selectedProject?.id || 0);
       setValue("version", selectedVersion?.id || 0);
     }
-  }, [selectedSprint?.sprint, editMode, selectedSprint?.country?.id, selectedProject?.id, props?.newSprintPopup]);
+  }, [editMode, props?.newSprintPopup]);
+
+  useEffect(() => {
+    setValue("project", selectedProject?.id || 0);
+  }, [selectedProject?.id])
+
+  useEffect(() => {
+    setValue("version", selectedVersion?.id || 0);
+  }, [selectedVersion?.id])
 
   const addCountry = (event: any) => {
     if (newCountry) {
@@ -73,7 +81,7 @@ function SprintSelection(props: any) {
   const addProject = (event: any) => {
     if (newProject) {
       props.send({ type: "createProject", prop: newProject });
-      setNewCountry("");
+      setNewProject("");
     }
   };
   
@@ -97,6 +105,7 @@ function SprintSelection(props: any) {
 
   const onSubmit = (e: any) => {
     handleSubmit((data: any) => {
+      const name = getName();
       if (!editMode) {
         props.send({ type: "assignNewSprint", prop: { ...data, sprint: getName() } });
       } else {
