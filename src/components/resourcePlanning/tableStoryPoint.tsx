@@ -1,5 +1,5 @@
 import TextField from '@mui/material/TextField';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Fab from '@mui/material/Fab';
 import UpgradeIcon from '@mui/icons-material/Upgrade';
 import { TableStoryPointStyle } from './tableStoryPoint.style';
@@ -9,6 +9,18 @@ function TableStoryPoint(props: any) {
     function storyPointChanged(event: any) {
         setStorypoint(event.target.value)
     }
+
+    useEffect(() => {
+        setStorypoint(
+          props.scrumResourceProjectData?.length
+            ? props.scrumResourceProjectData[0].story
+            : 0
+        );
+      }, [
+        props.scrumResourceProjectData?.length
+          ? props.scrumResourceProjectData[0].story
+          : 0,
+      ]);
 
     function updateStoryPoint() {
         props.send({
