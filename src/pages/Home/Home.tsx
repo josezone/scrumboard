@@ -66,10 +66,6 @@ function TabPanel(props: any) {
 function Home(props: any) {
   const [value, setValue] = useState(0);
 
-  const handleChange = (event: any, newValue: any) => {
-    setValue(newValue);
-  };
-
   props.graphQLClient.setHeader(
     "Authorization",
     "Basic " + localStorage.getItem("data")
@@ -314,6 +310,13 @@ function Home(props: any) {
   });
   const activateScrum = () => {
     send({ type: "activateScrum" });
+  };
+
+  const handleChange = (event: any, newValue: any) => {
+    if(newValue === 0){
+      send({ type: "reloadResource" });
+    }
+    setValue(newValue);
   };
 
   return (

@@ -45,6 +45,11 @@ export const homeMachine = createMachine<any>({
     newProjectId: undefined,
     newProjectGroup: undefined
   },
+  on: {
+    reloadResource: {
+      target: "newResource.reloadResourceList",
+    },
+  },
   states: {
     home: {
       id: "home",

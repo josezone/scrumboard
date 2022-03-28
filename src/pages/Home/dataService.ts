@@ -330,7 +330,7 @@ export function useInvokeResourceList(graphQLClient: any) {
   return useMutation(() => {
     return graphQLClient.request(gql`
       query MyQuery {
-        resource {
+        resource(where: {status: {_eq: true}}) {
           resource
           id
           resource_type {
