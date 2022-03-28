@@ -2,10 +2,10 @@ import { gql } from "graphql-request";
 import { useMutation } from "react-query";
 
 export function useGetScrumList(graphQLClient: any) {
-  return useMutation((year: number) => {
+  return useMutation(({ year, projectGroup }: any) => {
     return graphQLClient.request(gql`
       query MyQuery {
-          scrum(where: {scrum: {_gte: "${year}-01-01", _lte: "${year}-12-31"}}) {
+          scrum(where: {scrum: {_gte: "${year}-01-01", _lte: "${year}-12-31"},project_group_id: {_eq: ${projectGroup}}},order_by: {scrum: desc}) {
             scrum
             id
             active
@@ -53,7 +53,7 @@ export function useGetResourcePlanningList(graphQLClient: any) {
     return graphQLClient.request(gql`
       query MyQuery {
         scrum_resource_project(
-          where: { scrum: { project_group_id: { _eq: ${scrum}}, id: { _eq: ${projectGroup} } } }
+          where: { scrum: { project_group_id: { _eq: ${projectGroup}}, id: { _eq: ${scrum} } } }
           order_by: { project: { project: asc } }
         ) {
           story
