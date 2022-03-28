@@ -41,7 +41,11 @@ function TotalSP(props: any) {
   const [state, send] = useMachine(totalSPMachine, {
     actions,
     services: {
-      invokeGetScrumList: (context: any) => invokeGetScrumList(context.year),
+      invokeGetScrumList: (context: any) =>
+        invokeGetScrumList({
+          year: context.year,
+          projectGroup: context.selectedProjectGroup,
+        }),
       invokeGetTicketList: (context: any) =>
         invokeGetTicketList({
           scrum: context.selectedScrum,

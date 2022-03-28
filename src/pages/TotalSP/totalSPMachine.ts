@@ -5,7 +5,7 @@ const year = date.getFullYear();
 
 export const totalSPMachine = createMachine<any>({
   id: "main",
-  initial: "getScrumList",
+  initial: "getProjectGroups",
   context: {
     scrumList: [],
     ticketList: [],
@@ -24,7 +24,7 @@ export const totalSPMachine = createMachine<any>({
         },
         projectGroupChanged: {
           actions: "assignSelectedProjectGroup",
-          target: "getTicketList",
+          target: "getScrumList",
         },
       },
     },
@@ -34,7 +34,7 @@ export const totalSPMachine = createMachine<any>({
         src: "invokeGetScrumList",
         onDone: {
           actions: "assignScrumList",
-          target: "getProjectGroups",
+          target: "getTicketList",
         },
         onError: {
           target: "idle",
@@ -47,14 +47,13 @@ export const totalSPMachine = createMachine<any>({
         src: "invokeGetProjectGroups",
         onDone: {
           actions: "assignProjectGroups",
-          target: "getTicketList",
+          target: "getScrumList",
         },
         onError: {
           target: "idle",
         },
       },
     },
-
     getTicketList: {
       invoke: {
         id: "getTicketList",
