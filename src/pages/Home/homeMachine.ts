@@ -662,6 +662,7 @@ export const homeMachine = createMachine<any>({
             src: "invokecreateEstimateList",
             onDone: {
               target: "reloadProject",
+              actions: "resetSelectedVersion"
             },
             onError: {
               target: "idle",
@@ -673,8 +674,21 @@ export const homeMachine = createMachine<any>({
             id: "reloadProject",
             src: "invokeReloadProject",
             onDone: {
-              target: "idle",
+              target: "getVersionList",
               actions: ["assignReloadProject", "assignSelectedProject"],
+            },
+            onError: {
+              target: "idle",
+            },
+          },
+        },
+        getVersionList: {
+          invoke: {
+            id: "getVersionListNewVersion",
+            src: "invokeGetVersionList",
+            onDone: {
+              actions: "assignVersionList",
+              target: "idle",
             },
             onError: {
               target: "idle",
@@ -713,6 +727,7 @@ export const homeMachine = createMachine<any>({
             src: "invokeGetVersionList",
             onDone: {
               actions: "assignVersionList",
+              target: "idle",
             },
             onError: {
               target: "idle",
