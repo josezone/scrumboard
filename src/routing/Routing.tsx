@@ -8,6 +8,7 @@ const graphQLClient = new GraphQLClient(
   process.env.REACT_APP_API_URL as string
 );
 const Home = lazy(() => import("../pages/Home/Home"));
+const Home2 = lazy(() => import("../pages/Home2/Home"));
 const Login = lazy(() => import("../pages/Login/Login"));
 const Bug = lazy(() => import("../pages/Bug/Bug"));
 
@@ -27,6 +28,7 @@ function Routing() {
         {loginData && (
           <>
             <Route path="/" element={<Home graphQLClient={graphQLClient} />} />
+            <Route path="/2" element={<Home2 graphQLClient={graphQLClient} />} />
             <Route
               path="/issue/:id"
               element={<Bug graphQLClient={graphQLClient} />}

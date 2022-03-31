@@ -9,7 +9,6 @@ const assignResourceList = assign({
 
 export const assignScrumList = assign({
     scrumList: (context: any, event: any) => {
-        console.log(context)
         return event.data.scrum;
     },
 });
