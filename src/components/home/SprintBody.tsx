@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 
+import { SprintBodyWrapper } from "./sprintBody.style";
 const schema = yup
   .object({
     sprint: yup.string().required(),
@@ -69,7 +70,7 @@ function SprintBody(props: any) {
       props.toggleOpenTicket();
       if (props.editMode) {
         const val = JSON.parse(JSON.stringify(data));
-        val.sprintId = props.sprintSelected.id
+        val.sprintId = props.sprintSelected.id;
         props.send({ type: "updateSprint", val });
       } else {
         props.send({ type: "newSprint", data });
@@ -78,97 +79,57 @@ function SprintBody(props: any) {
   };
 
   return (
-    <form onSubmit={onSubmit} className="formContainer">
-      <Grid container spacing={2}>
-        <Grid item md={6} sm={12}>
-          <Controller
-            name="sprint"
-            control={formProps.control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                id="standard-basic"
-                label="Sprint"
-                variant="outlined"
-                className="textConatiner"
-                fullWidth
-                error={formProps.formState.errors.sprint ? true : false}
-                helperText={formProps.formState.errors?.sprint?.message}
-              />
-            )}
-          />
-        </Grid>
-
-        <Grid item md={6} sm={12}>
-          <FormControl fullWidth>
-            <InputLabel id="country">Country</InputLabel>
+    <SprintBodyWrapper>
+      <form onSubmit={onSubmit} className="formContainer">
+        <Grid container spacing={2}>
+          <Grid item md={6} sm={12}>
             <Controller
-              name="country"
+              name="sprint"
               control={formProps.control}
               render={({ field }) => (
-                <Select
-                  labelId="country"
-                  id="country"
-                  label="country"
+                <TextField
+                  {...field}
+                  id="standard-basic"
+                  label="Sprint"
+                  variant="outlined"
                   className="textConatiner"
                   fullWidth
-                  {...field}
-                  value={country}
-                  onChange={(e) => {
-                    onCountryChanged(e.target.value);
-                    setCountry(e.target.value);
-                    field.onChange(e);
-                  }}
-                  error={formProps.formState.errors.country ? true : false}
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  {props.countryList?.map((country: any) => {
-                    return (
-                      <MenuItem value={country.id} key={country.country}>
-                        {country.country}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
+                  error={formProps.formState.errors.sprint ? true : false}
+                  helperText={formProps.formState.errors?.sprint?.message}
+                />
               )}
             />
-            <FormHelperText>
-              {formProps.formState.errors?.country?.message}
-            </FormHelperText>
-          </FormControl>
-        </Grid>
+          </Grid>
 
-        {props.versionList && (
           <Grid item md={6} sm={12}>
             <FormControl fullWidth>
-              <InputLabel id="version">Version</InputLabel>
+              <InputLabel id="country">Country</InputLabel>
               <Controller
-                name="version"
+                name="country"
                 control={formProps.control}
                 render={({ field }) => (
                   <Select
-                    labelId="version"
-                    id="version"
-                    label="version"
+                    labelId="country"
+                    id="country"
+                    label="country"
                     className="textConatiner"
                     fullWidth
                     {...field}
-                    value={version}
+                    value={country}
                     onChange={(e) => {
-                      setVersion(e.target.value);
+                      onCountryChanged(e.target.value);
+                      setCountry(e.target.value);
                       field.onChange(e);
                     }}
-                    error={formProps.formState.errors.version ? true : false}
+                    error={formProps.formState.errors.country ? true : false}
                   >
                     <MenuItem value="">
                       <em>None</em>
                     </MenuItem>
-                    {props.versionList?.map((version: any) => {
+                    {props.countryList?.map((country: any) => {
                       return (
-                        <MenuItem value={version.id} key={version.version}>
-                          {version.version}
+                        <MenuItem value={country.id} key={country.country}>
+                          {country.country}
                         </MenuItem>
                       );
                     })}
@@ -176,16 +137,58 @@ function SprintBody(props: any) {
                 )}
               />
               <FormHelperText>
-                {formProps.formState.errors?.version?.message}
+                {formProps.formState.errors?.country?.message}
               </FormHelperText>
             </FormControl>
           </Grid>
-        )}
+
+          {props.versionList && (
+            <Grid item md={6} sm={12}>
+              <FormControl fullWidth>
+                <InputLabel id="version">Version</InputLabel>
+                <Controller
+                  name="version"
+                  control={formProps.control}
+                  render={({ field }) => (
+                    <Select
+                      labelId="version"
+                      id="version"
+                      label="version"
+                      className="textConatiner"
+                      fullWidth
+                      {...field}
+                      value={version}
+                      onChange={(e) => {
+                        setVersion(e.target.value);
+                        field.onChange(e);
+                      }}
+                      error={formProps.formState.errors.version ? true : false}
+                    >
+                      <MenuItem value="">
+                        <em>None</em>
+                      </MenuItem>
+                      {props.versionList?.map((version: any) => {
+                        return (
+                          <MenuItem value={version.id} key={version.version}>
+                            {version.version}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  )}
+                />
+                <FormHelperText>
+                  {formProps.formState.errors?.version?.message}
+                </FormHelperText>
+              </FormControl>
+            </Grid>
+          )}
+        </Grid>
         <Button type="submit" autoFocus>
           Create
         </Button>
-      </Grid>
-    </form>
+      </form>
+    </SprintBodyWrapper>
   );
 }
 

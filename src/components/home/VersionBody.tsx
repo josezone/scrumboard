@@ -10,6 +10,8 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 
+import { VersionBodyWrapper } from "./versionBody.style";
+
 const schema = yup
   .object({
     country: yup.string().required(),
@@ -32,67 +34,68 @@ function VersionBody(props: any) {
   };
 
   return (
-    <form onSubmit={onSubmit} className="formContainer">
-      <Grid container spacing={2}>
-        <Grid item md={6} sm={12}>
-          <Controller
-            name="version"
-            control={formProps.control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                id="standard-basic"
-                label="Version"
-                variant="outlined"
-                className="textConatiner"
-                fullWidth
-                error={formProps.formState.errors.version ? true : false}
-                helperText={formProps.formState.errors?.version?.message}
-              />
-            )}
-          />
-        </Grid>
-
-        <Grid item md={6} sm={12}>
-          <FormControl fullWidth>
-            <InputLabel id="country">Country</InputLabel>
+    <VersionBodyWrapper>
+      <form onSubmit={onSubmit} className="formContainer">
+        <Grid container spacing={2}>
+          <Grid item md={6} sm={12}>
             <Controller
-              name="country"
+              name="version"
               control={formProps.control}
               render={({ field }) => (
-                <Select
-                  labelId="country"
-                  id="country"
-                  label="country"
+                <TextField
+                  {...field}
+                  id="standard-basic"
+                  label="Version"
+                  variant="outlined"
                   className="textConatiner"
                   fullWidth
-                  {...field}
-                  error={formProps.formState.errors.country ? true : false}
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  {props.countryList?.map((country: any) => {
-                    return (
-                      <MenuItem value={country.id} key={country.country}>
-                        {country.country}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
+                  error={formProps.formState.errors.version ? true : false}
+                  helperText={formProps.formState.errors?.version?.message}
+                />
               )}
             />
-            <FormHelperText>
-              {formProps.formState.errors?.country?.message}
-            </FormHelperText>
-          </FormControl>
-        </Grid>
+          </Grid>
 
+          <Grid item md={6} sm={12}>
+            <FormControl fullWidth>
+              <InputLabel id="country">Country</InputLabel>
+              <Controller
+                name="country"
+                control={formProps.control}
+                render={({ field }) => (
+                  <Select
+                    labelId="country"
+                    id="country"
+                    label="country"
+                    className="textConatiner"
+                    fullWidth
+                    {...field}
+                    error={formProps.formState.errors.country ? true : false}
+                  >
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    {props.countryList?.map((country: any) => {
+                      return (
+                        <MenuItem value={country.id} key={country.country}>
+                          {country.country}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                )}
+              />
+              <FormHelperText>
+                {formProps.formState.errors?.country?.message}
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+        </Grid>
         <Button type="submit" autoFocus>
           Create
         </Button>
-      </Grid>
-    </form>
+      </form>
+    </VersionBodyWrapper>
   );
 }
 
