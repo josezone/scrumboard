@@ -67,9 +67,16 @@ function SprintBody(props: any) {
       formProps.reset();
       e.target.reset();
       props.toggleOpenTicket();
-      props.send({ type: "newSprint", data });
+      if (props.editMode) {
+        const val = JSON.parse(JSON.stringify(data));
+        val.sprintId = props.sprintSelected.id
+        props.send({ type: "updateSprint", val });
+      } else {
+        props.send({ type: "newSprint", data });
+      }
     })(e);
   };
+
   return (
     <form onSubmit={onSubmit} className="formContainer">
       <Grid container spacing={2}>

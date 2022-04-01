@@ -368,6 +368,20 @@ function useInvokeCreateNewSprint(graphQLClient: any) {
   );
 }
 
+function useInvokeUpdateSprint(graphQLClient: any) {
+  return useMutation(({ sprint, country, version, sprintId }: any) => {
+    return graphQLClient.request(gql`
+    mutation MyMutation {
+      update_sprint(where: {id: {_eq: ${sprintId}}}, _set: {sprint: "${sprint}", country_id: ${country}, verison_id: ${version}}) {
+          returning {
+            id
+          }
+        }
+      }
+    `);
+  });
+}
+
 export const useServices = (props: any) => {
   const {
     mutateAsync: invokeGetSprintstatusCountryScopeResourcePriorityResourcetype,
@@ -423,6 +437,10 @@ export const useServices = (props: any) => {
     props.graphQLClient
   );
   const { mutateAsync: invokeCreateNewSprint } = useInvokeCreateNewSprint(
+    props.graphQLClient
+  );
+
+  const { mutateAsync: invokeUpdateSprint } = useInvokeUpdateSprint(
     props.graphQLClient
   );
 
@@ -487,6 +505,10 @@ export const useServices = (props: any) => {
         ...context.newSprint,
         projectId: context.projectSelected?.id,
         scrumId: context.scrumSelected?.id,
+      }),
+    invokeUpdateSprint: (context: any) =>
+      invokeUpdateSprint({
+        ...context.updateSprint,
       }),
   };
 };

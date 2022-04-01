@@ -178,6 +178,13 @@ const assignNewSprint = assign({
   versionList: () => [],
 });
 
+const updateAssignSprint = assign({
+  updateSprint: (context: any, event: any) => {
+    return event.val;
+  },
+  versionList: () => [],
+});
+
 const updateDefaultSprint = assign({
   sprintSelected: (context: any, event: any) => {
     return event.data;
@@ -207,4 +214,5 @@ export const actions = {
   assignGetVersionList,
   assignNewSprint,
   updateDefaultSprint,
+  updateAssignSprint,
 };

@@ -72,6 +72,15 @@ function HomeComponent(props: any) {
       >
         <NewSprint toggleOpenTicket={toggleOpenEditSprint} editMode={true}/>
       </ModalComponent>
+
+      <ModalComponent
+        open={openSprint}
+        handleClose={toggleOpenSprint}
+        title="New Sprint"
+        componentsProps={{ data: props }}
+      >
+        <NewSprint toggleOpenTicket={toggleOpenSprint}/>
+      </ModalComponent>
     </div>
   );
 }

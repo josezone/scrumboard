@@ -25,6 +25,7 @@ export const homeMachine = createMachine<any>({
     sprintSelected: undefined,
     sprintStatusList: [],
     ticketList: [],
+    updateSprint: undefined,
     updateTicket: undefined,
     versionList: [],
   },
@@ -152,6 +153,18 @@ export const homeMachine = createMachine<any>({
             },
           },
         },
+        updateSprintStart: {
+          invoke: {
+            id: "updateSprintStart",
+            src: "invokeUpdateSprint",
+            onDone: {
+              target: "getSprintlist",
+            },
+            onError: {
+              target: "end",
+            },
+          },
+        },
         end: {
           on: {
             projectChanged: {
@@ -165,6 +178,10 @@ export const homeMachine = createMachine<any>({
             newSprint: {
               actions: "assignNewSprint",
               target: "createNewSprint",
+            },
+            updateSprint: {
+              actions: "updateAssignSprint",
+              target: "updateSprintStart",
             },
           },
         },
