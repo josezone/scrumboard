@@ -1,5 +1,8 @@
 import TopBar from "./TopBar";
-import Select from "react-select";
+
+import AppBar from "../../components/appBar/AppBar";
+import Box from "@mui/material/Box";
+import ItemSelect from "../../components/itemSelect/ItemSelect";
 
 export function dateConvert(val: string) {
   return (
@@ -24,16 +27,16 @@ function ScrumBar(props: any) {
     label: sprint.sprint,
   }));
 
-  const handleScrumChange = (val: any) => {
-    const data = props.scrumList?.filter(
-      (scrum: any) => val.value === scrum.id
-    )[0];
+  const handleScrumChange = (event: any) => {
+    const data = props.scrumList?.filter((scrum: any) => {
+      return parseInt(event.target.value) === scrum.id;
+    })[0];
     props.send({ type: "scrumChanged", data });
   };
 
-  const handleSprintChange = (val: any) => {
+  const handleSprintChange = (event: any) => {
     const data = props.sprintList?.filter(
-      (sprint: any) => val.value === sprint.id
+      (sprint: any) => parseInt(event.target.value) === sprint.id
     )[0];
     props.send({ type: "sprintChanged", data });
   };
@@ -41,28 +44,31 @@ function ScrumBar(props: any) {
   return (
     <div>
       <TopBar {...props} />
-      {props.scrumSelected && (
-        <Select
-          value={{
-            key: props.scrumSelected?.id,
-            value: props.scrumSelected?.id,
-            label: dateConvert(props.scrumSelected?.scrum),
-          }}
-          onChange={handleScrumChange}
-          options={scrumItems}
-        />
-      )}
-      {props.sprintSelected && (
-        <Select
-          value={{
-            key: props.sprintSelected?.id,
-            value: props.sprintSelected?.id,
-            label: props.sprintSelected?.sprint,
-          }}
-          onChange={handleSprintChange}
-          options={sprintItem}
-        />
-      )}
+      <AppBar>
+        <Box sx={{ flexGrow: 1, display: "flex" }}>
+          <ItemSelect
+            items={scrumItems}
+            defaultItem={props.scrumSelected?.id}
+            onChange={handleScrumChange}
+            name="Scrum"
+            id="selectScrumNative"
+            showList={props.scrumSelected?.id && true}
+          ></ItemSelect>
+          <ItemSelect
+            items={sprintItem}
+            defaultItem={props.sprintSelected?.id}
+            onChange={handleSprintChange}
+            name="Sprint"
+            id="selectSprintNative"
+            showList={
+              props.sprintSelected?.id &&
+              props.sprintList &&
+              props.sprintList?.length &&
+              true
+            }
+          ></ItemSelect>
+        </Box>
+      </AppBar>
     </div>
   );
 }

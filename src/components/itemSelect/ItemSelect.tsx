@@ -37,7 +37,7 @@ function ItemSelect(props: IitemSelect) {
             }}
             className="label_color"
           >
-            {items.map((item) => {
+            {items?.map((item) => {
               return (
                 <option value={item.value} key={item.key}>
                   {item.label}
