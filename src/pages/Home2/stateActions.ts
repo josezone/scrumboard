@@ -21,6 +21,12 @@ const assignSprintstatusCountryScopeResourcePriorityResourcetype = assign({
   },
 });
 
+const reassignResourceList = assign({
+  resourceList: (context: any, event: any) => {
+    return event.data.resource;
+  },
+});
+
 const assignProjectGroupList = assign({
   projectGroupList: (context: any, event: any) => {
     return event.data.project_group;
@@ -222,4 +228,5 @@ export const actions = {
   updateDefaultSprint,
   updateAssignSprint,
   assignNewVersion,
+  reassignResourceList,
 };

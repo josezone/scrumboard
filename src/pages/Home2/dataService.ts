@@ -396,6 +396,23 @@ function useInvokeCreateNewVersion(graphQLClient: any) {
   });
 }
 
+function useInvokeGetResourceList(graphQLClient: any) {
+  return useMutation(() => {
+    return graphQLClient.request(gql`
+    query MyQuery {
+        resource(where: {status: {_eq: true}}) {
+          id
+          resource
+          resource_type {
+            id
+            resource_type
+          }
+        }
+      }
+    `);
+  });
+}
+
 export const useServices = (props: any) => {
   const {
     mutateAsync: invokeGetSprintstatusCountryScopeResourcePriorityResourcetype,
@@ -459,6 +476,10 @@ export const useServices = (props: any) => {
   );
 
   const { mutateAsync: invokeCreateNewVersion } = useInvokeCreateNewVersion(
+    props.graphQLClient
+  );
+
+  const { mutateAsync: invokeGetResourceList } = useInvokeGetResourceList(
     props.graphQLClient
   );
 
@@ -533,5 +554,6 @@ export const useServices = (props: any) => {
         ...context.newVersion,
         projectId: context.projectSelected?.id,
       }),
+    invokeGetResourceList: () => invokeGetResourceList(),
   };
 };

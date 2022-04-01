@@ -213,6 +213,31 @@ export const homeMachine = createMachine<any>({
         },
       },
     },
+    resourceList: {
+      initial: "idle",
+      states: {
+        idle: {
+          on: {
+            resourceList: {
+              target: "getResourceList",
+            },
+          },
+        },
+        getResourceList: {
+          invoke: {
+            id: "getResourceList",
+            src: "invokeGetResourceList",
+            onDone: {
+              actions: "reassignResourceList",
+              target: "idle",
+            },
+            onError: {
+              target: "idle",
+            },
+          },
+        },
+      },
+    },
     getTicket: {
       states: {
         getTicketlist: {
