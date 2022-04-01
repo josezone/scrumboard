@@ -28,6 +28,7 @@ export const homeMachine = createMachine<any>({
     updateSprint: undefined,
     updateTicket: undefined,
     versionList: [],
+    newVersion: undefined,
   },
 
   states: {
@@ -182,6 +183,31 @@ export const homeMachine = createMachine<any>({
             updateSprint: {
               actions: "updateAssignSprint",
               target: "updateSprintStart",
+            },
+          },
+        },
+      },
+    },
+    newVersion: {
+      initial: "idle",
+      states: {
+        idle: {
+          on: {
+            newVersion: {
+              actions: "assignNewVersion",
+              target: "createNewVersion",
+            },
+          },
+        },
+        createNewVersion: {
+          invoke: {
+            id: "createNewVersion",
+            src: "invokeCreateNewVersion",
+            onDone: {
+              target: "idle",
+            },
+            onError: {
+              target: "idle",
             },
           },
         },

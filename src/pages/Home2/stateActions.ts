@@ -191,6 +191,12 @@ const updateDefaultSprint = assign({
   },
 });
 
+const assignNewVersion = assign({
+  newVersion: (context: any, event: any) => {
+    return event.data;
+  },
+});
+
 export const actions = {
   assignSprintstatusCountryScopeResourcePriorityResourcetype,
   assignProjectGroupList,
@@ -215,4 +221,5 @@ export const actions = {
   assignNewSprint,
   updateDefaultSprint,
   updateAssignSprint,
+  assignNewVersion,
 };

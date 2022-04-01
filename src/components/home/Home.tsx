@@ -8,20 +8,27 @@ import { useState } from "react";
 import ModalComponent from "../modal/modal";
 import NewSprint from "./NewSprint";
 import NewTicket from "./NewTicket";
+import NewVersion from "./NewVersion";
 import ScrumBoard from "./ScrumBoard";
 import ScrumItem from "./ScrumItem";
 import ScrumBar from "./SrumBar";
+import AddTaskIcon from "@mui/icons-material/AddTask";
 
 function HomeComponent(props: any) {
   const [open, setOpen] = useState(false);
   const [openSprint, setOpenSprint] = useState(false);
   const [openTicket, setOpenTicket] = useState(false);
   const [openEditSprint, setOpenEditSprint] = useState(false);
+  const [openVersion, setOpenVersion] = useState(false);
+
   const toggleOpen = () => setOpen((s) => !s);
   const toggleOpenSprint = () => setOpenSprint((s) => !s);
   const toggleOpenEditSprint = () => setOpenEditSprint((s) => !s);
   const toggleOpenTicket = () => setOpenTicket((s) => !s);
+  const toggleOpenVersion = () => setOpenVersion((s) => !s);
+
   const actions = [
+    { icon: <AddTaskIcon onClick={toggleOpenVersion} />, name: "New Version" },
     { icon: <NewspaperIcon onClick={toggleOpenSprint} />, name: "New Sprint" },
     {
       icon: <CreateNewFolderIcon onClick={toggleOpenTicket} />,
@@ -70,7 +77,7 @@ function HomeComponent(props: any) {
         title="Edit Sprint"
         componentsProps={{ data: props }}
       >
-        <NewSprint toggleOpenTicket={toggleOpenEditSprint} editMode={true}/>
+        <NewSprint toggleOpenTicket={toggleOpenEditSprint} editMode={true} />
       </ModalComponent>
 
       <ModalComponent
@@ -79,7 +86,16 @@ function HomeComponent(props: any) {
         title="New Sprint"
         componentsProps={{ data: props }}
       >
-        <NewSprint toggleOpenTicket={toggleOpenSprint}/>
+        <NewSprint toggleOpenTicket={toggleOpenSprint} />
+      </ModalComponent>
+
+      <ModalComponent
+        open={openVersion}
+        handleClose={toggleOpenVersion}
+        title="New Version"
+        componentsProps={{ data: props }}
+      >
+        <NewVersion toggleOpenVersion={toggleOpenVersion} />
       </ModalComponent>
     </div>
   );
