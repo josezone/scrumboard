@@ -5,11 +5,17 @@ export const homeMachine = createMachine<any>({
   type: "parallel",
   context: {
     countryList: [],
+    getVersion: undefined,
+    newSprint: undefined,
+    newTicket: undefined,
+    newTicketId: undefined,
     priorityList: [],
     projectGroupList: [],
     projectGroupSelected: undefined,
     projectList: [],
     projectSelected: undefined,
+    remoteStatusUpdateData: undefined,
+    removeTicketId: undefined,
     resouceTypeList: [],
     resourceList: [],
     scopeList: [],
@@ -19,6 +25,8 @@ export const homeMachine = createMachine<any>({
     sprintSelected: undefined,
     sprintStatusList: [],
     ticketList: [],
+    updateTicket: undefined,
+    versionList: [],
   },
 
   states: {
@@ -94,6 +102,29 @@ export const homeMachine = createMachine<any>({
         },
       },
     },
+    version: {
+      initial: "idle",
+      states: {
+        idle: {
+          on: {
+            getVersion: {
+              actions: "assignGetVersion",
+              target: "getVersionList",
+            },
+          },
+        },
+        getVersionList: {
+          invoke: {
+            id: "getVersionList",
+            src: "invokeGetVersionList",
+            onDone: {
+              actions: "assignGetVersionList",
+              target: "idle",
+            },
+          },
+        },
+      },
+    },
     getSprint: {
       states: {
         getSprintlist: {
@@ -109,6 +140,18 @@ export const homeMachine = createMachine<any>({
             },
           },
         },
+        createNewSprint: {
+          invoke: {
+            id: "createNewSprint",
+            src: "invokeCreateNewSprint",
+            onDone: {
+              target: "getSprintlist",
+            },
+            onError: {
+              target: "end",
+            },
+          },
+        },
         end: {
           on: {
             projectChanged: {
@@ -118,6 +161,10 @@ export const homeMachine = createMachine<any>({
             scrumChanged: {
               actions: "updateDefaultScrum",
               target: "getSprintlist",
+            },
+            newSprint: {
+              actions: "assignNewSprint",
+              target: "createNewSprint",
             },
           },
         },

@@ -267,7 +267,7 @@ function useInvokeUpdateTicket(graphQLClient: any) {
 function getDeleteData(deleteRes: any) {
   return deleteRes.map(
     (item: any) =>
-    stringGen(3) +
+      stringGen(3) +
       `:delete_ticket_resource(where: {id: {_eq: "${item.id}"}}) {
                       returning {
                         id
@@ -335,6 +335,39 @@ function useInvokeAddResourceTicket(graphQLClient: any) {
   });
 }
 
+function useInvokeGetVersionList(graphQLClient: any) {
+  return useMutation(({ project, country }: any) => {
+    return graphQLClient.request(gql`
+      query MyQuery {
+        version(where: { country_id: { _eq: ${country} }, project_id: { _eq: ${project} } }) {
+          version
+          id
+          sprints {
+            sprint
+            id
+          }
+        }
+      }
+    `);
+  });
+}
+
+function useInvokeCreateNewSprint(graphQLClient: any) {
+  return useMutation(
+    ({ sprint, country, version, projectId, scrumId }: any) => {
+      return graphQLClient.request(gql`
+    mutation MyMutation {
+      insert_sprint(objects: {country_id: ${country}, verison_id: ${version}, sprint: "${sprint}", scrum_id: ${scrumId}, project_id: ${projectId}}) {
+          returning {
+            id
+          }
+        }
+      }
+    `);
+    }
+  );
+}
+
 export const useServices = (props: any) => {
   const {
     mutateAsync: invokeGetSprintstatusCountryScopeResourcePriorityResourcetype,
@@ -383,6 +416,13 @@ export const useServices = (props: any) => {
     useInvokeDeleteResourceTicket(props.graphQLClient);
 
   const { mutateAsync: invokeAddResourceTicket } = useInvokeAddResourceTicket(
+    props.graphQLClient
+  );
+
+  const { mutateAsync: invokeGetVersionList } = useInvokeGetVersionList(
+    props.graphQLClient
+  );
+  const { mutateAsync: invokeCreateNewSprint } = useInvokeCreateNewSprint(
     props.graphQLClient
   );
 
@@ -436,6 +476,17 @@ export const useServices = (props: any) => {
       invokeAddResourceTicket({
         ticketId: context.updateTicket.ticket.id,
         newResources: context.updateTicket.newResource,
+      }),
+    invokeGetVersionList: (context: any) =>
+      invokeGetVersionList({
+        project: context.getVersion.project,
+        country: context.getVersion.country,
+      }),
+    invokeCreateNewSprint: (context: any) =>
+      invokeCreateNewSprint({
+        ...context.newSprint,
+        projectId: context.projectSelected?.id,
+        scrumId: context.scrumSelected?.id,
       }),
   };
 };

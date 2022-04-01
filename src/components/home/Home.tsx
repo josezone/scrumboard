@@ -1,29 +1,35 @@
-import ScrumBar from "./SrumBar";
-import ScrumBoard from "./ScrumBoard";
-import ScrumItem from "./ScrumItem";
-import SpeedDial from "@mui/material/SpeedDial";
-import SpeedDialIcon from "@mui/material/SpeedDialIcon";
-import SpeedDialAction from "@mui/material/SpeedDialAction";
-import { useState } from "react";
-
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
+import EditRoadIcon from "@mui/icons-material/EditRoad";
 import NewspaperIcon from "@mui/icons-material/Newspaper";
-import NewTicket from "./NewTicket";
+import SpeedDial from "@mui/material/SpeedDial";
+import SpeedDialAction from "@mui/material/SpeedDialAction";
+import SpeedDialIcon from "@mui/material/SpeedDialIcon";
+import { useState } from "react";
 import ModalComponent from "../modal/modal";
 import NewSprint from "./NewSprint";
+import NewTicket from "./NewTicket";
+import ScrumBoard from "./ScrumBoard";
+import ScrumItem from "./ScrumItem";
+import ScrumBar from "./SrumBar";
 
 function HomeComponent(props: any) {
   const [open, setOpen] = useState(false);
   const [openSprint, setOpenSprint] = useState(false);
   const [openTicket, setOpenTicket] = useState(false);
+  const [openEditSprint, setOpenEditSprint] = useState(false);
   const toggleOpen = () => setOpen((s) => !s);
   const toggleOpenSprint = () => setOpenSprint((s) => !s);
+  const toggleOpenEditSprint = () => setOpenEditSprint((s) => !s);
   const toggleOpenTicket = () => setOpenTicket((s) => !s);
   const actions = [
     { icon: <NewspaperIcon onClick={toggleOpenSprint} />, name: "New Sprint" },
     {
       icon: <CreateNewFolderIcon onClick={toggleOpenTicket} />,
       name: "New Ticket",
+    },
+    {
+      icon: <EditRoadIcon onClick={toggleOpenEditSprint} />,
+      name: "Edit Sprint",
     },
   ];
 
@@ -59,12 +65,12 @@ function HomeComponent(props: any) {
       </ModalComponent>
 
       <ModalComponent
-        open={openSprint}
-        handleClose={toggleOpenSprint}
-        title="New Sprint"
+        open={openEditSprint}
+        handleClose={toggleOpenEditSprint}
+        title="Edit Sprint"
         componentsProps={{ data: props }}
       >
-        <NewSprint toggleOpenTicket={toggleOpenSprint} />
+        <NewSprint toggleOpenTicket={toggleOpenEditSprint} editMode={true}/>
       </ModalComponent>
     </div>
   );

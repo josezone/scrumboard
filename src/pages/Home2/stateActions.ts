@@ -153,11 +153,36 @@ const assignTicketId = assign({
   },
 });
 
-const assignUpdateTicket  = assign({
+const assignUpdateTicket = assign({
   updateTicket: (context: any, event: any) => {
     return event.prop;
   },
-})
+});
+
+const assignGetVersion = assign({
+  getVersion: (context: any, event: any) => {
+    return event.data;
+  },
+});
+
+const assignGetVersionList = assign({
+  versionList: (context: any, event: any) => {
+    return event.data.version;
+  },
+});
+
+const assignNewSprint = assign({
+  newSprint: (context: any, event: any) => {
+    return event.data;
+  },
+  versionList: () => [],
+});
+
+const updateDefaultSprint = assign({
+  sprintSelected: (context: any, event: any) => {
+    return event.data;
+  },
+});
 
 export const actions = {
   assignSprintstatusCountryScopeResourcePriorityResourcetype,
@@ -178,4 +203,8 @@ export const actions = {
   assignCreateTicket,
   assignTicketId,
   assignUpdateTicket,
+  assignGetVersion,
+  assignGetVersionList,
+  assignNewSprint,
+  updateDefaultSprint,
 };
