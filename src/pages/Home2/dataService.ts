@@ -399,13 +399,57 @@ function useInvokeCreateNewVersion(graphQLClient: any) {
 function useInvokeGetResourceList(graphQLClient: any) {
   return useMutation(() => {
     return graphQLClient.request(gql`
-    query MyQuery {
-        resource(where: {status: {_eq: true}}) {
+      query MyQuery {
+        resource(where: { status: { _eq: true } }) {
           id
           resource
           resource_type {
             id
             resource_type
+          }
+        }
+      }
+    `);
+  });
+}
+
+function useInvokeGetVersionSprintList(graphQLClient: any) {
+  return useMutation(({ projectId, countryId, versionId }: any) => {
+    return graphQLClient.request(gql`
+    query MyQuery {
+        version(where: {country_id: {_eq: ${countryId}}, project_id: {_eq: ${projectId}}}) {
+          version
+          id
+        }
+        sprint(where: {project_id: {_eq: ${projectId}}, country_id: {_eq: ${countryId}}, verison_id: {_eq: ${versionId}}}) {
+          sprint
+          id
+        }
+      }
+    `);
+  });
+}
+
+function useInvokeGetSprintInVersion(graphQLClient: any) {
+  return useMutation(({ projectId, countryId, versionId }: any) => {
+    return graphQLClient.request(gql`
+    query MyQuery {
+        sprint(where: {project_id: {_eq: ${projectId}}, country_id: {_eq: ${countryId}}, verison_id: {_eq: ${versionId}}}) {
+          sprint
+          id
+        }
+      }
+    `);
+  });
+}
+
+function useInvokeUpdateChangeSprint(graphQLClient: any) {
+  return useMutation(({ ticketId, sprintId, versionId }: any) => {
+    return graphQLClient.request(gql`
+    mutation MyMutation {
+        update_ticket(where: {id: {_eq: "${ticketId}"}}, _set: {sprint_id: ${sprintId}, version_id: ${versionId}}) {
+          returning {
+            id
           }
         }
       }
@@ -483,6 +527,17 @@ export const useServices = (props: any) => {
     props.graphQLClient
   );
 
+  const { mutateAsync: invokeGetVersionSprintList } =
+    useInvokeGetVersionSprintList(props.graphQLClient);
+
+  const { mutateAsync: invokeGetSprintInVersion } = useInvokeGetSprintInVersion(
+    props.graphQLClient
+  );
+
+  const { mutateAsync: invokeUpdateChangeSprint } = useInvokeUpdateChangeSprint(
+    props.graphQLClient
+  );
+
   return {
     invokeGetSprintstatusCountryScopeResourcePriorityResourcetype: () =>
       invokeGetSprintstatusCountryScopeResourcePriorityResourcetype(),
@@ -555,5 +610,19 @@ export const useServices = (props: any) => {
         projectId: context.projectSelected?.id,
       }),
     invokeGetResourceList: () => invokeGetResourceList(),
+    invokeGetVersionSprintList: (context: any) =>
+      invokeGetVersionSprintList({
+        projectId: context.projectSelected.id,
+        countryId: context.sprintSelected.country.id,
+        versionId: context.sprintSelected.version.id,
+      }),
+    invokeGetSprintInVersion: (context: any) =>
+      invokeGetSprintInVersion({
+        projectId: context.projectSelected.id,
+        countryId: context.sprintSelected.country.id,
+        versionId: context.sprintChangeVersion,
+      }),
+    invokeUpdateChangeSprint: (context: any) =>
+      invokeUpdateChangeSprint(context.updateSprintData),
   };
 };

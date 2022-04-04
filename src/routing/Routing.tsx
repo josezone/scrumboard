@@ -27,8 +27,8 @@ function Routing() {
         <Route path="/login" element={<Login />} />
         {loginData && (
           <>
-            <Route path="/" element={<Home graphQLClient={graphQLClient} />} />
-            <Route path="/2" element={<Home2 graphQLClient={graphQLClient} />} />
+            <Route path="2" element={<Home graphQLClient={graphQLClient} />} />
+            <Route path="/" element={<Home2 graphQLClient={graphQLClient} />} />
             <Route
               path="/issue/:id"
               element={<Bug graphQLClient={graphQLClient} />}

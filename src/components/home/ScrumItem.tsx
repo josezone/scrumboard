@@ -11,6 +11,8 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Checkbox from "@mui/material/Checkbox";
 import NewTicket from "./NewTicket";
 import ModalComponent from "../modal/modal";
+import DisplaySettingsIcon from "@mui/icons-material/DisplaySettings";
+import ChangeSprint from "./ChangeSprint";
 
 function storyPoint(props: any) {
   const el = [];
@@ -63,8 +65,10 @@ function ScrumItem(props: any) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [openTicket, setOpenTicket] = useState(false);
+  const [changeSprint, setChangeSprint] = useState(false);
 
   const toggleOpenTicket = () => setOpenTicket((s) => !s);
+  const toggleChangeSprint = () => setChangeSprint((s) => !s);
 
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -115,7 +119,6 @@ function ScrumItem(props: any) {
           onClose={handleClose(null)}
           PaperProps={{
             style: {
-              maxHeight: 48 * 4.5,
               width: "20ch",
             },
           }}
@@ -125,6 +128,13 @@ function ScrumItem(props: any) {
               <EditIcon />
             </IconButton>
             Edit
+          </MenuItem>
+
+          <MenuItem onClick={handleClose(toggleChangeSprint)}>
+            <IconButton>
+              <DisplaySettingsIcon />
+            </IconButton>
+            Move
           </MenuItem>
 
           <MenuItem onClick={handleClose(removeClicked)}>
@@ -194,6 +204,15 @@ function ScrumItem(props: any) {
           componentsProps={{ data: props }}
         >
           <NewTicket toggleOpenTicket={toggleOpenTicket} editMode={true} />
+        </ModalComponent>
+
+        <ModalComponent
+          open={changeSprint}
+          handleClose={toggleChangeSprint}
+          title="Move Sprint"
+          componentsProps={{ data: props }}
+        >
+          <ChangeSprint toggleChangeSprint={toggleChangeSprint} />
         </ModalComponent>
       </div>
     </DndItemStyled>

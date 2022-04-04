@@ -29,6 +29,8 @@ export const homeMachine = createMachine<any>({
     updateTicket: undefined,
     versionList: [],
     newVersion: undefined,
+    changeSprintVersionList: [],
+    changeSprintSprintList: [],
   },
 
   states: {
@@ -204,6 +206,65 @@ export const homeMachine = createMachine<any>({
             id: "createNewVersion",
             src: "invokeCreateNewVersion",
             onDone: {
+              target: "idle",
+            },
+            onError: {
+              target: "idle",
+            },
+          },
+        },
+      },
+    },
+    changeSprint: {
+      initial: "idle",
+      states: {
+        idle: {
+          on: {
+            initChangeSprint: {
+              target: "getVersionSprintList",
+            },
+            sprintChangeVersion: {
+              actions: "assignSprintChangeVersion",
+              target: "getSprintInVersion",
+            },
+            makeChangeSprint: {
+              actions: "assignMakeChangeSprint",
+              target: "updateChangeSprint",
+            },
+          },
+        },
+        getVersionSprintList: {
+          invoke: {
+            id: "getVersionSprintList",
+            src: "invokeGetVersionSprintList",
+            onDone: {
+              actions: "assignDefaultVersionSprintList",
+              target: "idle",
+            },
+            onError: {
+              target: "idle",
+            },
+          },
+        },
+        updateChangeSprint: {
+          invoke: {
+            id: "updateChangeSprint",
+            src: "invokeUpdateChangeSprint",
+            onDone: {
+              actions: "idle",
+              target: ["#main.getTicket.getTicketlist", "idle"],
+            },
+            onError: {
+              target: "idle",
+            },
+          },
+        },
+        getSprintInVersion: {
+          invoke: {
+            id: "getSprintInVersion",
+            src: "invokeGetSprintInVersion",
+            onDone: {
+              actions: "assignGetSprintInVersion",
               target: "idle",
             },
             onError: {

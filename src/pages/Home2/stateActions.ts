@@ -203,6 +203,34 @@ const assignNewVersion = assign({
   },
 });
 
+const assignDefaultVersionSprintList = assign({
+  changeSprintVersionList: (context: any, event: any) => {
+    return event.data.version;
+  },
+  changeSprintSprintList: (context: any, event: any) => {
+    return event.data.sprint;
+  },
+});
+
+const assignSprintChangeVersion = assign({
+  sprintChangeVersion: (context: any, event: any) => {
+    return event.data;
+  },
+  changeSprintSprintList: () => [],
+});
+
+const assignGetSprintInVersion = assign({
+  changeSprintSprintList: (context: any, event: any) => {
+    return event.data.sprint;
+  },
+});
+
+const assignMakeChangeSprint = assign({
+  updateSprintData: (context: any, event: any) => {
+    return event.data;
+  },
+});
+
 export const actions = {
   assignSprintstatusCountryScopeResourcePriorityResourcetype,
   assignProjectGroupList,
@@ -229,4 +257,8 @@ export const actions = {
   updateAssignSprint,
   assignNewVersion,
   reassignResourceList,
+  assignDefaultVersionSprintList,
+  assignSprintChangeVersion,
+  assignGetSprintInVersion,
+  assignMakeChangeSprint,
 };
