@@ -31,22 +31,48 @@ function HomeComponent(props: any) {
   const toggleOpenVersion = () => setOpenVersion((s) => !s);
   const toggleOpenScrum = () => setOpenScrum((s) => !s);
 
-  const actions = [
-    {
+  const actions = [];
+
+  if (props.projectGroupSelected) {
+    actions.push({
       icon: <CalendarMonthIcon onClick={toggleOpenScrum} />,
       name: "New Scrum",
-    },
-    { icon: <AddTaskIcon onClick={toggleOpenVersion} />, name: "New Version" },
-    { icon: <NewspaperIcon onClick={toggleOpenSprint} />, name: "New Sprint" },
-    {
-      icon: <CreateNewFolderIcon onClick={toggleOpenTicket} />,
-      name: "New Ticket",
-    },
-    {
+    });
+  }
+
+  if (props.projectGroupSelected && props.projectSelected) {
+    actions.push({
+      icon: <AddTaskIcon onClick={toggleOpenVersion} />,
+      name: "New Version",
+    });
+  }
+
+  if (
+    props.projectGroupSelected &&
+    props.projectSelected &&
+    props.scrumSelected
+  ) {
+    actions.push({
+      icon: <NewspaperIcon onClick={toggleOpenSprint} />,
+      name: "New Sprint",
+    });
+  }
+
+  if (
+    props.projectGroupSelected &&
+    props.projectSelected &&
+    props.scrumSelected &&
+    props.sprintSelected
+  ) {
+    actions.push({
       icon: <EditRoadIcon onClick={toggleOpenEditSprint} />,
       name: "Edit Sprint",
-    },
-  ];
+    });
+    actions.push({
+      icon: <CreateNewFolderIcon onClick={toggleOpenTicket} />,
+      name: "New Ticket",
+    });
+  }
 
   return (
     <div>
