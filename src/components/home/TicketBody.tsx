@@ -17,6 +17,7 @@ import TextField from "@mui/material/TextField";
 import { Grid } from "@mui/material";
 
 import MultipleSelect from "../multiSelect/multiSelect";
+import { TicketBodyWrapper } from "./TicketBody.style";
 
 const schema = yup
   .object({
@@ -124,7 +125,10 @@ function NewTicket(props: any) {
         const newResource = selectedResources.filter(
           (item: any) => !item.ticketResourceId
         );
-        const deleteResource = props.ticket_resources.filter(({ resource }: any) => !selectedResources.some(({ id: id2 }) => resource.id === id2));
+        const deleteResource = props.ticket_resources.filter(
+          ({ resource }: any) =>
+            !selectedResources.some(({ id: id2 }) => resource.id === id2)
+        );
         newData.ticket.id = props.id;
         newData.updateResource = updateResource;
         newData.newResource = newResource;
@@ -178,261 +182,280 @@ function NewTicket(props: any) {
 
   return (
     <Fragment>
-      <Card variant="outlined" className="cardContainer">
-        <form onSubmit={onSubmit} className="formContainer">
-          <Grid container spacing={2}>
-            <Grid item md={6} sm={12}>
-              <Controller
-                name="ticket"
-                control={formProps.control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    id="standard-basic"
-                    label="Ticket"
-                    variant="outlined"
-                    className="textConatiner"
-                    fullWidth
-                    error={formProps.formState.errors.ticket ? true : false}
-                    helperText={formProps.formState.errors?.ticket?.message}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item md={6} sm={12}>
-              <FormControl fullWidth>
-                <InputLabel id="priority">Priority</InputLabel>
+      <TicketBodyWrapper>
+        <Card variant="outlined" className="cardContainer">
+          <form onSubmit={onSubmit} className="formContainer">
+            <Grid container spacing={2}>
+              <Grid item md={6} sm={12}>
                 <Controller
-                  name="priority"
+                  name="ticket"
                   control={formProps.control}
                   render={({ field }) => (
-                    <Select
-                      labelId="priority"
-                      id="priority"
-                      label="Priority"
+                    <TextField
+                      {...field}
+                      id="standard-basic"
+                      label="Ticket"
+                      variant="outlined"
                       className="textConatiner"
                       fullWidth
-                      {...field}
-                      value={priority}
-                      onChange={(e) => {
-                        setPriority(e.target.value);
-                        field.onChange(e);
-                      }}
-                      error={formProps.formState.errors.priority ? true : false}
-                    >
-                      <MenuItem value="">
-                        <em>None</em>
-                      </MenuItem>
-                      {props.priorityList?.map((priority: any) => {
-                        return (
-                          <MenuItem value={priority.id} key={priority.priority}>
-                            {priority.priority}
-                          </MenuItem>
-                        );
-                      })}
-                    </Select>
-                  )}
-                />
-                <FormHelperText>
-                  {formProps.formState.errors?.priority?.message}
-                </FormHelperText>
-              </FormControl>
-            </Grid>
-
-            <Grid item md={6} sm={12}>
-              <FormControl fullWidth>
-                <InputLabel id="scope">Scope</InputLabel>
-                <Controller
-                  name="scope"
-                  control={formProps.control}
-                  render={({ field }) => (
-                    <Select
-                      labelId="scope"
-                      id="scope"
-                      label="Scope"
-                      className="textConatiner"
-                      {...field}
-                      value={scope}
-                      onChange={(e) => {
-                        setScope(e.target.value);
-                        field.onChange(e);
-                      }}
-                      error={formProps.formState.errors.scope ? true : false}
-                    >
-                      <MenuItem value="">
-                        <em>None</em>
-                      </MenuItem>
-                      {props.scopeList?.map((scope: any) => {
-                        return (
-                          <MenuItem value={scope.id} key={scope.scope}>
-                            {scope.scope}
-                          </MenuItem>
-                        );
-                      })}
-                    </Select>
-                  )}
-                />
-                <FormHelperText>
-                  {formProps.formState.errors?.scope?.message}
-                </FormHelperText>
-              </FormControl>
-            </Grid>
-
-            <Grid item md={6} sm={12}>
-              {props.scopeList
-                ?.filter((item: any) => item.id === scope)[0]
-                ?.scope?.includes("BE") && (
-                <Controller
-                  name="beStory"
-                  control={formProps.control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      type="number"
-                      id="standard-basic"
-                      label="BE Story Points"
-                      variant="outlined"
-                      fullWidth
-                      error={formProps.formState.errors.beStory ? true : false}
-                      helperText={formProps.formState.errors?.beStory?.message}
+                      error={formProps.formState.errors.ticket ? true : false}
+                      helperText={formProps.formState.errors?.ticket?.message}
                     />
                   )}
                 />
-              )}
-
-              {props.scopeList
-                ?.filter((item: any) => item.id === scope)[0]
-                ?.scope?.includes("FE") && (
-                <Controller
-                  name="feStory"
-                  control={formProps.control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      type="number"
-                      id="standard-basic"
-                      label="FE Story Points"
-                      variant="outlined"
-                      fullWidth
-                      error={formProps.formState.errors.feStory ? true : false}
-                      helperText={formProps.formState.errors?.feStory?.message}
-                    />
-                  )}
-                />
-              )}
-
-              {props.scopeList
-                ?.filter((item: any) => item.id === scope)[0]
-                ?.scope?.includes("QA") && (
-                <Controller
-                  name="qaStory"
-                  control={formProps.control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      type="number"
-                      id="standard-basic"
-                      label="QA Story Points"
-                      variant="outlined"
-                      fullWidth
-                      error={formProps.formState.errors.qaStory ? true : false}
-                      helperText={formProps.formState.errors?.qaStory?.message}
-                    />
-                  )}
-                />
-              )}
-            </Grid>
-
-            <Grid item md={6} sm={12}>
-              <Controller
-                name="link"
-                control={formProps.control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    id="standard-basic"
-                    label="Jira Link"
-                    variant="outlined"
-                    className="textConatiner"
-                    fullWidth
-                    error={formProps.formState.errors.link ? true : false}
-                    helperText={formProps.formState.errors?.link?.message}
-                  />
-                )}
-              />
-            </Grid>
-
-            <Grid item md={6} sm={12}>
-              <Controller
-                name="resources"
-                control={formProps.control}
-                render={({ field }) => (
-                  <MultipleSelect
-                    label="Resources"
-                    error={
-                      getResourceError() && !Boolean(selectedResources.length)
-                    }
-                    options={resourceList}
-                    value={selectedResources}
-                    handleChange={handleChangeResource}
-                  />
-                )}
-              />
-            </Grid>
-
-            <Grid item md={12} sm={12}>
-              {Boolean(selectedResources.length) && (
-                <FormControl
-                  sx={{ m: 3 }}
-                  component="fieldset"
-                  variant="standard"
-                  error={getResourceError()}
-                >
-                  <FormLabel component="legend">
-                    Resources StoryPoints{" "}
-                  </FormLabel>
+              </Grid>
+              <Grid item md={6} sm={12}>
+                <FormControl fullWidth>
+                  <InputLabel id="priority">Priority</InputLabel>
                   <Controller
-                    name="resources"
+                    name="priority"
                     control={formProps.control}
-                    render={({ field }) => {
-                      return (
-                        <FormGroup>
-                          {selectedResources?.map((resource: any) => {
-                            return (
-                              <FormControlLabel
-                                control={
-                                  <>
-                                    <TextField
-                                      onChange={handleChangeValue(resource)}
-                                      type="number"
-                                      label="Story points"
-                                      variant="standard"
-                                      value={resource.story}
-                                    />
-                                  </>
-                                }
-                                label={resource.resource}
-                              />
-                            );
-                          })}
-                        </FormGroup>
-                      );
-                    }}
+                    render={({ field }) => (
+                      <Select
+                        labelId="priority"
+                        id="priority"
+                        label="Priority"
+                        className="textConatiner"
+                        fullWidth
+                        {...field}
+                        value={priority}
+                        onChange={(e) => {
+                          setPriority(e.target.value);
+                          field.onChange(e);
+                        }}
+                        error={
+                          formProps.formState.errors.priority ? true : false
+                        }
+                      >
+                        <MenuItem value="">
+                          <em>None</em>
+                        </MenuItem>
+                        {props.priorityList?.map((priority: any) => {
+                          return (
+                            <MenuItem
+                              value={priority.id}
+                              key={priority.priority}
+                            >
+                              {priority.priority}
+                            </MenuItem>
+                          );
+                        })}
+                      </Select>
+                    )}
                   />
-                  {getResourceError() && (
-                    <FormHelperText>
-                      Resource with storypoint required
-                    </FormHelperText>
-                  )}
+                  <FormHelperText>
+                    {formProps.formState.errors?.priority?.message}
+                  </FormHelperText>
                 </FormControl>
-              )}
+              </Grid>
+
+              <Grid item md={6} sm={12}>
+                <FormControl fullWidth>
+                  <InputLabel id="scope">Scope</InputLabel>
+                  <Controller
+                    name="scope"
+                    control={formProps.control}
+                    render={({ field }) => (
+                      <Select
+                        labelId="scope"
+                        id="scope"
+                        label="Scope"
+                        className="textConatiner"
+                        {...field}
+                        value={scope}
+                        onChange={(e) => {
+                          setScope(e.target.value);
+                          field.onChange(e);
+                        }}
+                        error={formProps.formState.errors.scope ? true : false}
+                      >
+                        <MenuItem value="">
+                          <em>None</em>
+                        </MenuItem>
+                        {props.scopeList?.map((scope: any) => {
+                          return (
+                            <MenuItem value={scope.id} key={scope.scope}>
+                              {scope.scope}
+                            </MenuItem>
+                          );
+                        })}
+                      </Select>
+                    )}
+                  />
+                  <FormHelperText>
+                    {formProps.formState.errors?.scope?.message}
+                  </FormHelperText>
+                </FormControl>
+              </Grid>
+
+              <Grid item md={6} sm={12}>
+                {props.scopeList
+                  ?.filter((item: any) => item.id === scope)[0]
+                  ?.scope?.includes("BE") && (
+                  <Controller
+                    name="beStory"
+                    control={formProps.control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        type="number"
+                        id="standard-basic"
+                        label="BE Story Points"
+                        variant="outlined"
+                        fullWidth
+                        error={
+                          formProps.formState.errors.beStory ? true : false
+                        }
+                        helperText={
+                          formProps.formState.errors?.beStory?.message
+                        }
+                      />
+                    )}
+                  />
+                )}
+
+                {props.scopeList
+                  ?.filter((item: any) => item.id === scope)[0]
+                  ?.scope?.includes("FE") && (
+                  <Controller
+                    name="feStory"
+                    control={formProps.control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        type="number"
+                        id="standard-basic"
+                        label="FE Story Points"
+                        variant="outlined"
+                        fullWidth
+                        error={
+                          formProps.formState.errors.feStory ? true : false
+                        }
+                        helperText={
+                          formProps.formState.errors?.feStory?.message
+                        }
+                      />
+                    )}
+                  />
+                )}
+
+                {props.scopeList
+                  ?.filter((item: any) => item.id === scope)[0]
+                  ?.scope?.includes("QA") && (
+                  <Controller
+                    name="qaStory"
+                    control={formProps.control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        type="number"
+                        id="standard-basic"
+                        label="QA Story Points"
+                        variant="outlined"
+                        fullWidth
+                        error={
+                          formProps.formState.errors.qaStory ? true : false
+                        }
+                        helperText={
+                          formProps.formState.errors?.qaStory?.message
+                        }
+                      />
+                    )}
+                  />
+                )}
+              </Grid>
+
+              <Grid item md={6} sm={12}>
+                <Controller
+                  name="link"
+                  control={formProps.control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      id="standard-basic"
+                      label="Jira Link"
+                      variant="outlined"
+                      className="textConatiner"
+                      fullWidth
+                      error={formProps.formState.errors.link ? true : false}
+                      helperText={formProps.formState.errors?.link?.message}
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item md={6} sm={12}>
+                <Controller
+                  name="resources"
+                  control={formProps.control}
+                  render={({ field }) => (
+                    <MultipleSelect
+                      label="Resources"
+                      error={
+                        getResourceError() && !Boolean(selectedResources.length)
+                      }
+                      options={resourceList}
+                      value={selectedResources}
+                      handleChange={handleChangeResource}
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item md={12} sm={12}>
+                {Boolean(selectedResources.length) && (
+                  <FormControl
+                    sx={{ m: 3 }}
+                    component="fieldset"
+                    variant="standard"
+                    error={getResourceError()}
+                  >
+                    <FormLabel component="legend">
+                      Resources StoryPoints{" "}
+                    </FormLabel>
+                    <Controller
+                      name="resources"
+                      control={formProps.control}
+                      render={({ field }) => {
+                        return (
+                          <FormGroup>
+                            {selectedResources?.map((resource: any) => {
+                              return (
+                                <FormControlLabel
+                                  control={
+                                    <>
+                                      <TextField
+                                        onChange={handleChangeValue(resource)}
+                                        type="number"
+                                        label="Story points"
+                                        variant="standard"
+                                        value={resource.story}
+                                      />
+                                    </>
+                                  }
+                                  label={resource.resource}
+                                />
+                              );
+                            })}
+                          </FormGroup>
+                        );
+                      }}
+                    />
+                    {getResourceError() && (
+                      <FormHelperText>
+                        Resource with storypoint required
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                )}
+              </Grid>
+              <Button type="submit" autoFocus>
+                Create
+              </Button>
             </Grid>
-            <Button type="submit" autoFocus>
-              Create
-            </Button>
-          </Grid>
-        </form>
-      </Card>
+          </form>
+        </Card>
+      </TicketBodyWrapper>
     </Fragment>
   );
 }
