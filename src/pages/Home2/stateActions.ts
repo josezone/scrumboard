@@ -57,9 +57,21 @@ const assignDefaultProjectScrum = assign({
       : undefined;
   },
   scrumSelected: (context: any, event: any) => {
+    const scrum = event.data?.scrum?.filter(
+      (scrum: { active: boolean }) => scrum.active === true
+    );
+    if (scrum.length) {
+      return scrum[0];
+    }
     return event.data?.scrum?.length
       ? event.data.scrum.sort((a: any, b: any) => b.id - a.id)[0]
       : undefined;
+  },
+});
+
+const assignDefaultScrum = assign({
+  scrumList: (context: any, event: any) => {
+    return event.data.scrum;
   },
 });
 
@@ -250,6 +262,30 @@ const assignEstimateChange = assign({
   },
 });
 
+const assignNewScrum = assign({
+  scrumCreateData: (context: any, event: any) => {
+    return event.data.toISOString();
+  },
+});
+
+const activateScrumList = assign({
+  scrumList: (context: any, event: any) => {
+    const currentActive = context?.scrumList?.filter(
+      (scrum: { active: boolean }) => scrum?.active === true
+    );
+    if (currentActive?.length) {
+      currentActive[0].active = false;
+    }
+    const toActivate = context?.scrumList?.filter(
+      (scrum: any) => scrum?.id === context?.scrumSelected?.id
+    );
+    if (toActivate?.length) {
+      toActivate[0].active = true;
+    }
+    return context.scrumList;
+  },
+});
+
 export const actions = {
   assignSprintstatusCountryScopeResourcePriorityResourcetype,
   assignProjectGroupList,
@@ -282,4 +318,7 @@ export const actions = {
   assignMakeChangeSprint,
   assignEstimateStatus,
   assignEstimateChange,
+  assignNewScrum,
+  assignDefaultScrum,
+  activateScrumList,
 };

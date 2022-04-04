@@ -3,8 +3,13 @@ import TopBar from "./TopBar";
 import AppBar from "../../components/appBar/AppBar";
 import Box from "@mui/material/Box";
 import ItemSelect from "../../components/itemSelect/ItemSelect";
+import BoltIcon from "@mui/icons-material/Bolt";
+import IconButton from "@mui/material/IconButton";
 
 export function dateConvert(val: string) {
+  if (!val) {
+    return val;
+  }
   return (
     new Date(val).toLocaleString("default", {
       month: "long",
@@ -41,6 +46,10 @@ function ScrumBar(props: any) {
     props.send({ type: "sprintChanged", data });
   };
 
+  const activateScrum = () => {
+    props.send({ type: "activateScrum" });
+  };
+
   return (
     <div>
       <TopBar {...props} />
@@ -54,6 +63,11 @@ function ScrumBar(props: any) {
             id="selectScrumNative"
             showList={props.scrumSelected?.id && true}
           ></ItemSelect>
+          {props.scrumSelected && !props.scrumSelected.active && (
+            <IconButton color="primary" onClick={activateScrum}>
+              <BoltIcon />
+            </IconButton>
+          )}
           <ItemSelect
             items={sprintItem}
             defaultItem={props.sprintSelected?.id}

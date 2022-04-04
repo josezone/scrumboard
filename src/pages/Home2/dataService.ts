@@ -121,6 +121,7 @@ function useInvokeGetProjectAndScrumList(graphQLClient: any) {
         scrum(where: { project_group_id: { _eq: ${projectGroupId} } }) {
           id
           scrum
+          active
         }
       }
     `);
@@ -471,6 +472,56 @@ function useInvokeChangeEstimate(graphQLClient: any) {
   });
 }
 
+function useInvokeMakeScrum(graphQLClient: any) {
+  return useMutation(({ scrum, projectGroupId }: any) => {
+    return graphQLClient.request(gql`
+      mutation createScrum {
+        insert_scrum(objects: {scrum: "${scrum}", active: false, status: true, project_group_id: ${projectGroupId}}) {
+          returning {
+            id
+          }
+        }
+      }
+    `);
+  });
+}
+
+function useInvokeGetScrumList(graphQLClient: any) {
+  return useMutation((projectGroupId: number) => {
+    if (!projectGroupId) {
+      return Promise.resolve([]);
+    }
+    return graphQLClient.request(gql`
+      query MyQuery {
+        scrum(where: { project_group_id: { _eq: ${projectGroupId} } }) {
+          id
+          scrum
+          active
+        }
+      }
+    `);
+  });
+}
+
+function useInvokeActivate(graphQLClient: any) {
+  return useMutation(({ activateId, projectGroupId }: any) => {
+    return graphQLClient.request(gql`
+      mutation MyMutation {
+        u1: update_scrum(where: { active: { _eq: ${true} }, project_group_id: { _eq: ${projectGroupId}} }, _set: { active: false }) {
+          returning {
+            id
+          }
+        }
+        u2: update_scrum(where: { id: { _eq: ${activateId} } }, _set: { active: true }) {
+          returning {
+            id
+          }
+        }
+      }
+    `);
+  });
+}
+
 export const useServices = (props: any) => {
   const {
     mutateAsync: invokeGetSprintstatusCountryScopeResourcePriorityResourcetype,
@@ -553,6 +604,18 @@ export const useServices = (props: any) => {
   );
 
   const { mutateAsync: invokeChangeEstimate } = useInvokeChangeEstimate(
+    props.graphQLClient
+  );
+
+  const { mutateAsync: invokeMakeScrum } = useInvokeMakeScrum(
+    props.graphQLClient
+  );
+
+  const { mutateAsync: invokeGetScrumList } = useInvokeGetScrumList(
+    props.graphQLClient
+  );
+
+  const { mutateAsync: invokeActivate } = useInvokeActivate(
     props.graphQLClient
   );
 
@@ -646,6 +709,18 @@ export const useServices = (props: any) => {
       invokeChangeEstimate({
         ticketId: context.estimateToggleId.id,
         estimate: context.estimateToggleId.estimation,
+      }),
+    invokeMakeScrum: (context: any) =>
+      invokeMakeScrum({
+        scrum: context.scrumCreateData || new Date().toISOString(),
+        projectGroupId: context.projectGroupSelected?.id,
+      }),
+    invokeGetScrumList: (context: any) =>
+      invokeGetScrumList(context.projectGroupSelected?.id),
+    invokeActivate: (context: any) =>
+      invokeActivate({
+        activateId: context?.scrumSelected?.id,
+        projectGroupId: context?.projectGroupSelected?.id,
       }),
   };
 };

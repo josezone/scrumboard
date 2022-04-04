@@ -13,6 +13,8 @@ import ScrumBoard from "./ScrumBoard";
 import ScrumItem from "./ScrumItem";
 import ScrumBar from "./SrumBar";
 import AddTaskIcon from "@mui/icons-material/AddTask";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import NewScrum from "./NewScrum";
 
 function HomeComponent(props: any) {
   const [open, setOpen] = useState(false);
@@ -20,14 +22,20 @@ function HomeComponent(props: any) {
   const [openTicket, setOpenTicket] = useState(false);
   const [openEditSprint, setOpenEditSprint] = useState(false);
   const [openVersion, setOpenVersion] = useState(false);
+  const [openScrum, setOpenScrum] = useState(false);
 
   const toggleOpen = () => setOpen((s) => !s);
   const toggleOpenSprint = () => setOpenSprint((s) => !s);
   const toggleOpenEditSprint = () => setOpenEditSprint((s) => !s);
   const toggleOpenTicket = () => setOpenTicket((s) => !s);
   const toggleOpenVersion = () => setOpenVersion((s) => !s);
+  const toggleOpenScrum = () => setOpenScrum((s) => !s);
 
   const actions = [
+    {
+      icon: <CalendarMonthIcon onClick={toggleOpenScrum} />,
+      name: "New Scrum",
+    },
     { icon: <AddTaskIcon onClick={toggleOpenVersion} />, name: "New Version" },
     { icon: <NewspaperIcon onClick={toggleOpenSprint} />, name: "New Sprint" },
     {
@@ -96,6 +104,15 @@ function HomeComponent(props: any) {
         componentsProps={{ data: props }}
       >
         <NewVersion toggleOpenVersion={toggleOpenVersion} />
+      </ModalComponent>
+
+      <ModalComponent
+        open={openScrum}
+        handleClose={toggleOpenScrum}
+        title="New Scrum"
+        componentsProps={{ data: props }}
+      >
+        <NewScrum toggleOpenScrum={toggleOpenScrum} />
       </ModalComponent>
     </div>
   );

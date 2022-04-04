@@ -6,9 +6,9 @@ function NewSprint(props: any) {
   return (
     <div>
       <Breadcrumbs>
-        <div>{props.modalProps.projectGroupSelected.name}</div>
-        <div>{dateConvert(props.modalProps.scrumSelected.scrum)}</div>
-        <div>{props.modalProps.projectSelected.project}</div>
+        <div>{props.modalProps?.projectGroupSelected?.name}</div>
+        <div>{dateConvert(props.modalProps?.scrumSelected?.scrum)}</div>
+        <div>{props.modalProps?.projectSelected?.project}</div>
       </Breadcrumbs>
       <SprintBody
         {...props.modalProps}

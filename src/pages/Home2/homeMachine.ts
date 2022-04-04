@@ -31,6 +31,7 @@ export const homeMachine = createMachine<any>({
     newVersion: undefined,
     changeSprintVersionList: [],
     changeSprintSprintList: [],
+    scrumCreateData: undefined,
   },
 
   states: {
@@ -99,6 +100,51 @@ export const homeMachine = createMachine<any>({
                 projectGroupChanged: {
                   actions: "updateDefaultProjectGroup",
                   target: "getProjectAndScrumList",
+                },
+                initiateScrumCreate: {
+                  target: "makeScrum",
+                  actions: "assignNewScrum",
+                },
+                activateScrum: {
+                  target: "activate",
+                },
+              },
+            },
+            activate: {
+              invoke: {
+                id: "invokeActivate",
+                src: "invokeActivate",
+                onDone: {
+                  actions: "activateScrumList",
+                  target: "end",
+                },
+                onError: {
+                  target: "end",
+                },
+              },
+            },
+            getScrumList: {
+              invoke: {
+                id: "getScrumList",
+                src: "invokeGetScrumList",
+                onDone: {
+                  actions: "assignDefaultScrum",
+                  target: "end",
+                },
+                onError: {
+                  target: "end",
+                },
+              },
+            },
+            makeScrum: {
+              invoke: {
+                id: "makeScrum",
+                src: "invokeMakeScrum",
+                onDone: {
+                  target: "getScrumList",
+                },
+                onError: {
+                  target: "end",
                 },
               },
             },
