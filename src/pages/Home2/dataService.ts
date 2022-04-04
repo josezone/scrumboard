@@ -457,6 +457,20 @@ function useInvokeUpdateChangeSprint(graphQLClient: any) {
   });
 }
 
+function useInvokeChangeEstimate(graphQLClient: any) {
+  return useMutation(({ ticketId, estimate }: any) => {
+    return graphQLClient.request(gql`
+    mutation MyMutation {
+      update_ticket(where: {id: {_eq: "${ticketId}"}}, _set: {estimation: ${estimate}}) {
+          returning {
+            id
+          }
+        }
+      }
+    `);
+  });
+}
+
 export const useServices = (props: any) => {
   const {
     mutateAsync: invokeGetSprintstatusCountryScopeResourcePriorityResourcetype,
@@ -535,6 +549,10 @@ export const useServices = (props: any) => {
   );
 
   const { mutateAsync: invokeUpdateChangeSprint } = useInvokeUpdateChangeSprint(
+    props.graphQLClient
+  );
+
+  const { mutateAsync: invokeChangeEstimate } = useInvokeChangeEstimate(
     props.graphQLClient
   );
 
@@ -624,5 +642,10 @@ export const useServices = (props: any) => {
       }),
     invokeUpdateChangeSprint: (context: any) =>
       invokeUpdateChangeSprint(context.updateSprintData),
+    invokeChangeEstimate: (context: any) =>
+      invokeChangeEstimate({
+        ticketId: context.estimateToggleId.id,
+        estimate: context.estimateToggleId.estimation,
+      }),
   };
 };

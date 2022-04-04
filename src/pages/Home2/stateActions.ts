@@ -231,6 +231,25 @@ const assignMakeChangeSprint = assign({
   },
 });
 
+const assignEstimateStatus = assign({
+  ticketList: (context: any, event: any) => {
+    Object.values(context.ticketList).forEach((ticketType: any) => {
+      ticketType.forEach((ticket: any) => {
+        if (ticket.id === context.estimateToggleId.id) {
+          ticket.estimation = context.estimateToggleId.estimation;
+        }
+      });
+    });
+    return context.ticketList;
+  },
+});
+
+const assignEstimateChange = assign({
+  estimateToggleId: (context: any, event: any) => {
+    return event.prop;
+  },
+});
+
 export const actions = {
   assignSprintstatusCountryScopeResourcePriorityResourcetype,
   assignProjectGroupList,
@@ -261,4 +280,6 @@ export const actions = {
   assignSprintChangeVersion,
   assignGetSprintInVersion,
   assignMakeChangeSprint,
+  assignEstimateStatus,
+  assignEstimateChange,
 };

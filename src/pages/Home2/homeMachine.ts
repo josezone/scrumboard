@@ -215,6 +215,33 @@ export const homeMachine = createMachine<any>({
         },
       },
     },
+    estimate: {
+      id: "estimate",
+      initial: "end",
+      states: {
+        changeEstimate: {
+          invoke: {
+            id: "changeEstimate",
+            src: "invokeChangeEstimate",
+            onDone: {
+              actions: "assignEstimateStatus",
+              target: "end",
+            },
+            onError: {
+              target: "end",
+            },
+          },
+        },
+        end: {
+          on: {
+            toggleEstimate: {
+              target: "changeEstimate",
+              actions: "assignEstimateChange",
+            },
+          },
+        },
+      },
+    },
     changeSprint: {
       initial: "idle",
       states: {
