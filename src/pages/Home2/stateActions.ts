@@ -73,6 +73,12 @@ const assignDefaultScrum = assign({
   scrumList: (context: any, event: any) => {
     return event.data.scrum;
   },
+  scrumSelected: (context: any, event: any) => {
+    if (!context.scrumSelected) {
+      return event.data.scrum[0];
+    }
+    return context.scrumSelected;
+  },
 });
 
 const assignSprintList = assign({
