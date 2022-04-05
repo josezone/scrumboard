@@ -33,7 +33,11 @@ export const homeMachine = createMachine<any>({
     changeSprintSprintList: [],
     scrumCreateData: undefined,
   },
-
+  on: {
+    ticketSub: {
+      actions: "subUpdateTicket",
+    },
+  },
   states: {
     initGroup: {
       type: "parallel",

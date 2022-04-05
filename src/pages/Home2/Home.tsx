@@ -1,12 +1,17 @@
 import { useMachine } from "@xstate/react";
 import { homeMachine } from "./homeMachine";
-import { useServices } from "./dataService";
+import { getQuery, useServices } from "./dataService";
 import { actions } from "./stateActions";
 import HomeComponent from "../../components/home/Home";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import Resources from "../Resources/Resource";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createClient } from "graphql-ws";
+
+const client = createClient({
+  url: (process.env.REACT_APP_API_URL as string).replace("http", "ws"),
+});
 
 function TabPanel(props: any) {
   const { children, value, index, ...other } = props;
@@ -24,7 +29,6 @@ function TabPanel(props: any) {
   );
 }
 
-
 function DailyReport(props: any) {
   props.graphQLClient.setHeader(
     "Authorization",
@@ -39,8 +43,20 @@ function DailyReport(props: any) {
     services,
   });
 
+  useEffect(() => {
+    let unsubscribe: any;
+    if (state.context.sprintSelected?.id) {
+      unsubscribe = getQuery(state.context.sprintSelected.id, client, send);
+    }
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [state.context.sprintSelected?.id]);
+
   const handleChange = (event: any, newValue: any) => {
-    if(newValue === 0){
+    if (newValue === 0) {
       send({ type: "resourceList" });
     }
     setValue(newValue);

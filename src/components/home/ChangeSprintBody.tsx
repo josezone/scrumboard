@@ -25,7 +25,6 @@ function ChangeSprintBody(props: any) {
 
   const [version, setVersion] = useState<string>("");
   const [sprint, setSprint] = useState<string>("");
-  console.log(props);
   useEffect(() => {
     formProps.setValue("version", props.sprintSelected.version.id);
     setVersion(props.sprintSelected.version.id);
@@ -36,7 +35,6 @@ function ChangeSprintBody(props: any) {
 
   const onSubmit = (e: any) => {
     formProps.handleSubmit((data: any) => {
-      console.log(data);
       formProps.reset();
       e.target.reset();
       const val = {

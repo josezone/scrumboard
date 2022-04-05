@@ -292,6 +292,18 @@ const activateScrumList = assign({
   },
 });
 
+const subUpdateTicket = assign({
+  ticketList: (context: any, event: any) => {
+    const ticketList: any = {};
+    context.sprintStatusList?.forEach((status: any) => {
+      ticketList[status.status] = event?.data?.ticket?.filter(
+        (ticket: any) => ticket.status.id === status.id
+      );
+    });
+    return ticketList;
+  },
+});
+
 export const actions = {
   assignSprintstatusCountryScopeResourcePriorityResourcetype,
   assignProjectGroupList,
@@ -327,4 +339,5 @@ export const actions = {
   assignNewScrum,
   assignDefaultScrum,
   activateScrumList,
+  subUpdateTicket,
 };

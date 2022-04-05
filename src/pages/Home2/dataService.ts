@@ -522,6 +522,70 @@ function useInvokeActivate(graphQLClient: any) {
   });
 }
 
+export function getQuery(sprintId: number, client: any, send: any) {
+  return client.subscribe(
+    {
+      query: `
+      subscription MySubscription {
+        ticket(where: {sprint_id: {_eq: ${sprintId}}}) {
+          be_spill
+          be_story
+          fe_spill
+          fe_story
+          id
+          qa_spill
+          qa_story
+          spill
+          ticket
+          priority {
+            colorCode
+            id
+            priority
+          }
+          scope {
+            id
+            scope
+          }
+          sprint {
+            id
+            sprint
+          }
+          version {
+            id
+            version
+          }
+          status {
+            id
+            status
+          }
+          ticket_resources {
+            id
+            story
+            resource {
+              resource
+              id
+              resource_type {
+                id
+                resource_type
+              }
+            }
+          }
+          estimation,
+          link
+        }
+      }
+      `,
+    },
+    {
+      next: (val: any) => {
+        send({ type: "ticketSub", data: val.data });
+      },
+      error: (val: any) => {},
+      complete: () => {},
+    }
+  );
+}
+
 export const useServices = (props: any) => {
   const {
     mutateAsync: invokeGetSprintstatusCountryScopeResourcePriorityResourcetype,
