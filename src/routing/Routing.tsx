@@ -1,4 +1,4 @@
-import { lazy } from "react";
+import { lazy, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { GraphQLClient } from "graphql-request";
 import Estimate from "../pages/Estimate/Estimate";
@@ -19,12 +19,12 @@ const TotalSP = lazy(() => import("../pages/TotalSP/TotalSP"));
 const Report = lazy(() => import("../pages/Report/Report"));
 
 function Routing() {
-  const loginData = localStorage.getItem("data");
+  const [loginData, setLoginData] = useState(localStorage.getItem("data"));
   return (
     <BrowserRouter>
-    <NavigationBar />
+      {loginData && <NavigationBar />}
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login setLoginData={setLoginData} />} />
         {loginData && (
           <>
             <Route path="2" element={<Home graphQLClient={graphQLClient} />} />

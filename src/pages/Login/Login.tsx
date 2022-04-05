@@ -14,7 +14,7 @@ const schema = yup
   })
   .required();
 
-function Login() {
+function Login(props: any) {
   const navigate = useNavigate();
 
   const {
@@ -32,6 +32,9 @@ function Login() {
       e.target.reset();
       localStorage.setItem(
         "data",
+        Buffer.from(`${data.username}:${data.password}`).toString("base64")
+      );
+      props.setLoginData(
         Buffer.from(`${data.username}:${data.password}`).toString("base64")
       );
       navigate("/");
