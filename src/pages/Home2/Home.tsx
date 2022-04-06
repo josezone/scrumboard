@@ -11,6 +11,13 @@ import { createClient } from "graphql-ws";
 
 const client = createClient({
   url: (process.env.REACT_APP_API_URL as string).replace("http", "ws"),
+  connectionParams: async () => {
+    return {
+      headers: {
+        Authorization: "Basic " + localStorage.getItem("data"),
+      },
+    };
+  },
 });
 
 function TabPanel(props: any) {
