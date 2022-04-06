@@ -17,6 +17,7 @@ const ResourcePlanning = lazy(
 );
 const TotalSP = lazy(() => import("../pages/TotalSP/TotalSP"));
 const Report = lazy(() => import("../pages/Report/Report"));
+const Version = lazy(() => import("../pages/Version//Version"));
 
 function Routing() {
   const [loginData, setLoginData] = useState(localStorage.getItem("data"));
@@ -29,6 +30,10 @@ function Routing() {
           <>
             <Route path="2" element={<Home graphQLClient={graphQLClient} />} />
             <Route path="/" element={<Home2 graphQLClient={graphQLClient} />} />
+            <Route
+              path="/version"
+              element={<Version graphQLClient={graphQLClient} />}
+            />
             <Route
               path="/issue/:id"
               element={<Bug graphQLClient={graphQLClient} />}
