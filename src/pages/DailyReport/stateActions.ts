@@ -6,6 +6,7 @@ const assignDailyReport = assign({
     return event.data.bugs;
   },
   scrumName: (context: any, event: any) => {
+    console.log(event.data);
     return event?.data?.scrum[0]?.scrum || "";
   },
 });

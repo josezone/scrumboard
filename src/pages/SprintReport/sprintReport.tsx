@@ -35,7 +35,7 @@ const SprintReport: FC<any> = (props) => {
             <div className="btnContainer" >
                 <Button variant="contained" onClick={handleSprintReport} >Download Sprint Report </Button>
             </div>
-            <ReportTable reportList={context?.sprintReportList} />
+            <ReportTable reportList={context?.sprintReportList} scrum={context.sprintName} />
         </SprintReportStyled>
     );
 }

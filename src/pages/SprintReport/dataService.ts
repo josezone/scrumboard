@@ -24,6 +24,7 @@ export function useGetSprintReport(graphQLClient: any) {
               fe_spill
               be_spill
               spill
+              start_date
               bugs(where: {report: {_eq: true}}) {
                 bug
                 date
@@ -42,9 +43,8 @@ export const useServices = (props: any) => {
     props.graphQLClient
   );
 
-  const { mutateAsync: invokeGetProjectGroupList } = useInvokeGetProjectGroupList(
-    props.graphQLClient
-  );
+  const { mutateAsync: invokeGetProjectGroupList } =
+    useInvokeGetProjectGroupList(props.graphQLClient);
 
   const { mutateAsync: invokeGetScrumList } = useInvokeGetScrumList(
     props.graphQLClient
@@ -52,7 +52,12 @@ export const useServices = (props: any) => {
 
   return {
     invokeGetProjectGroupList: () => invokeGetProjectGroupList(),
-    invokeGetScrumList: (context: any) => invokeGetScrumList(context.selectedProjectGroup.id),
-    getSprintReport: (context: any) => getSprintReport({ projectGroupId: context.selectedProjectGroup.id, scrumId: context.scrumSelected.id })
-  }
-}
+    invokeGetScrumList: (context: any) =>
+      invokeGetScrumList(context.selectedProjectGroup.id),
+    getSprintReport: (context: any) =>
+      getSprintReport({
+        projectGroupId: context.selectedProjectGroup.id,
+        scrumId: context.scrumSelected.id,
+      }),
+  };
+};
