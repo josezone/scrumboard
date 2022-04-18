@@ -21,8 +21,8 @@ const validationSchema = yup
             spill: yup.boolean().required(),
             report: yup.boolean().required(),
             bug: yup.string().required().label("Issue"),
-            evidence: yup.string().required().label("Evidence"),
-            impact: yup.string().required().label("Impact"),
+            evidence: yup.string().label("Evidence"),
+            impact: yup.string().label("Impact"),
             resource: yup.number().required().label("Resource"),
             beSpill: yup.number().nullable(true).when(['feSpill', 'qaSpill', "spill"], {
                 is: (feSpill: any, qaSpill: any, spill: boolean) => spill && feSpill === null && qaSpill === null,
