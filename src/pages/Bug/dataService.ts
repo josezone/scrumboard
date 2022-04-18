@@ -19,7 +19,7 @@ export function useInvokeNewBug(graphQLClient: any) {
       if (bugType) {
         return graphQLClient.request(gql`
             mutation MyMutation {
-              insert_bugs(objects: {ticket_id: "${ticket_id}", resource_id: ${resource_id}, estimate_bug: "${bug}"}) {
+              insert_bugs(objects: {ticket_id: "${ticket_id}", resource_id: ${resource_id}, estimate_bug: """${bug}"""}) {
                 returning {
                   id
                 }
@@ -29,7 +29,7 @@ export function useInvokeNewBug(graphQLClient: any) {
       }
       return graphQLClient.request(gql`
             mutation MyMutation {
-                insert_bugs(objects: {bug: "${bug}", evidence: "${evidence}", impact: "${impact}", report: ${report}, resource_id: ${resource_id}, spilled: ${spilled}, ticket_id: ${ticket_id}, qa_spill: ${qaSpill}, be_spill: ${beSpill}, fe_spill: ${feSpill}}) {
+                insert_bugs(objects: {bug: """${bug}""", evidence: "${evidence}", impact: """${impact}""", report: ${report}, resource_id: ${resource_id}, spilled: ${spilled}, ticket_id: ${ticket_id}, qa_spill: ${qaSpill}, be_spill: ${beSpill}, fe_spill: ${feSpill}}) {
                     returning {
                         id
                     }
