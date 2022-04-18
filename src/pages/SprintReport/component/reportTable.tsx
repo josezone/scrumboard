@@ -54,7 +54,6 @@ const ReportTable: FC<IReportTable> = (props) => {
   };
 
   const getDateofTicket = (date: any) => {
-    debugger;
     const ticketDate = new Date(date);
     const scrumDate = new Date(scrum);
     const dateVal =
