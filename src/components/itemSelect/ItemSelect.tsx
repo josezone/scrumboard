@@ -20,10 +20,12 @@ function ItemSelect(props: IitemSelect) {
   return (
     <ItemDiv>
       <LabelWrapper>
-        <InputLabel variant="standard" htmlFor={name} className="label_color">
-          {name}
-        </InputLabel>
-        {props.children}
+        <>
+          <InputLabel variant="standard" htmlFor={name} className="label_color">
+            {name}
+          </InputLabel>
+          {props.children}
+        </>
       </LabelWrapper>
 
       <SelectWrapper>
