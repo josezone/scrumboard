@@ -27,7 +27,9 @@ const schema = yup
     beStory: yup.number().nullable(true),
     feStory: yup.number().nullable(true),
     qaStory: yup.number().nullable(true),
-    link: yup.string().required(),
+    link: yup.string().test("bh", "Enter correct url!", (value)=>{
+       return value?.startsWith("https")||false;
+    }).required(),
   })
   .required();
 
