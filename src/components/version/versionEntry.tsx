@@ -54,7 +54,6 @@ function VersionEntry(props: any) {
     <VersionEntryStyle>
       <form onSubmit={onSubmit} className="formContainer">
         <Grid container spacing={2}>
-          <Grid item md={2} sm={12}>
             <FormControl fullWidth>
               <InputLabel id="noteType">Type</InputLabel>
               <Controller
@@ -92,10 +91,8 @@ function VersionEntry(props: any) {
                 {formProps.formState.errors?.noteType?.message}
               </FormHelperText>
             </FormControl>
-          </Grid>
           {noteType && (
             <div>
-              <Grid item md={6} sm={12}>
                 <FormControl fullWidth>
                   <InputLabel id="noteTypeAction">
                     {getActionType()} action
@@ -135,7 +132,6 @@ function VersionEntry(props: any) {
                     {formProps.formState.errors?.noteType?.message}
                   </FormHelperText>
                 </FormControl>
-              </Grid>
 
               <Controller
                 name="dateEntry"
@@ -148,7 +144,6 @@ function VersionEntry(props: any) {
                 )}
               />
 
-              <Grid item md={6} sm={12}>
                 <Controller
                   name="link"
                   control={formProps.control}
@@ -165,9 +160,7 @@ function VersionEntry(props: any) {
                     />
                   )}
                 />
-              </Grid>
 
-              <Grid item md={6} sm={12}>
                 <Controller
                   name="notes"
                   control={formProps.control}
@@ -184,7 +177,6 @@ function VersionEntry(props: any) {
                     />
                   )}
                 />
-              </Grid>
             </div>
           )}
         </Grid>

@@ -24,6 +24,12 @@ type projectGroupItem = {
 };
 
 function TotalSP(props: any) {
+
+  props.graphQLClient.setHeader(
+    "Authorization",
+    "Basic " + localStorage.getItem("data")
+  );
+
   const { mutateAsync: invokeGetScrumList } = useGetScrumList(
     props.graphQLClient
   );

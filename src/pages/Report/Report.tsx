@@ -8,6 +8,12 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 
 function TabPanel(props: any) {
+
+  props.graphQLClient.setHeader(
+    "Authorization",
+    "Basic " + localStorage.getItem("data")
+  );
+
   const { children, value, index, ...other } = props;
 
   return (
