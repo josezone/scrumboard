@@ -10,8 +10,13 @@ export const versionMachine = createMachine<any>({
     projectList: [],
     selectedProject: undefined,
     versionList: [],
+    selectedVersion: undefined,
     versionTypeList: [],
     newVersionNotes: undefined,
+    countryList: [],
+    defaultCountry: undefined,
+    versionNotes: [],
+    versionTickets: [],
   },
   states: {
     projectGroupVersionTypeGroup: {
@@ -59,7 +64,7 @@ export const versionMachine = createMachine<any>({
         setDefaultProject: {
           always: {
             actions: "assignDefaultProject",
-            target: ["#main.versionGroup.getVersionList", "end"],
+            target: ["#main.countryGroup.getCountryList", "end"],
           },
         },
         end: {
@@ -67,6 +72,37 @@ export const versionMachine = createMachine<any>({
             projectGroupChanged: {
               actions: "updateDefaultProjectGroup",
               target: "getProjectList",
+            },
+          },
+        },
+      },
+    },
+    countryGroup: {
+      states: {
+        getCountryList: {
+          invoke: {
+            id: "getCountryList",
+            src: "invokeGetCountryList",
+            onDone: {
+              actions: "assignCountryList",
+              target: "setDefaultCountry",
+            },
+            onError: {
+              target: "end",
+            },
+          },
+        },
+        setDefaultCountry: {
+          always: {
+            actions: "assignDefaultCountry",
+            target: ["#main.versionGroup.getVersionList", "end"],
+          },
+        },
+        end: {
+          on: {
+            projectChanged: {
+              actions: "updateDefaultProject",
+              target: "getCountryList",
             },
           },
         },
@@ -80,6 +116,37 @@ export const versionMachine = createMachine<any>({
             src: "invokeGetVersionList",
             onDone: {
               actions: "assignVersionList",
+              target: "setDefaultVersion",
+            },
+            onError: {
+              target: "end",
+            },
+          },
+        },
+        setDefaultVersion: {
+          always: {
+            actions: "assignDefaultVersion",
+            target: ["#main.versionDataGroup.getVersionData", "end"],
+          },
+        },
+        end: {
+          on: {
+            countryChanged: {
+              actions: "updateDefaultCountry",
+              target: "getVersionList",
+            },
+          },
+        },
+      },
+    },
+    versionDataGroup: {
+      states: {
+        getVersionData: {
+          invoke: {
+            id: "getVersionData",
+            src: "invokeGetVersionData",
+            onDone: {
+              actions: "assignVersionData",
               target: "end",
             },
             onError: {
@@ -92,7 +159,7 @@ export const versionMachine = createMachine<any>({
             id: "createNewVersionNotes",
             src: "invokeCreateNewVersionNotes",
             onDone: {
-              target: "getVersionList",
+              target: "getVersionData",
             },
             onError: {
               target: "end",
@@ -101,9 +168,9 @@ export const versionMachine = createMachine<any>({
         },
         end: {
           on: {
-            projectChanged: {
-              actions: "updateDefaultProject",
-              target: "getVersionList",
+            versionChanged: {
+              actions: "updateDefaultVersion",
+              target: "getVersionData",
             },
             newVersionNotes: {
               actions: "assignNewVersionNotes",

@@ -12,6 +12,7 @@ import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import VersionCalendar from "./versionCalendar";
 import { VersionEntryStyle } from "./versionEntry.style";
+import VersionList from "./versionList";
 
 const schema = yup
   .object({
@@ -50,11 +51,96 @@ function VersionEntry(props: any) {
     formProps.setValue("noteTypeAction", false);
   }, []);
 
+  const handleProjectGroupChange = (event: any) => {
+    const defaultProjectGroup = props.projectGroupList.filter(
+      (project: any) => project.id === event.target.value
+    )[0];
+    props.send({ type: "projectGroupChanged", data: defaultProjectGroup });
+  };
+
+  const handleProjectChange = (event: any) => {
+    const defaultProject = props.projectList.filter(
+      (project: any) => project.id === event.target.value
+    )[0];
+    props.send({ type: "projectChanged", data: defaultProject });
+  };
+
+  const handleCountryChange = (event: any) => {
+    const defaultCountry = props.countryList.filter(
+      (country: any) => country.id === event.target.value
+    )[0];
+    props.send({ type: "countryChanged", data: defaultCountry });
+  };
+
+  const handleVersionChange = (event: any) => {
+    const defaultVersion = props.versionList.filter(
+      (version: any) => version.id === event.target.value
+    )[0];
+    props.send({ type: "versionChanged", data: defaultVersion });
+  };
+
   return (
     <VersionEntryStyle>
+      {props.selectedProjectGroup?.id && (
+        <Select
+          value={props.selectedProjectGroup?.id}
+          label="Project Group"
+          onChange={handleProjectGroupChange}
+        >
+          {props.projectGroupList.map((projectGroup: any) => (
+            <MenuItem key={projectGroup.name} value={projectGroup.id}>
+              {projectGroup.name}
+            </MenuItem>
+          ))}
+        </Select>
+      )}
+
+      {props.selectedProject?.id && (
+        <Select
+          value={props.selectedProject?.id}
+          label="Project"
+          onChange={handleProjectChange}
+        >
+          {props.projectList.map((project: any) => (
+            <MenuItem key={project.project} value={project.id}>
+              {project.project}
+            </MenuItem>
+          ))}
+        </Select>
+      )}
+
+      {props.defaultCountry?.id && (
+        <Select
+          value={props.defaultCountry?.id}
+          label="Country"
+          onChange={handleCountryChange}
+        >
+          {props.countryList.map((country: any) => (
+            <MenuItem key={country.country} value={country.id}>
+              {country.country}
+            </MenuItem>
+          ))}
+        </Select>
+      )}
+
+      {props.selectedVersion?.id && (
+        <Select
+          value={props.selectedVersion?.id}
+          label="Version"
+          onChange={handleVersionChange}
+        >
+          {props.versionList.map((version: any) => (
+            <MenuItem key={version.version} value={version.id}>
+              {version.version}
+            </MenuItem>
+          ))}
+        </Select>
+      )}
+
       <form onSubmit={onSubmit} className="formContainer">
-        <Grid container spacing={2}>
-            <FormControl fullWidth>
+        <div className="versionContainer">
+          <div>
+            <FormControl className="noteType">
               <InputLabel id="noteType">Type</InputLabel>
               <Controller
                 name="noteType"
@@ -91,99 +177,108 @@ function VersionEntry(props: any) {
                 {formProps.formState.errors?.noteType?.message}
               </FormHelperText>
             </FormControl>
+          </div>
           {noteType && (
             <div>
-                <FormControl fullWidth>
-                  <InputLabel id="noteTypeAction">
-                    {getActionType()} action
-                  </InputLabel>
-                  <Controller
-                    name="noteTypeAction"
-                    control={formProps.control}
-                    render={({ field }) => (
-                      <Select
-                        labelId="noteTypeAction"
-                        id="noteTypeAction"
-                        label="noteTypeAction"
-                        className="textConatiner"
-                        fullWidth
-                        {...field}
-                        value={noteTypeAction}
-                        onChange={(e) => {
-                          setNoteTypeAction(e.target.value);
-                          field.onChange(e);
-                        }}
-                        error={
-                          formProps.formState.errors.noteTypeAction
-                            ? true
-                            : false
-                        }
-                      >
-                        <MenuItem value="0">
-                          <em>False</em>
-                        </MenuItem>
-                        <MenuItem value="1">
-                          <em>True</em>
-                        </MenuItem>
-                      </Select>
-                    )}
-                  />
-                  <FormHelperText>
-                    {formProps.formState.errors?.noteType?.message}
-                  </FormHelperText>
-                </FormControl>
+              {props.versionTypeList &&
+                props.versionTypeList[noteType - 1]?.type !== "notes" && (
+                  <div className="noteSection">
+                    <FormControl fullWidth>
+                      <InputLabel id="noteTypeAction">
+                        {getActionType()} action
+                      </InputLabel>
+                      <Controller
+                        name="noteTypeAction"
+                        control={formProps.control}
+                        render={({ field }) => (
+                          <Select
+                            labelId="noteTypeAction"
+                            id="noteTypeAction"
+                            label="noteTypeAction"
+                            className="textConatiner"
+                            fullWidth
+                            {...field}
+                            value={noteTypeAction}
+                            onChange={(e) => {
+                              setNoteTypeAction(e.target.value);
+                              field.onChange(e);
+                            }}
+                            error={
+                              formProps.formState.errors.noteTypeAction
+                                ? true
+                                : false
+                            }
+                          >
+                            <MenuItem value="0">
+                              <em>False</em>
+                            </MenuItem>
+                            <MenuItem value="1">
+                              <em>True</em>
+                            </MenuItem>
+                          </Select>
+                        )}
+                      />
+                      <FormHelperText>
+                        {formProps.formState.errors?.noteType?.message}
+                      </FormHelperText>
+                    </FormControl>
+
+                    <Controller
+                      name="dateEntry"
+                      control={formProps.control}
+                      render={({ field }) => (
+                        <VersionCalendar
+                          label={getActionType() + " date"}
+                          field={field}
+                        />
+                      )}
+                    />
+
+                    <Controller
+                      name="link"
+                      control={formProps.control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          id="standard-basic"
+                          label="Link"
+                          variant="outlined"
+                          className="textConatiner"
+                          fullWidth
+                          error={formProps.formState.errors.link ? true : false}
+                          helperText={formProps.formState.errors?.link?.message}
+                        />
+                      )}
+                    />
+                  </div>
+                )}
 
               <Controller
-                name="dateEntry"
+                name="notes"
                 control={formProps.control}
                 render={({ field }) => (
-                  <VersionCalendar
-                    label={getActionType() + " date"}
-                    field={field}
+                  <TextField
+                    {...field}
+                    multiline
+                    id="standard-basic"
+                    label="Notes"
+                    rows={4}
+                    className="noteData"
+                    fullWidth
+                    variant="standard"
+                    error={formProps.formState.errors.notes ? true : false}
+                    helperText={formProps.formState.errors?.notes?.message}
                   />
                 )}
               />
-
-                <Controller
-                  name="link"
-                  control={formProps.control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      id="standard-basic"
-                      label="Link"
-                      variant="outlined"
-                      className="textConatiner"
-                      fullWidth
-                      error={formProps.formState.errors.link ? true : false}
-                      helperText={formProps.formState.errors?.link?.message}
-                    />
-                  )}
-                />
-
-                <Controller
-                  name="notes"
-                  control={formProps.control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      id="standard-basic"
-                      label="Notes"
-                      variant="outlined"
-                      className="textConatiner"
-                      fullWidth
-                      error={formProps.formState.errors.notes ? true : false}
-                      helperText={formProps.formState.errors?.notes?.message}
-                    />
-                  )}
-                />
             </div>
           )}
-        </Grid>
-        <Button type="submit" autoFocus>
-          Create
-        </Button>
+          <Button type="submit" autoFocus>
+            Create
+          </Button>
+        </div>
       </form>
+      <VersionList {...props} />
     </VersionEntryStyle>
   );
 }

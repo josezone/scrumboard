@@ -23,7 +23,7 @@ function VersionCalendar(props: any) {
             setValue(newValue);
             props.field.onChange(newValue);
           }}
-          renderInput={(params) => <TextField {...params} />}
+          renderInput={(params) => <TextField style={{width:"12rem"}} {...params} />}
         />
       </Stack>
     </LocalizationProvider>
