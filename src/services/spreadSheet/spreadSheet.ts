@@ -51,9 +51,9 @@ class SpreadSheet {
       { header: "Project", key: "project", width: 15, height: 10 },
       { header: "Sprint", key: "sprintName", width: 15, height: 10 },
       { header: "Ticket", key: "ticket", width: 15, height: 10 },
-      { header: "Story Points (DEV)", key: "devSp", width: 15, height: 10 },
+      { header: "Story Points (DEV)", key: "devSp", width: 20, height: 10 },
       { header: "Story Points (QA)", key: "qaSp", width: 15, height: 10 },
-      { header: "Issue History", key: "issues", width: 15, height: 10 },
+      { header: "Issue History", key: "issues", width: 50, height: 10 },
       { header: "Issue Impact", key: "impact", width: 15, height: 10 },
     ];
     this.worksheet.columns = columns;
@@ -72,6 +72,7 @@ class SpreadSheet {
   }
 
   protected getBugs(bugs: Array<any>) {
+    console.log(bugs);
     let bugText: string = "";
     bugs?.map((bug, i: number) => {
       bugText +=
@@ -84,6 +85,7 @@ class SpreadSheet {
         bugText += "\n";
       }
     });
+    console.log(bugText);
     return bugText;
   }
 
