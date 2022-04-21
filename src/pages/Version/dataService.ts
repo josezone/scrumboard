@@ -20,6 +20,9 @@ function useInvokeGetProjectGroupVersionTypeList(graphQLClient: any) {
 
 function useInvokeGetProjectList(graphQLClient: any) {
   return useMutation((selectedProjectGroup: any) => {
+    if (!selectedProjectGroup) {
+      return Promise.resolve({ project: [] });
+    }
     return graphQLClient.request(gql`
       query MyQuery {
         project(where: { project_group_id: { _eq: ${selectedProjectGroup} } }) {
@@ -33,6 +36,9 @@ function useInvokeGetProjectList(graphQLClient: any) {
 
 function useInvokeGetCountryList(graphQLClient: any) {
   return useMutation((selectedProject: any) => {
+    if (!selectedProject) {
+      return Promise.resolve({ country: [] });
+    }
     return graphQLClient.request(gql`
       query MyQuery {
         country(where: { sprints: { project_id: { _eq: ${selectedProject} } } }) {
@@ -46,6 +52,9 @@ function useInvokeGetCountryList(graphQLClient: any) {
 
 function useInvokeGetVersionList(graphQLClient: any) {
   return useMutation((selectedCountry: any) => {
+    if (!selectedCountry) {
+      return Promise.resolve({ version: [] });
+    }
     return graphQLClient.request(gql`
       query MyQuery {
         version(where: {country_id: {_eq: ${selectedCountry}}}) {
@@ -59,6 +68,9 @@ function useInvokeGetVersionList(graphQLClient: any) {
 
 function useInvokeGetVersionData(graphQLClient: any) {
   return useMutation((selectedVersion: any) => {
+    if (!selectedVersion) {
+      return Promise.resolve({ version_notes: [], ticket: [] });
+    }
     return graphQLClient.request(gql`
       query MyQuery {
         version_notes(where: { version_id: { _eq: ${selectedVersion} } }) {
@@ -137,14 +149,14 @@ export const useServices = (props: any) => {
     invokeGetProjectGroupVersionTypeList: () =>
       invokeGetProjectGroupVersionTypeList(),
     invokeGetProjectList: (context: any) =>
-      invokeGetProjectList(context.selectedProjectGroup.id),
+      invokeGetProjectList(context.selectedProjectGroup?.id),
     invokeGetCountryList: (context: any) =>
-      invokeGetCountryList(context.selectedProject.id),
+      invokeGetCountryList(context.selectedProject?.id),
     invokeGetVersionList: (context: any) =>
-      invokeGetVersionList(context.defaultCountry.id),
+      invokeGetVersionList(context.defaultCountry?.id),
     invokeCreateNewVersionNotes: (context: any) =>
       invokeCreateNewVersionNotes(context.newVersionNotes),
     invokeGetVersionData: (context: any) =>
-      invokeGetVersionData(context.selectedVersion.id),
+      invokeGetVersionData(context.selectedVersion?.id),
   };
 };
