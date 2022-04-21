@@ -1,8 +1,9 @@
 import styled from "styled-components";
 
-export const VersionEntryStyle = styled.div`
+export const NewNoteStyle = styled.div`
+  width: 720px;
+  height: 175px;
   padding: 20px;
-  margin-top: 20px;
 
   .versionContainer {
     display: flex;
@@ -25,7 +26,7 @@ export const VersionEntryStyle = styled.div`
     width: 500px;
   }
 
-  .addButton{
+  .addButton {
     position: absolute;
     bottom: 16px;
     right: 16px;
