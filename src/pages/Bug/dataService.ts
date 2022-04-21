@@ -14,7 +14,7 @@ export function useInvokeNewBug(graphQLClient: any) {
       ticket_id,
       beSpill,
       feSpill,
-      qaSpill
+      qaSpill,
     }: any) => {
       if (bugType) {
         return graphQLClient.request(gql`
@@ -29,7 +29,9 @@ export function useInvokeNewBug(graphQLClient: any) {
       }
       return graphQLClient.request(gql`
             mutation MyMutation {
-                insert_bugs(objects: {bug: """${bug}""", evidence: "${evidence}", impact: """${impact}""", report: ${report}, resource_id: ${resource_id}, spilled: ${spilled}, ticket_id: ${ticket_id}, qa_spill: ${qaSpill}, be_spill: ${beSpill}, fe_spill: ${feSpill}}) {
+                insert_bugs(objects: {bug: """${bug}""", evidence: "${evidence}", impact: """${impact}""", report: ${report}, resource_id: ${resource_id}, spilled: ${spilled}, ticket_id: ${ticket_id}, qa_spill: ${qaSpill}, be_spill: ${beSpill}, fe_spill: ${feSpill},add_to_SPR: ${
+        report && true
+      }}) {
                     returning {
                         id
                     }
@@ -44,7 +46,9 @@ export function useInvokeGetList(graphQLClient: any) {
   return useMutation(({ bugType, ticket_id }: any) => {
     return graphQLClient.request(gql`
         query MyQuery {
-          bugs(where: {ticket_id: {_eq: ${ticket_id}}, bug: {_is_null: ${bugType === null ? false : true}}}) {
+          bugs(order_by: {date: desc},where: {ticket_id: {_eq: ${ticket_id}}, bug: {_is_null: ${
+      bugType === null ? false : true
+    }}}) {
             bug
             date
             evidence
@@ -56,6 +60,7 @@ export function useInvokeGetList(graphQLClient: any) {
               resource
             }
             spilled
+            add_to_SPR
             ticket {
               ticket
               id
@@ -74,7 +79,9 @@ export function useInvokeUpdateReport(graphQLClient: any) {
   return useMutation(({ bug, report }: any) => {
     return graphQLClient.request(gql`
             mutation MyMutation {
-                update_bugs(where: { id: { _eq: ${bug} } }, _set: { report: ${report} }) {
+                update_bugs(where: { id: { _eq: ${bug} } }, _set: { report: ${report}, add_to_SPR: ${
+      report && true
+    } }) {
                     returning {
                         id
                     }
@@ -100,13 +107,30 @@ export function useInvokeDeleteBug(graphQLClient: any) {
 
 export function useInvokeGetTicket(graphQLClient: any) {
   return useMutation((variable: any) => {
-    return graphQLClient.request(gql`
-          query getTicket($ticketId: bigint!){
-            ticket_by_pk(id:$ticketId){
-              id,
-              ticket
-            }
+    return graphQLClient.request(
+      gql`
+        query getTicket($ticketId: bigint!) {
+          ticket_by_pk(id: $ticketId) {
+            id
+            ticket
           }
-        `, variable);
+        }
+      `,
+      variable
+    );
+  });
+}
+
+export function useInvokeUpdateAddtoSPR(graphQLClient: any) {
+  return useMutation(({ bug, report }: any) => {
+    return graphQLClient.request(gql`
+            mutation MyMutation {
+                update_bugs(where: { id: { _eq: ${bug} } }, _set: { add_to_SPR: ${report} }) {
+                    returning {
+                        id
+                    }
+                }
+            }
+        `);
   });
 }

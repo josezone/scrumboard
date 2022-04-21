@@ -1,5 +1,5 @@
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-
+import { StatusWrapper } from "./ScrumBoard.style";
 const reorder = (list: any, startIndex: any, endIndex: any) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
@@ -29,14 +29,17 @@ const getItemStyle = (isDragging: any, draggableStyle: any) => ({
   userSelect: "none",
   padding: grid * 2,
   margin: `0 0 ${grid}px 0`,
-  background: isDragging ? "lightgreen" : "grey",
+  background: isDragging ? "lightgreen" : "white",
   ...draggableStyle,
+  borderRadius: "5px",
+  boxShadow: `rgb(0 0 0 / 9%) 0px 3px 15px`,
 });
 
 const getListStyle = (isDraggingOver: any) => ({
-  background: isDraggingOver ? "lightblue" : "lightgrey",
+  background: isDraggingOver ? "lightblue" : "#f4f5f7",
   padding: grid,
   width: 250,
+  margin:"0.2rem",
 });
 
 function ScrumBoard(props: any) {
@@ -99,32 +102,34 @@ function ScrumBoard(props: any) {
           draggableId={item.ticket + "_" + item.id}
           index={index}
         >
-          {(provided, snapshot) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-              style={getItemStyle(
-                snapshot.isDragging,
-                provided.draggableProps.style
-              )}
-            >
+          {(provided, snapshot) => {
+            return (
               <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-around",
-                }}
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+                style={getItemStyle(
+                  snapshot.isDragging,
+                  provided.draggableProps.style
+                )}
               >
-                <props.ScrumItem
-                  {...item}
-                  draggableIndx={index}
-                  droppableIndx={ind}
-                  removeItem={removeItem}
-                  {...props}
-                />
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-around",
+                  }}
+                >
+                  <props.ScrumItem
+                    {...item}
+                    draggableIndx={index}
+                    droppableIndx={ind}
+                    removeItem={removeItem}
+                    {...props}
+                  />
+                </div>
               </div>
-            </div>
-          )}
+            );
+          }}
         </Draggable>
       ));
     }
@@ -142,7 +147,9 @@ function ScrumBoard(props: any) {
                   style={getListStyle(snapshot.isDraggingOver)}
                   {...provided.droppableProps}
                 >
-                  <div>{el.status}</div>
+                  <StatusWrapper>
+                    <div>{el.status}</div>
+                  </StatusWrapper>
                   {getIndividualSprint(el, ind)}
                   {provided.placeholder}
                 </div>
