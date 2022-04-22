@@ -15,6 +15,12 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import { Grid } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 
 import MultipleSelect from "../multiSelect/multiSelect";
 import { TicketBodyWrapper } from "./TicketBody.style";
@@ -27,7 +33,12 @@ const schema = yup
     beStory: yup.number().nullable(true),
     feStory: yup.number().nullable(true),
     qaStory: yup.number().nullable(true),
-    link: yup.string().required(),
+    link: yup
+      .string()
+      .test("bh", "Enter correct url!", (value) => {
+        return value?.startsWith("https") || false;
+      })
+      .required(),
   })
   .required();
 
@@ -40,6 +51,7 @@ function NewTicket(props: any) {
   const [scope, setScope] = useState<string>("");
   const [resourceList, setResourceList] = useState<Array<any>>([]);
   const [selectedResources, setSelectedResources] = useState<Array<any>>([]);
+  const [value, setValue] = useState(new Date("2014-08-18T21:11:54"));
 
   useEffect(() => {
     if (props.editMode) {
@@ -91,6 +103,10 @@ function NewTicket(props: any) {
         return data;
       });
     });
+  };
+
+  const handleChange = (newValue: any) => {
+    setValue(newValue);
   };
 
   const onSubmit = (e: any) => {
@@ -382,6 +398,35 @@ function NewTicket(props: any) {
                     />
                   )}
                 />
+              </Grid>
+
+              <Grid item md={6} sm={12}>
+                {/* <Controller
+                  name="link"
+                  control={formProps.control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      id="standard-basic"
+                      label="Jira Link"
+                      variant="outlined"
+                      className="textConatiner"
+                      fullWidth
+                      error={formProps.formState.errors.link ? true : false}
+                      helperText={formProps.formState.errors?.link?.message}
+                    />
+                  )}
+                /> */}
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DateTimePicker
+                    label="Date&Time picker"
+                    value={value}
+                    onChange={handleChange}
+                    renderInput={(params) => (
+                      <TextField {...params} fullWidth />
+                    )}
+                  />
+                </LocalizationProvider>
               </Grid>
 
               <Grid item md={6} sm={12}>
