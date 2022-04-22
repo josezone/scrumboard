@@ -197,16 +197,16 @@ function useInvokeCreateNewTickets(graphQLClient: any) {
       feSpill,
       qaSpill,
       link,
+      activatedDate,
     }: any) => {
-      return graphQLClient.request(gql`
-      mutation MyMutation {
-        insert_ticket(objects: {ticket: "${ticket}", link: "${link}", sprint_id: ${sprintId}, scope_id: ${scopeId}, version_id: ${versionId}, priority_id: ${priorityId}, status_id: ${statusId}, spill:${spill}, fe_story: ${feStory}, fe_spill: ${feSpill}, be_story: ${beStory}, be_spill: ${beSpill}, qa_story: ${qaStory}, qa_spill: ${qaSpill}}) {
+      return graphQLClient.request(gql`mutation MyMutation {
+        insert_ticket(objects: {ticket: "${ticket}", link: "${link}", sprint_id: ${sprintId}, scope_id: ${scopeId}, version_id: ${versionId}, priority_id: ${priorityId}, status_id: ${statusId}, spill:${spill}, fe_story: ${feStory}, fe_spill: ${feSpill}, be_story: ${beStory}, be_spill: ${beSpill}, qa_story: ${qaStory}, qa_spill: ${qaSpill},
+         ${activatedDate?`activated_date:"${activatedDate}"`: `` }}) {
           returning {
             id
           }
         }
-      }
-    `);
+      }`);
     }
   );
 }

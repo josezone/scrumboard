@@ -15,12 +15,12 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import { Grid } from "@mui/material";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+
+import { DatePicker } from "@mui/x-date-pickers";
 
 import MultipleSelect from "../multiSelect/multiSelect";
 import { TicketBodyWrapper } from "./TicketBody.style";
@@ -39,6 +39,7 @@ const schema = yup
         return value?.startsWith("https") || false;
       })
       .required(),
+    activatedDate: yup.date().nullable(true),
   })
   .required();
 
@@ -51,7 +52,6 @@ function NewTicket(props: any) {
   const [scope, setScope] = useState<string>("");
   const [resourceList, setResourceList] = useState<Array<any>>([]);
   const [selectedResources, setSelectedResources] = useState<Array<any>>([]);
-  const [value, setValue] = useState(new Date("2014-08-18T21:11:54"));
 
   useEffect(() => {
     if (props.editMode) {
@@ -105,12 +105,10 @@ function NewTicket(props: any) {
     });
   };
 
-  const handleChange = (newValue: any) => {
-    setValue(newValue);
-  };
-
   const onSubmit = (e: any) => {
     formProps.handleSubmit((data: any) => {
+      console.log(data);
+
       formProps.reset();
       e.target.reset();
       if (!selectedResources.length) {
@@ -132,8 +130,10 @@ function NewTicket(props: any) {
           feSpill: null,
           qaSpill: null,
           link: data.link,
+          activatedDate: data.activatedDate?.toISOString(),
         },
       };
+      console.log(newData);
       if (props.editMode) {
         const updateResource = selectedResources.filter(
           (item: any) => item.ticketResourceId
@@ -401,32 +401,21 @@ function NewTicket(props: any) {
               </Grid>
 
               <Grid item md={6} sm={12}>
-                {/* <Controller
-                  name="link"
+                <Controller
+                  name="activatedDate"
                   control={formProps.control}
                   render={({ field }) => (
-                    <TextField
-                      {...field}
-                      id="standard-basic"
-                      label="Jira Link"
-                      variant="outlined"
-                      className="textConatiner"
-                      fullWidth
-                      error={formProps.formState.errors.link ? true : false}
-                      helperText={formProps.formState.errors?.link?.message}
-                    />
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DatePicker
+                        label="Activated Date"
+                        {...field}
+                        renderInput={(params: any) => (
+                          <TextField {...params} fullWidth />
+                        )}
+                      />
+                    </LocalizationProvider>
                   )}
-                /> */}
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DateTimePicker
-                    label="Date&Time picker"
-                    value={value}
-                    onChange={handleChange}
-                    renderInput={(params) => (
-                      <TextField {...params} fullWidth />
-                    )}
-                  />
-                </LocalizationProvider>
+                />
               </Grid>
 
               <Grid item md={6} sm={12}>
