@@ -27,7 +27,6 @@ const grid = 8;
 
 const getItemStyle = (isDragging: any, draggableStyle: any) => ({
   userSelect: "none",
-  padding: grid * 2,
   margin: `0 0 ${grid}px 0`,
   background: isDragging ? "lightgreen" : "grey",
   ...draggableStyle,
@@ -37,6 +36,7 @@ const getListStyle = (isDraggingOver: any) => ({
   background: isDraggingOver ? "lightblue" : "lightgrey",
   padding: grid,
   width: 250,
+  margin: "0.2rem",
 });
 
 function ScrumBoard(props: any) {
