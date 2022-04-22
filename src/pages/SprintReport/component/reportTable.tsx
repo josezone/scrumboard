@@ -14,7 +14,13 @@ interface IReportTable {
 
 const ReportTable: FC<IReportTable> = (props) => {
   const { reportList, scrum } = props;
-
+  const getDateofTicket = (date: any) => {
+    const ticketDate = new Date(date);
+    const scrumDate = new Date(scrum);
+    const dateVal =
+      ticketDate > scrumDate ? formatDate(ticketDate) : formatDate(scrumDate);
+    return dateVal;
+  };
   const getProjectSpan = (sprints: Array<any>): number => {
     return (
       sprints.reduce((length, data) => length + data.tickets.length + 1, 0) + 1
@@ -47,18 +53,13 @@ const ReportTable: FC<IReportTable> = (props) => {
     );
   };
 
-  const getImapact = (bugs: Array<any>) => {
-    const issues = bugs.find((bug) => bug.report === true);
-    if (issues) return "Spilled over";
-    return "Delivered on time";
-  };
-
-  const getDateofTicket = (date: any) => {
-    const ticketDate = new Date(date);
-    const scrumDate = new Date(scrum);
-    const dateVal =
-      ticketDate > scrumDate ? formatDate(ticketDate) : formatDate(scrumDate);
-    return dateVal;
+  const getImapact = (ticket: any) => {
+    const { status, bugs } = ticket;
+    const spilled = bugs.find((bug: any) => bug.spilled === true);
+    if (status.status === "Done") {
+      return "Delivered on time";
+    } else if (spilled) return "Spilled over";
+    else return null;
   };
 
   return (
@@ -95,7 +96,15 @@ const ReportTable: FC<IReportTable> = (props) => {
                       </TableRow>
                       {tickets.map((ticket, i) => (
                         <TableRow key={i}>
-                          <TableCell>{ticket.ticket}</TableCell>
+                          <TableCell>
+                            <a
+                              href={ticket.link}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {ticket.ticket}
+                            </a>
+                          </TableCell>
                           <TableCell align="right">
                             {getDevStoryPoint(ticket) || "-"}
                           </TableCell>
@@ -103,7 +112,7 @@ const ReportTable: FC<IReportTable> = (props) => {
                             {ticket.qa_story || "-"}
                           </TableCell>
                           <TableCell>{getBugs(ticket.bugs)}</TableCell>
-                          <TableCell>{getImapact(ticket.bugs)}</TableCell>
+                          <TableCell>{getImapact(ticket) || "-"}</TableCell>
                           <TableCell>
                             {getDateofTicket(ticket.start_date)}
                           </TableCell>

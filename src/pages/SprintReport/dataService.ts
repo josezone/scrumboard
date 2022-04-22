@@ -24,11 +24,15 @@ export function useGetSprintReport(graphQLClient: any) {
               fe_spill
               be_spill
               spill
-              start_date
-              bugs(where: {report: {_eq: true}}) {
+              link
+              status {
+                status
+              }
+              bugs(where: {add_to_SPR: {_eq: true}}) {
                 bug
                 date
                 report
+                spilled
               }
             }
           }

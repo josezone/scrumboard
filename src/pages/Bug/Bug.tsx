@@ -5,7 +5,8 @@ import {
   useInvokeGetList,
   useInvokeNewBug,
   useInvokeUpdateReport,
-  useInvokeGetTicket
+  useInvokeGetTicket,
+  useInvokeUpdateAddtoSPR
 } from "./dataService";
 import { useMachine } from "@xstate/react";
 import { actions } from "./stateActions";
@@ -15,14 +16,16 @@ import { useInvokeResourceList } from "../Home/dataService";
 function Bug(props: any) {
   const { id } = useParams<"id">();
   const [searchParams] = useSearchParams();
-  const type = searchParams.get('type');
+  const type = searchParams.get("type");
 
   props.graphQLClient.setHeader(
     "Authorization",
     "Basic " + localStorage.getItem("data")
   );
 
-  const { mutateAsync: invokeGetTicket } = useInvokeGetTicket(props.graphQLClient);
+  const { mutateAsync: invokeGetTicket } = useInvokeGetTicket(
+    props.graphQLClient
+  );
 
   const { mutateAsync: invokeNewBug } = useInvokeNewBug(props.graphQLClient);
 
@@ -40,10 +43,15 @@ function Bug(props: any) {
     props.graphQLClient
   );
 
+  const { mutateAsync: invokeupdateAddtoSPR } = useInvokeUpdateAddtoSPR(
+    props.graphQLClient
+  );
+
   const [state, send] = useMachine(bugMachine, {
     actions,
     services: {
-      invokeGetTicket: (context: any) => invokeGetTicket({ ticketId: id ? parseInt(id) : null }),
+      invokeGetTicket: (context: any) =>
+        invokeGetTicket({ ticketId: id ? parseInt(id) : null }),
       invokeResourceList: () => invokeResourceList(),
       invokeNewBug: (context: any) =>
         invokeNewBug({
@@ -55,9 +63,10 @@ function Bug(props: any) {
           resource_id: context.newBug.resource,
           spilled: context.newBug.spill ? true : false,
           ticket_id: id,
-          ...context.newBug
+          ...context.newBug,
         }),
-      invokeGetList: (context: any) => invokeGetList({ bugType: type, ticket_id: id }),
+      invokeGetList: (context: any) =>
+        invokeGetList({ bugType: type, ticket_id: id }),
       invokeUpdateReport: (context: any) =>
         invokeUpdateReport({
           bug: context.updateBugReport.bug,
@@ -67,10 +76,15 @@ function Bug(props: any) {
         invokeDeleteBug({
           id: context.removeBug,
         }),
+        invokeupdateAddtoSPR: (context: any) =>
+        invokeupdateAddtoSPR({
+          bug: context.updateAddToSPR.bug,
+          report: context.updateAddToSPR.report,
+        }),
     },
   });
 
-  return <BugList {...state.context} send={send} bugType={type}/>;
+  return <BugList {...state.context} send={send} bugType={type} />;
 }
 
 export default Bug;

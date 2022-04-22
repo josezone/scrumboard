@@ -21,6 +21,23 @@ const assignReport = assign({
     return context.bugList.map((bug: any) => {
       if (bug.id === event.data.bug) {
         bug.report = event.data.report;
+        bug.report && (bug.add_to_SPR = event.data.report);
+        return bug;
+      } else {
+        return bug;
+      }
+    });
+  },
+});
+
+const assignAddToSPR = assign({
+  updateAddToSPR: (context: any, event: any) => {
+    return event.data;
+  },
+  bugList: (context: any, event: any) => {
+    return context.bugList.map((bug: any) => {
+      if (bug.id === event.data.bug) {
+        bug.add_to_SPR = event.data.report;
         return bug;
       } else {
         return bug;
@@ -47,13 +64,13 @@ const assignTicketInfo = assign({
   ticketInfo: (context: any, event: any) => {
     return event?.data?.ticket_by_pk || {};
   },
-})
+});
 
 const assignToggleModal = assign({
   newBugModal: (context: any, event: any) => {
-    return !Boolean(context.newBugModal)
+    return !Boolean(context.newBugModal);
   },
-})
+});
 
 export const actions = {
   assignDeleteBug,
@@ -63,5 +80,6 @@ export const actions = {
   assignResourceList,
   assignBugList,
   assignTicketInfo,
-  assignToggleModal
+  assignToggleModal,
+  assignAddToSPR,
 };

@@ -51,10 +51,10 @@ class SpreadSheet {
       { header: "Project", key: "project", width: 15, height: 10 },
       { header: "Sprint", key: "sprintName", width: 15, height: 10 },
       { header: "Ticket", key: "ticket", width: 15, height: 10 },
-      { header: "Story Points (DEV)", key: "devSp", width: 15, height: 10 },
+      { header: "Story Points (DEV)", key: "devSp", width: 20, height: 10 },
       { header: "Story Points (QA)", key: "qaSp", width: 15, height: 10 },
-      { header: "Issue History", key: "issues", width: 15, height: 10 },
-      { header: "Issue Impact", key: "impact", width: 50, height: 10 },
+      { header: "Issue History", key: "issues", width: 50, height: 10 },
+      { header: "Issue Impact", key: "impact", width: 15, height: 10 },
       { header: "Issue Impct", key: "impct", width: 15, height: 10 },
     ];
     this.worksheet.columns = columns;
@@ -73,6 +73,7 @@ class SpreadSheet {
   }
 
   protected getBugs(bugs: Array<any>) {
+    console.log(bugs);
     let bugText: string = "";
     bugs?.map((bug, i: number) => {
       bugText +=
@@ -85,13 +86,17 @@ class SpreadSheet {
         bugText += "\n";
       }
     });
+    console.log(bugText);
     return bugText;
   }
 
-  protected getImapact = (bugs: Array<any>) => {
-    const issues = bugs.find((bug) => bug.report === true);
-    if (issues) return "Spilled over";
-    return "Delivered on time";
+  protected getImapact = (ticket: any) => {
+    const { status, bugs } = ticket;
+    if (status.status === "Done") {
+      return "Delivered on time";
+    }
+    const spilled = bugs.find((bug: any) => bug.spilled === true);
+    if (spilled) return "Spilled over";
   };
 
   setData(data: any) {
@@ -104,11 +109,14 @@ class SpreadSheet {
           const payload = {
             sprintName: sprint?.sprint,
             project: key,
-            ticket: ticket.ticket,
+            ticket: {
+              text: ticket.ticket,
+              hyperlink: ticket.link,
+            },
             devSp: this.getDevStoryPoint(ticket) || 0,
             qaSp: ticket.qa_story || 0,
             issues: this.getBugs(ticket.bugs),
-            impact: this.getImapact(ticket.bugs),
+            impact: this.getImapact(ticket),
             impct: "stt",
           };
           sortedData.push(payload);
@@ -119,7 +127,6 @@ class SpreadSheet {
     this.writeToSpreadSheet();
     return this;
   }
-
   writeToSpreadSheet() {
     this.dataList.map((data, i) => {
       this.worksheet.insertRow(i + 2, data);

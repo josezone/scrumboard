@@ -20,6 +20,9 @@ function useInvokeGetProjectGroupVersionTypeList(graphQLClient: any) {
 
 function useInvokeGetProjectList(graphQLClient: any) {
   return useMutation((selectedProjectGroup: any) => {
+    if (!selectedProjectGroup) {
+      return Promise.resolve({ project: [] });
+    }
     return graphQLClient.request(gql`
       query MyQuery {
         project(where: { project_group_id: { _eq: ${selectedProjectGroup} } }) {
@@ -31,27 +34,64 @@ function useInvokeGetProjectList(graphQLClient: any) {
   });
 }
 
-function useInvokeGetVersionList(graphQLClient: any) {
+function useInvokeGetCountryList(graphQLClient: any) {
   return useMutation((selectedProject: any) => {
+    if (!selectedProject) {
+      return Promise.resolve({ country: [] });
+    }
     return graphQLClient.request(gql`
       query MyQuery {
-        version(where: { project_id: { _eq: ${selectedProject} } }) {
+        country(where: { sprints: { project_id: { _eq: ${selectedProject} } } }) {
+          country
+          id
+        }
+      }
+    `);
+  });
+}
+
+function useInvokeGetVersionList(graphQLClient: any) {
+  return useMutation((selectedCountry: any) => {
+    if (!selectedCountry) {
+      return Promise.resolve({ version: [] });
+    }
+    return graphQLClient.request(gql`
+      query MyQuery {
+        version(where: {country_id: {_eq: ${selectedCountry}}}) {
           version
           id
-          version_notes {
-            action_date
-            action_done
+        }
+      }
+    `);
+  });
+}
+
+function useInvokeGetVersionData(graphQLClient: any) {
+  return useMutation((selectedVersion: any) => {
+    if (!selectedVersion) {
+      return Promise.resolve({ version_notes: [], ticket: [] });
+    }
+    return graphQLClient.request(gql`
+      query MyQuery {
+        version_notes(where: { version_id: { _eq: ${selectedVersion} } }) {
+          link
+          notes
+          action_date
+          action_done
+          id
+          version_notes_type {
+            type
             id
-            link
-            notes
-            version_notes_type {
-              id
-              type
-            }
           }
-          tickets {
+        }
+        ticket(where: { version_id: { _eq: ${selectedVersion} } }) {
+          id
+          link
+          ticket
+          start_date
+          status {
+            status
             id
-            ticket
           }
         }
       }
@@ -90,6 +130,10 @@ export const useServices = (props: any) => {
     props.graphQLClient
   );
 
+  const { mutateAsync: invokeGetCountryList } = useInvokeGetCountryList(
+    props.graphQLClient
+  );
+
   const { mutateAsync: invokeGetVersionList } = useInvokeGetVersionList(
     props.graphQLClient
   );
@@ -97,14 +141,22 @@ export const useServices = (props: any) => {
   const { mutateAsync: invokeCreateNewVersionNotes } =
     useInvokeCreateNewVersionNotes(props.graphQLClient);
 
+  const { mutateAsync: invokeGetVersionData } = useInvokeGetVersionData(
+    props.graphQLClient
+  );
+
   return {
     invokeGetProjectGroupVersionTypeList: () =>
       invokeGetProjectGroupVersionTypeList(),
     invokeGetProjectList: (context: any) =>
-      invokeGetProjectList(context.selectedProjectGroup.id),
+      invokeGetProjectList(context.selectedProjectGroup?.id),
+    invokeGetCountryList: (context: any) =>
+      invokeGetCountryList(context.selectedProject?.id),
     invokeGetVersionList: (context: any) =>
-      invokeGetVersionList(context.selectedProject.id),
+      invokeGetVersionList(context.defaultCountry?.id),
     invokeCreateNewVersionNotes: (context: any) =>
       invokeCreateNewVersionNotes(context.newVersionNotes),
+    invokeGetVersionData: (context: any) =>
+      invokeGetVersionData(context.selectedVersion?.id),
   };
 };

@@ -8,6 +8,7 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 
 function TabPanel(props: any) {
+
   const { children, value, index, ...other } = props;
 
   return (
@@ -24,6 +25,12 @@ function TabPanel(props: any) {
 }
 
 function Report(props: any) {
+  
+  props.graphQLClient.setHeader(
+    "Authorization",
+    "Basic " + localStorage.getItem("data")
+  );
+
   const [value, setValue] = useState(0);
 
   const handleChange = (event: any, newValue: any) => {

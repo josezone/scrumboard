@@ -11,6 +11,7 @@ export const bugMachine = createMachine<any>({
     resourceList: undefined,
     ticketInfo: undefined,
     newBugModal: false,
+    updateAddToSPR: undefined,
   },
   states: {
     bug: {
@@ -76,14 +77,14 @@ export const bugMachine = createMachine<any>({
             src: "invokeGetTicket",
             onDone: {
               actions: "assignTicketInfo",
-              target: "idle"
+              target: "idle",
             },
             onError: {
-              target: "idle"
-            }
-          }
-        }
-      }
+              target: "idle",
+            },
+          },
+        },
+      },
     },
     createBug: {
       initial: "idle",
@@ -96,8 +97,8 @@ export const bugMachine = createMachine<any>({
             },
             addBugModalToggle: {
               target: "idle",
-              actions: "assignToggleModal"
-            }
+              actions: "assignToggleModal",
+            },
           },
         },
         newBug: {
@@ -106,7 +107,7 @@ export const bugMachine = createMachine<any>({
             src: "invokeNewBug",
             onDone: {
               target: ["#main.bug.listBug.getList", "idle"],
-              actions: "assignToggleModal"
+              actions: "assignToggleModal",
             },
             onError: {
               target: "idle",
@@ -132,6 +133,31 @@ export const bugMachine = createMachine<any>({
             src: "invokeUpdateReport",
             onDone: {
               actions: "assignUpdateReportBugList",
+              target: "idle",
+            },
+            onError: {
+              target: "idle",
+            },
+          },
+        },
+      },
+    },
+    changeAddtoSPR: {
+      initial: "idle",
+      states: {
+        idle: {
+          on: {
+            changeAddtoSPR: {
+              target: "updateAddtoSPR",
+              actions: "assignAddToSPR",
+            },
+          },
+        },
+        updateAddtoSPR: {
+          invoke: {
+            id: "updateAddtoSPR",
+            src: "invokeupdateAddtoSPR",
+            onDone: {
               target: "idle",
             },
             onError: {
