@@ -114,7 +114,7 @@ const ReportTable: FC<IReportTable> = (props) => {
                           <TableCell>{getBugs(ticket.bugs)}</TableCell>
                           <TableCell>{getImapact(ticket) || "-"}</TableCell>
                           <TableCell>
-                            {getDateofTicket(ticket.start_date)}
+                            {getDateofTicket(ticket.activated_date)}
                           </TableCell>
                         </TableRow>
                       ))}

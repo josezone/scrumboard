@@ -61,7 +61,8 @@ function useInvokeGetTicketsList(graphQLClient: any) {
               }
             }
             estimation,
-            link
+            link,
+            activated_date
           }
         }
     `);

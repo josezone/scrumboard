@@ -25,6 +25,7 @@ export function useGetSprintReport(graphQLClient: any) {
               be_spill
               spill
               link
+              activated_date
               status {
                 status
               }

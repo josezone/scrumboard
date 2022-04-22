@@ -44,6 +44,7 @@ const schema = yup
   .required();
 
 function NewTicket(props: any) {
+  console.log(props);
   const formProps = useForm({
     resolver: yupResolver(schema),
   });
