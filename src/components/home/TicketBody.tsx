@@ -16,6 +16,12 @@ import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import { Grid } from "@mui/material";
 
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+
+import { DatePicker } from "@mui/x-date-pickers";
+
 import MultipleSelect from "../multiSelect/multiSelect";
 import { TicketBodyWrapper } from "./TicketBody.style";
 
@@ -27,9 +33,13 @@ const schema = yup
     beStory: yup.number().nullable(true),
     feStory: yup.number().nullable(true),
     qaStory: yup.number().nullable(true),
-    link: yup.string().test("bh", "Enter correct url!", (value)=>{
-       return value?.startsWith("https")||false;
-    }).required(),
+    link: yup
+      .string()
+      .test("bh", "Enter correct url!", (value) => {
+        return value?.startsWith("https") || false;
+      })
+      .required(),
+    activatedDate: yup.date().nullable(true),
   })
   .required();
 
@@ -45,6 +55,7 @@ function NewTicket(props: any) {
 
   useEffect(() => {
     if (props.editMode) {
+      formProps.setValue("activatedDate", props.activated_date);
       formProps.setValue("ticket", props.ticket);
       formProps.setValue("priority", props.priority.id);
       setPriority(props.priority.id);
@@ -102,7 +113,8 @@ function NewTicket(props: any) {
       if (!selectedResources.length) {
         return;
       }
-      const newData: { [x: string]: any } = {
+      type NewData = Record<string, any>;
+      const newData: NewData = {
         ticket: {
           ticket: data.ticket,
           sprintId: props.sprintSelected.id,
@@ -118,6 +130,7 @@ function NewTicket(props: any) {
           feSpill: null,
           qaSpill: null,
           link: data.link,
+          activatedDate: data.activatedDate?.toISOString(),
         },
       };
       if (props.editMode) {
@@ -388,6 +401,24 @@ function NewTicket(props: any) {
 
               <Grid item md={6} sm={12}>
                 <Controller
+                  name="activatedDate"
+                  control={formProps.control}
+                  render={({ field }) => (
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DatePicker
+                        label="Activated Date"
+                        {...field}
+                        renderInput={(params: any) => (
+                          <TextField {...params} fullWidth />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  )}
+                />
+              </Grid>
+
+              <Grid item md={6} sm={12}>
+                <Controller
                   name="resources"
                   control={formProps.control}
                   render={({ field }) => (
@@ -451,8 +482,9 @@ function NewTicket(props: any) {
                   </FormControl>
                 )}
               </Grid>
+
               <Button type="submit" autoFocus>
-                Create
+                {props.editMode ? "Update" : "Create"}
               </Button>
             </Grid>
           </form>

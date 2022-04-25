@@ -27,8 +27,8 @@ const grid = 8;
 
 const getItemStyle = (isDragging: any, draggableStyle: any) => ({
   userSelect: "none",
-  padding: grid * 2,
-  margin: `0 0 ${grid}px 0`,
+  // padding: grid * 2,
+  margin: `0 0 ${grid * 2}px 0`,
   background: isDragging ? "lightgreen" : "white",
   ...draggableStyle,
   borderRadius: "5px",
@@ -39,7 +39,7 @@ const getListStyle = (isDraggingOver: any) => ({
   background: isDraggingOver ? "lightblue" : "#f4f5f7",
   padding: grid,
   width: 250,
-  margin:"0.2rem",
+  margin: "0.2rem",
 });
 
 function ScrumBoard(props: any) {
@@ -98,7 +98,7 @@ function ScrumBoard(props: any) {
     if (props.ticketList && props.ticketList[el.status]) {
       return props.ticketList[el.status].map((item: any, index: any) => (
         <Draggable
-          key={index}
+          key={item.id}
           draggableId={item.ticket + "_" + item.id}
           index={index}
         >
@@ -140,7 +140,7 @@ function ScrumBoard(props: any) {
       <div style={{ display: "flex" }}>
         <DragDropContext onDragEnd={onDragEnd}>
           {props.sprintStatusList?.map((el: any, ind: any) => (
-            <Droppable key={el.id + ind} droppableId={`${ind}`}>
+            <Droppable key={el.id} droppableId={`${ind}`}>
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}

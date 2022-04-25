@@ -1,56 +1,79 @@
 import styled from "styled-components";
 
-
 export const DndItemStyled = styled.div`
-.editContainer {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.8px;
+  border-radius: 10px;
+  padding: 0 10px;
+  div:first-of-type {
+    border-radius: 10px;
+  }
+  .editContainer {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     width: 220px;
-    background-color: #d2d7d9;
-}
-.ticketContainer {
+  }
+  .ticketContainer {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-}
-.ticketVersion {
+  }
+  .ticketVersion {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-}
-.storyPoints {
+    text-transform: capitalize;
+  }
+  .storyPoints {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-}
-.priorityCritical{
-    background-color: #ffcccb;
-}
-.priorityHigh{
-    background-color: #FFD580;
-}
-.priorityNormal{
-    background-color: #98FB98;
-}
-.priorityLow{
-    background-color: #ADD8E6;
-}
-.dndItem{
-    padding: 7px;
-}
-.ticketNumberStyle{
-    color: #0000FF;
+  }
+  .priorityCritical {
+    .ticketNumberStyle {
+      color: #ff332f;
+    }
+  }
+  .priorityHigh {
+    .ticketNumberStyle {
+      color: #eb9d00;
+    }
+  }
+  .priorityNormal {
+    .ticketNumberStyle {
+      color: #007000;
+    }
+  }
+  .priorityLow {
+    .ticketNumberStyle {
+      color: #2e87a5;
+    }
+  }
+  .dndItem {
+    padding: 0 7px 7px 7px;
+
+    div {
+      margin: 0.1rem 0;
+    }
+  }
+  .ticketNumberStyle {
+    color: #0000ff;
     cursor: pointer;
-}
-.resourceWrap{
+    font-weight: 300;
+  }
+  .resourceWrap {
     display: flex;
     gap: 7px;
     flex-wrap: wrap;
-}
-.borderItem{
-    background-color: #FFFBC8;
-    padding: 0 10px;
-    border-radius: 25px;
-}
-`
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+  }
+  .borderItem {
+    color: rgb(70 69 69);
+    font-size: 12px;
+    text-transform: uppercase;
+    /* font-weight: bold; */
+  }
+`;

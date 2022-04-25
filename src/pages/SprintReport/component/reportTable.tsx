@@ -6,14 +6,21 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-
+import { formatDate } from "../../../utils/utils";
 interface IReportTable {
   reportList: any;
+  scrum: any;
 }
 
 const ReportTable: FC<IReportTable> = (props) => {
-  const { reportList } = props;
-
+  const { reportList, scrum } = props;
+  const getDateofTicket = (date: any) => {
+    const ticketDate = new Date(date);
+    const scrumDate = new Date(scrum);
+    const dateVal =
+      ticketDate > scrumDate ? formatDate(ticketDate) : formatDate(scrumDate);
+    return dateVal;
+  };
   const getProjectSpan = (sprints: Array<any>): number => {
     return (
       sprints.reduce((length, data) => length + data.tickets.length + 1, 0) + 1
@@ -67,6 +74,7 @@ const ReportTable: FC<IReportTable> = (props) => {
             <TableCell align="right">Story Points (QA)</TableCell>
             <TableCell>Issue History</TableCell>
             <TableCell>Issue Impact</TableCell>
+            <TableCell>Start Date</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -105,6 +113,9 @@ const ReportTable: FC<IReportTable> = (props) => {
                           </TableCell>
                           <TableCell>{getBugs(ticket.bugs)}</TableCell>
                           <TableCell>{getImapact(ticket) || "-"}</TableCell>
+                          <TableCell>
+                            {getDateofTicket(ticket.activated_date)}
+                          </TableCell>
                         </TableRow>
                       ))}
                     </Fragment>

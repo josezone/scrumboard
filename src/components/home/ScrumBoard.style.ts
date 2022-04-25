@@ -6,5 +6,6 @@ export const StatusWrapper = styled.div`
   padding: 0 0 0.5rem 0;
   text-transform: uppercase;
   font-size: 0.85rem;
-  font-weight:bold
+  font-weight:bold;
+  margin-top:5px;
 `;
