@@ -200,7 +200,7 @@ function ScrumItem(props: any) {
         <ModalComponent
           open={openTicket}
           handleClose={toggleOpenTicket}
-          title="New Ticket"
+          title="Update Ticket"
           componentsProps={{ data: props }}
         >
           <NewTicket toggleOpenTicket={toggleOpenTicket} editMode={true} />

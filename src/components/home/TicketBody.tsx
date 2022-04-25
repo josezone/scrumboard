@@ -108,13 +108,12 @@ function NewTicket(props: any) {
 
   const onSubmit = (e: any) => {
     formProps.handleSubmit((data: any) => {
-
       formProps.reset();
       e.target.reset();
       if (!selectedResources.length) {
         return;
       }
-      type NewData = Record<string, any>
+      type NewData = Record<string, any>;
       const newData: NewData = {
         ticket: {
           ticket: data.ticket,
@@ -483,8 +482,9 @@ function NewTicket(props: any) {
                   </FormControl>
                 )}
               </Grid>
+
               <Button type="submit" autoFocus>
-                Create
+                {props.editMode ? "Update" : "Create"}
               </Button>
             </Grid>
           </form>
