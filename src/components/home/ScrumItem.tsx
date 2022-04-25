@@ -62,7 +62,6 @@ function storyPoint(props: any) {
 }
 
 function ScrumItem(props: any) {
-  console.log(props);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [openTicket, setOpenTicket] = useState(false);

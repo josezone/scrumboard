@@ -44,7 +44,6 @@ const schema = yup
   .required();
 
 function NewTicket(props: any) {
-  console.log(props);
   const formProps = useForm({
     resolver: yupResolver(schema),
   });
@@ -56,6 +55,7 @@ function NewTicket(props: any) {
 
   useEffect(() => {
     if (props.editMode) {
+      formProps.setValue("activatedDate", props.activated_date);
       formProps.setValue("ticket", props.ticket);
       formProps.setValue("priority", props.priority.id);
       setPriority(props.priority.id);
@@ -108,14 +108,14 @@ function NewTicket(props: any) {
 
   const onSubmit = (e: any) => {
     formProps.handleSubmit((data: any) => {
-      console.log(data);
 
       formProps.reset();
       e.target.reset();
       if (!selectedResources.length) {
         return;
       }
-      const newData: { [x: string]: any } = {
+      type NewData = Record<string, any>
+      const newData: NewData = {
         ticket: {
           ticket: data.ticket,
           sprintId: props.sprintSelected.id,
@@ -134,7 +134,6 @@ function NewTicket(props: any) {
           activatedDate: data.activatedDate?.toISOString(),
         },
       };
-      console.log(newData);
       if (props.editMode) {
         const updateResource = selectedResources.filter(
           (item: any) => item.ticketResourceId

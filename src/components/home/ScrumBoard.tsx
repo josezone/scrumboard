@@ -39,7 +39,7 @@ const getListStyle = (isDraggingOver: any) => ({
   background: isDraggingOver ? "lightblue" : "#f4f5f7",
   padding: grid,
   width: 250,
-  margin:"0.2rem",
+  margin: "0.2rem",
 });
 
 function ScrumBoard(props: any) {

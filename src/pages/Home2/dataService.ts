@@ -202,7 +202,7 @@ function useInvokeCreateNewTickets(graphQLClient: any) {
     }: any) => {
       return graphQLClient.request(gql`mutation MyMutation {
         insert_ticket(objects: {ticket: "${ticket}", link: "${link}", sprint_id: ${sprintId}, scope_id: ${scopeId}, version_id: ${versionId}, priority_id: ${priorityId}, status_id: ${statusId}, spill:${spill}, fe_story: ${feStory}, fe_spill: ${feSpill}, be_story: ${beStory}, be_spill: ${beSpill}, qa_story: ${qaStory}, qa_spill: ${qaSpill},
-         ${activatedDate?`activated_date:"${activatedDate}"`: `` }}) {
+         ${activatedDate ? `activated_date:"${activatedDate}"` : ``}}) {
           returning {
             id
           }
@@ -248,6 +248,7 @@ function useInvokeUpdateTicket(graphQLClient: any) {
       scopeId,
       priorityId,
       link,
+      activatedDate,
     }: any) => {
       return graphQLClient.request(gql`
     mutation MyMutation {
@@ -255,7 +256,9 @@ function useInvokeUpdateTicket(graphQLClient: any) {
         beStory ? "be_story: " + beStory + "," : ""
       } ${feStory ? "fe_story: " + feStory + "," : ""} ${
         qaStory ? "qa_story: " + qaStory + "," : ""
-      } ticket: "${ticket}", scope_id: ${scopeId}, priority_id: ${priorityId}, link: "${link}"}) {
+      } ticket: "${ticket}", scope_id: ${scopeId}, priority_id: ${priorityId}, link: "${link}", ${
+        activatedDate ? `activated_date:"${activatedDate}"` : ``
+      }}) {
         returning {
             id
           }
@@ -538,6 +541,7 @@ export function getQuery(sprintId: number, client: any, send: any) {
           qa_story
           spill
           ticket
+          activated_date
           priority {
             colorCode
             id
@@ -711,8 +715,8 @@ export const useServices = (props: any) => {
         ticketId: context.newTicketId,
         resources: context.newTicket?.resources,
       }),
-    invokeUpdateTicket: (context: any) =>
-      invokeUpdateTicket({
+    invokeUpdateTicket: (context: any) => {
+      return invokeUpdateTicket({
         ticketId: context.updateTicket.ticket.id,
         beStory: context.updateTicket.ticket.beStory,
         feStory: context.updateTicket.ticket.feStory,
@@ -721,7 +725,9 @@ export const useServices = (props: any) => {
         scopeId: context.updateTicket.ticket.scopeId,
         priorityId: context.updateTicket.ticket.priorityId,
         link: context.updateTicket.ticket.link,
-      }),
+        activatedDate: context.updateTicket.ticket.activatedDate,
+      });
+    },
     invokeDeleteResourceTicket: (context: any) =>
       invokeDeleteResourceTicket({
         deleteRes: context.updateTicket.deleteResource,

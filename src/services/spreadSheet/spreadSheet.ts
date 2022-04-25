@@ -73,7 +73,6 @@ class SpreadSheet {
   }
 
   protected getBugs(bugs: Array<any>) {
-    console.log(bugs);
     let bugText: string = "";
     bugs?.map((bug, i: number) => {
       bugText +=
@@ -86,7 +85,6 @@ class SpreadSheet {
         bugText += "\n";
       }
     });
-    console.log(bugText);
     return bugText;
   }
 
