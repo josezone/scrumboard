@@ -110,9 +110,9 @@ function NewTicket(props: any) {
     formProps.handleSubmit((data: any) => {
       formProps.reset();
       e.target.reset();
-      if (!selectedResources.length) {
-        return;
-      }
+      // if (!selectedResources.length) {
+      //   return;
+      // }
       type NewData = Record<string, any>;
       const newData: NewData = {
         ticket: {
